@@ -5,9 +5,13 @@ var Sticky = React.createClass({
 
   reset: function() {
     var html = document.documentElement, body = document.body;
+    var node = this.getDOMNode();
 
     var windowOffset = window.pageYOffset || (html.clientHeight ? html : body).scrollTop;
-    this.elementOffset = this.getDOMNode().getBoundingClientRect().top + windowOffset;
+    var classes = node.className;
+    node.className = '';
+    this.elementOffset = node.getBoundingClientRect().top + windowOffset;
+    node.className = classes;
   },  
   
   tick: function() {
