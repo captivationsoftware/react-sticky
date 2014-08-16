@@ -22,7 +22,7 @@ var Header = React.createClass({
     return (
       <Sticky>
         <header>
-          ...
+          <nav />
         </header>
       </Sticky>
     );
@@ -52,7 +52,7 @@ In the event that you do not want to use the default class name, .sticky, you ca
 app.jsx
 ```js
 <Sticky stickyClassName="fixed">
-  ...
+  <header />
 </Sticky>
 ```
 
