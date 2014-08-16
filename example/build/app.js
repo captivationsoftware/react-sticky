@@ -5,11 +5,17 @@ var React = require('react'),
 var Sticky = React.createClass({
 
   reset: function() {
-    var windowOffset = window.pageYOffset || (document.documentElement.clientHeight ? document.documentElement : document.body).scrollTop;
+    var html = document.documentElement, body = document.body;
+
+    var windowOffset = window.pageYOffset || (html.clientHeight ? html : body).scrollTop;
     this.elementOffset = this.getDOMNode().getBoundingClientRect().top + windowOffset;
   },  
   
   tick: function() {
+    if (!this.unmounting) {
+      raf(this.tick);
+    }
+
     if (this.resizing) {
       this.resizing = false;
       this.reset();
@@ -22,10 +28,6 @@ var Sticky = React.createClass({
       } else {
         this.setState({ className: '' });
       }
-    }
-    
-    if (!this.unmounting) {
-      raf(this.tick);
     }
   },  
 
@@ -42,11 +44,10 @@ var Sticky = React.createClass({
   },
 
   componentDidMount: function() {
+    this.reset();
+    this.tick(); 
     window.addEventListener('scroll', this.handleScroll);
     window.addEventListener('resize', this.handleResize);
-    
-    this.reset();
-    raf(this.tick()); 
   },
 
   componentWillUnmount: function() {
