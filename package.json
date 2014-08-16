@@ -1,0 +1,33 @@
+{
+  "name": "react-sticky",
+  "version": "1.0.0",
+  "description": "<Sticky /> component for React",
+  "main": "./index",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/captivationsoftware/react-sticky"
+  },
+  "keywords": [
+    "React",
+    "Sticky"
+  ],
+  "author": "Captivation Software",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/captivationsoftware/react-sticky/issues"
+  },
+  "homepage": "https://github.com/captivationsoftware/react-sticky",
+  "devDependencies": {
+    "browserify": "^5.10.0",
+    "reactify": "^0.14.0"
+  },
+  "peerDependencies": {
+    "react": "^0.11.1"
+  },
+  "dependencies": {
+    "raf": "^2.0.2"
+  }
+}
