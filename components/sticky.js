@@ -22,7 +22,10 @@ var Sticky = React.createClass({
         this.setState({ className: '' });
       }
     }
-    raf(this.tick);
+    
+    if (!this.unmounting) {
+      raf(this.tick);
+    }
   },  
 
   handleResize: function() {
@@ -38,25 +41,23 @@ var Sticky = React.createClass({
   },
 
   componentDidMount: function() {
-    //this.interval = window.setInterval(this.tick, 100);
-    this.reset();
-    raf(this.tick());
     window.addEventListener('scroll', this.handleScroll);
     window.addEventListener('resize', this.handleResize);
+    
+    this.reset();
+    raf(this.tick()); 
   },
 
   componentWillUnmount: function() {
-    //window.clearInterval(this.interval);
     window.removeEventListener('scroll', this.handleScroll);
     window.removeEventListener('resize', this.handleResize);
+    this.unmounting = true;
   },
 
   render: function() {
-    return (
-      <div className={this.state.className}>
-        {this.props.children}
-      </div>
-    );
+    return React.DOM.div({
+      className: this.state.className
+    }, this.props.children);
   }
 });
 

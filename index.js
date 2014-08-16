@@ -1,1 +1,1 @@
-module.exports = require('./components/sticky.jsx');
+module.exports = require('./components/sticky.js');
