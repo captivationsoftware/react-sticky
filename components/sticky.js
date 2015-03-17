@@ -45,7 +45,6 @@ var React = require('react'),
   componentWillUnmount: function() {
     window.removeEventListener('scroll', this.handleScroll);
     window.removeEventListener('resize', this.handleResize);
-    this.unmounting = true;
   },
 
   render: function() {
