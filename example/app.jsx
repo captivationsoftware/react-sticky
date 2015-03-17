@@ -11,14 +11,14 @@ var App = React.createClass({
           </header>
         </Sticky>
         <main>
-          Content
+          Main content
         </main>
         <footer>
-          Footer
+          Footer content
         </footer>
       </div>
     );
   }
 });
 
-React.renderComponent(new App(), document.getElementById('example'));
+React.renderComponent(<App />, document.getElementById('example'));
