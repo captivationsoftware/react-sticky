@@ -31,10 +31,3 @@ main {
   height: 1000px;
   line-height: 1000px;
 }
-
-.sticky {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-}

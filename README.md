@@ -31,37 +31,27 @@ var Header = React.createClass({
 
 ```
 
-To control the look-and-feel of what happens when the "stickiness" becomes activated, you will need to add the .sticky class to your stylesheet:
+When the "stickiness" becomes activated, the following css style rules are applied to the Sticky element:
 
-app.css
 ```css
-.sticky {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-}
 ```
-Note: 
-We didn't want to make any assumptions about your project, and as such, the above css rule is required for this component to have any visual effect. Having said that, the above will most likely cover the majority of use cases. 
 
 ### Options
 
-In the event that you do not want to use the default class name, .sticky, you can override the default like so:
+In the event that you wish to override the style rules applied, simply pass in the style object as a prop:
 
 app.jsx
 ```js
-<Sticky stickyClassName="fixed">
+<Sticky stickyStyle={customStyleObject}>
   <header />
 </Sticky>
 ```
-
-app.css
-```css
-.fixed {
-  ...
-}
-```
+Note:
+For more information on the style object see <http://facebook.github.io/react/tips/inline-styles.html>
 
 A more in-depth example is included, but you will need to build it first using the following command:
 ```sh
