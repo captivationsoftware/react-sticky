@@ -62,6 +62,8 @@ scripts/build-example
 
 Captivation Software (@teamcaptivation)
 
+Aaron Goin
+
 By all means, if you see room for improvement, let us know!
 
 ## License
