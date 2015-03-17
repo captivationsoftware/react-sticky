@@ -1,7 +1,7 @@
 react-sticky
 ============
 
-A simple React component polyfill for making any mounted component on your page sticky. This uses the raf (https://github.com/chrisdickinson/raf) polyfill to ensure that the animations for super-smooth scrolling work well for all major browsers.
+A simple React component polyfill for making any mounted component on your page sticky.
 
 ## Installation
 ```sh
