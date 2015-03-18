@@ -1,54 +1,43 @@
 var React = require('react'),
-  raf = require('raf');
-
-var Sticky = React.createClass({
+		Sticky = React.createClass({
 
   reset: function() {
-    var html = document.documentElement, body = document.body;
-    var node = this.getDOMNode();
-
-    var windowOffset = window.pageYOffset || (html.clientHeight ? html : body).scrollTop;
-    var classes = node.className;
-    node.className = '';
-    this.elementOffset = node.getBoundingClientRect().top + windowOffset;
-    node.className = classes;
-  },  
-  
-  tick: function() {
-    if (!this.unmounting) {
-      raf(this.tick);
-    }
-
-    if (this.resizing) {
-      this.resizing = false;
-      this.reset();
-    }
-
-    if (this.scrolling) {
-      this.scrolling = false;
-      if (pageYOffset > this.elementOffset) {
-        this.setState({ className: this.props.stickyClassName || 'sticky' });
-      } else {
-        this.setState({ className: '' });
-      }
-    }
-  },  
+    var html = document.documentElement,
+        body = document.body,
+        windowOffset = window.pageYOffset || (html.clientHeight ? html : body).scrollTop;
+    
+    this.elementOffset = this.getDOMNode().getBoundingClientRect().top + windowOffset;
+  },
 
   handleResize: function() {
-    this.resizing = true;
+    // set style with callback to reset once style rendered succesfully
+    this.setState({ style: {} }, this.reset);
   },
 
   handleScroll: function() {
-    this.scrolling = true;
+    if (window.pageYOffset > this.elementOffset) this.setState({ style: this.props.stickyStyle });
+    else this.setState({ style: {} });
+  },
+
+  getDefaultProps: function() {
+    return {
+      stickyStyle: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0
+      }
+    };
   },
 
   getInitialState: function() {
-    return { className: '' }; 
+    return {
+      style: {}
+    }; 
   },
 
   componentDidMount: function() {
     this.reset();
-    this.tick(); 
     window.addEventListener('scroll', this.handleScroll);
     window.addEventListener('resize', this.handleResize);
   },
@@ -56,12 +45,11 @@ var Sticky = React.createClass({
   componentWillUnmount: function() {
     window.removeEventListener('scroll', this.handleScroll);
     window.removeEventListener('resize', this.handleResize);
-    this.unmounting = true;
   },
 
   render: function() {
     return React.DOM.div({
-      className: this.state.className
+      style: this.state.style
     }, this.props.children);
   }
 });
