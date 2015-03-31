@@ -1,6 +1,4 @@
-var React = require('react'),
-		Sticky = React.createClass({
-
+var React = require('react'), Sticky = React.createClass({
   reset: function() {
     var html = document.documentElement,
         body = document.body,
@@ -27,6 +25,7 @@ var React = require('react'),
 
   getDefaultProps: function() {
     return {
+      type: React.DOM.div,
       stickyClass: 'sticky',
       stickyStyle: {
         position: 'fixed',
@@ -55,7 +54,7 @@ var React = require('react'),
   },
 
   render: function() {
-    return React.DOM.div({
+    return this.props.type({
       style: this.state.style,
       className: this.state.className
     }, this.props.children);

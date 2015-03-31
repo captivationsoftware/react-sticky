@@ -56,10 +56,21 @@ For more information on the style object see <http://facebook.github.io/react/ti
 
 #### stickyClass
 You can specify a class name ('sticky' by default) to be applied when the element becomes sticky:
+
 app.jsx
 ```js
 <Sticky stickyClass={customClassName}>
   <header />
+</Sticky>
+```
+
+#### type
+You can specify the type of element (`React.DOM.div` by default) that will be rendered:
+
+app.jsx
+```js
+<Sticky type={React.DOM.header}>
+  <SomeChild />
 </Sticky>
 ```
 
