@@ -5,22 +5,29 @@ var React = require('react'),
     var html = document.documentElement,
         body = document.body,
         windowOffset = window.pageYOffset || (html.clientHeight ? html : body).scrollTop;
-    
+
     this.elementOffset = this.getDOMNode().getBoundingClientRect().top + windowOffset;
   },
 
   handleResize: function() {
     // set style with callback to reset once style rendered succesfully
-    this.setState({ style: {} }, this.reset);
+    this.setState({ style: {}, className: '' }, this.reset);
   },
 
   handleScroll: function() {
-    if (window.pageYOffset > this.elementOffset) this.setState({ style: this.props.stickyStyle });
-    else this.setState({ style: {} });
+    if (window.pageYOffset > this.elementOffset) {
+      this.setState({
+        style: this.props.stickyStyle,
+        className: this.props.stickyClass
+      });
+    } else {
+      this.setState({ style: {}, className: '' });
+    }
   },
 
   getDefaultProps: function() {
     return {
+      stickyClass: 'sticky',
       stickyStyle: {
         position: 'fixed',
         top: 0,
@@ -33,7 +40,7 @@ var React = require('react'),
   getInitialState: function() {
     return {
       style: {}
-    }; 
+    };
   },
 
   componentDidMount: function() {
@@ -49,7 +56,8 @@ var React = require('react'),
 
   render: function() {
     return React.DOM.div({
-      style: this.state.style
+      style: this.state.style,
+      className: this.state.className
     }, this.props.children);
   }
 });
