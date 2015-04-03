@@ -42,6 +42,7 @@ When the "stickiness" becomes activated, the following css style rules are appli
 
 ### Options
 
+#### style
 In the event that you wish to override the style rules applied, simply pass in the style object as a prop:
 
 app.jsx
@@ -52,6 +53,27 @@ app.jsx
 ```
 Note:
 For more information on the style object see <http://facebook.github.io/react/tips/inline-styles.html>
+
+#### stickyClass
+You can specify a class name ('sticky' by default) to be applied when the element becomes sticky:
+
+app.jsx
+```js
+<Sticky stickyClass={customClassName}>
+  <header />
+</Sticky>
+```
+
+#### type
+You can specify the type of element (`React.DOM.div` by default) that will be rendered:
+
+app.jsx
+```js
+<Sticky type={React.DOM.header}>
+  <SomeChild />
+</Sticky>
+```
+
 
 A more in-depth example is included, but you will need to build it first using the following command:
 ```sh
@@ -69,4 +91,3 @@ By all means, if you see room for improvement, let us know!
 ## License
 
 MIT License
-
