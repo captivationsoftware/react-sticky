@@ -86,6 +86,8 @@ Captivation Software (@teamcaptivation)
 
 Aaron Goin
 
+Alejandro Tardin
+
 By all means, if you see room for improvement, let us know!
 
 ## License
