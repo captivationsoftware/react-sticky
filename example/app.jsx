@@ -2,10 +2,13 @@ var React = require('react'),
   Sticky = require('../index');
 
 var App = React.createClass({
+  handleStickyStateChange: function ( state ) {
+    console.log( state );
+  },
   render: function() {
     return (
       <div>
-        <Sticky>
+        <Sticky onStickyStateChange={this.handleStickyStateChange}>
           <header>
             Header (sticky) 
           </header>
