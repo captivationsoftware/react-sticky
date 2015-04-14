@@ -53,6 +53,15 @@ app.jsx
 Note:
 For more information on the style object see <http://facebook.github.io/react/tips/inline-styles.html>
 
+To communicate to the parent element that the sticky state has changed, pass in a callback function as the `onStickyStateChange` prop:
+
+app.jsx
+```js
+<Sticky onStickyStateChange={this.handleStickyStateChange}>
+  <header />
+</Sticky
+```
+
 A more in-depth example is included, but you will need to build it first using the following command:
 ```sh
 scripts/build-example
