@@ -10,13 +10,20 @@ var React = require('react'),
   },
 
   handleResize: function() {
+    this.props.onStickyStateChange( false );
     // set style with callback to reset once style rendered succesfully
     this.setState({ style: {} }, this.reset);
   },
 
   handleScroll: function() {
-    if (window.pageYOffset > this.elementOffset) this.setState({ style: this.props.stickyStyle });
-    else this.setState({ style: {} });
+    if (window.pageYOffset > this.elementOffset){
+      this.props.onStickyStateChange( true );
+      this.setState({ style: this.props.stickyStyle });
+    }
+    else{
+      this.props.onStickyStateChange( false );
+      this.setState({ style: {} });
+    }
   },
 
   getDefaultProps: function() {
@@ -26,7 +33,8 @@ var React = require('react'),
         top: 0,
         left: 0,
         right: 0
-      }
+      },
+      onStickyStateChange: function () {}
     };
   },
 
