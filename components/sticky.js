@@ -1,8 +1,10 @@
-var React = require('react'), Sticky = React.createClass({
+var React = require('react');
+
+var Sticky = React.createClass({
   reset: function() {
-    var html = document.documentElement,
-        body = document.body,
-        windowOffset = window.pageYOffset || (html.clientHeight ? html : body).scrollTop;
+    var html = document.documentElement;
+    var body = document.body;
+    var windowOffset = window.pageYOffset || (html.clientHeight ? html : body).scrollTop;
 
     this.elementOffset = this.getDOMNode().getBoundingClientRect().top + windowOffset;
   },

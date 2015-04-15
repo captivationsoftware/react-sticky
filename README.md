@@ -51,15 +51,25 @@ app.jsx
   <header />
 </Sticky>
 ```
+
 Note:
 For more information on the style object see <http://facebook.github.io/react/tips/inline-styles.html>
 
 #### stickyClass
-You can specify a class name ('sticky' by default) to be applied when the element becomes sticky:
+You can also specify a class name ('sticky' by default) to be applied when the element becomes sticky:
 
 app.jsx
 ```js
 <Sticky stickyClass={customClassName}>
+  <header />
+</Sticky>
+```
+
+If you prefer to use external CSS rules instead of inline styles, you will need to pass an empty object to the stickyStyle property in order to prevent the default inline styles from taking precedence over your own CSS rules. An example of this is found below:
+
+app.jsx
+```js
+<Sticky stickyStyle={{}}>
   <header />
 </Sticky>
 ```
@@ -73,7 +83,6 @@ app.jsx
   <SomeChild />
 </Sticky>
 ```
-
 
 A more in-depth example is included, but you will need to build it first using the following command:
 ```sh
