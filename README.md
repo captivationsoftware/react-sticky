@@ -40,7 +40,7 @@ When the "stickiness" becomes activated, the following css style rules are appli
   right: 0;
 ```
 
-### Options
+### Props
 
 #### style
 In the event that you wish to override the style rules applied, simply pass in the style object as a prop:
@@ -96,7 +96,9 @@ scripts/build-example
 ## Contributors
 
 Captivation Software (@teamcaptivation)
+
 Aaron Goin
+
 Alejandro Tardin
 
 By all means, if you see room for improvement, let us know!
