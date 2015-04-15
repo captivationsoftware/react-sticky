@@ -18,6 +18,9 @@
   "contributors": [{
     "name": "Aaron Goin",
     "email": "aarondgoin@gmail.com"
+  },{
+    "name": "Alejandro Tardin",
+    "email": "alejandro@tardin.com"
   }],
   "license": "MIT",
   "bugs": {
