@@ -10,18 +10,24 @@ var Sticky = React.createClass({
   },
 
   handleResize: function() {
+    this.props.onStickyStateChange( false );
     // set style with callback to reset once style rendered succesfully
     this.setState({ style: {}, className: '' }, this.reset);
   },
 
   handleScroll: function() {
-    if (window.pageYOffset > this.elementOffset) {
+    var wasSticky = this.isSticky;
+    this.isSticky = window.pageYOffset > this.elementOffset;
+    if (this.isSticky) {
       this.setState({
         style: this.props.stickyStyle,
         className: this.props.stickyClass
       });
     } else {
       this.setState({ style: {}, className: '' });
+    }
+    if (this.isSticky !== wasSticky) {
+      this.props.onStickyStateChange(this.isSticky);
     }
   },
 
@@ -34,7 +40,8 @@ var Sticky = React.createClass({
         top: 0,
         left: 0,
         right: 0
-      }
+      },
+      onStickyStateChange: function () {}
     };
   },
 

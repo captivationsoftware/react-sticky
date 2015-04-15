@@ -86,6 +86,17 @@ app.jsx
 
 The above would result in all sticky state attributes (class and style) being applied directly to the element you specify, rather than being wrapped in a React.DOM.div.
 
+#### onStickyStateChange
+
+Use the onStickyStateChange prop to fire a callback function when the sticky state changes:
+
+app.jsx
+```js
+<Sticky onStickyStateChange={this.handleStickyStateChange}>
+  <header />
+</Sticky
+```
+
 ## Try it!
 
 A more in-depth example is included, but you will need to build it first using the following command:
@@ -101,7 +112,10 @@ Aaron Goin
 
 Alejandro Tardin
 
+
 By all means, if you see room for improvement, let us know!
+
+
 
 ## License
 
