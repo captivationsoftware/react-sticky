@@ -21,6 +21,10 @@
   },{
     "name": "Alejandro Tardin",
     "email": "alejandro@tardin.com"
+  },
+  {
+    "name": "Josh Carr",
+    "email": "joshcarr@gmail.com"
   }],
   "license": "MIT",
   "bugs": {
