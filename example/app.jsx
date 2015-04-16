@@ -6,10 +6,12 @@ var App = React.createClass({
     console.log( state );
   },
   render: function() {
+    // Inline style (partial)
+    var partialStyle = {left: 0, right: 0, background: 'orange'};
     return (
       <div>
         <Sticky stickyClass="supersticky"
-          stickyStyle={{top: 0, left: 0, right: 0, background: 'orange'}}
+          stickyStyle={partialStyle}
           type={React.DOM.header}
           onStickyStateChange={this.handleStickyStateChange}>
 
