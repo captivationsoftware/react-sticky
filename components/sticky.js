@@ -1,39 +1,54 @@
-var React = require('react'),
-		Sticky = React.createClass({
+var React = require('react');
 
+var Sticky = React.createClass({
   reset: function() {
-    var html = document.documentElement,
-        body = document.body,
-        windowOffset = window.pageYOffset || (html.clientHeight ? html : body).scrollTop;
-    
+    var html = document.documentElement;
+    var body = document.body;
+    var windowOffset = window.pageYOffset || (html.clientHeight ? html : body).scrollTop;
+
     this.elementOffset = this.getDOMNode().getBoundingClientRect().top + windowOffset;
   },
 
   handleResize: function() {
+    this.props.onStickyStateChange( false );
     // set style with callback to reset once style rendered succesfully
-    this.setState({ style: {} }, this.reset);
+    this.setState({ style: {}, className: '' }, this.reset);
   },
 
   handleScroll: function() {
-    if (window.pageYOffset > this.elementOffset) this.setState({ style: this.props.stickyStyle });
-    else this.setState({ style: {} });
+    var wasSticky = this.isSticky;
+    this.isSticky = window.pageYOffset > this.elementOffset;
+    if (this.isSticky) {
+      this.setState({
+        style: this.props.stickyStyle,
+        className: this.props.stickyClass
+      });
+    } else {
+      this.setState({ style: {}, className: '' });
+    }
+    if (this.isSticky !== wasSticky) {
+      this.props.onStickyStateChange(this.isSticky);
+    }
   },
 
   getDefaultProps: function() {
     return {
+      type: React.DOM.div,
+      stickyClass: 'sticky',
       stickyStyle: {
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0
-      }
+      },
+      onStickyStateChange: function () {}
     };
   },
 
   getInitialState: function() {
     return {
       style: {}
-    }; 
+    };
   },
 
   componentDidMount: function() {
@@ -48,8 +63,9 @@ var React = require('react'),
   },
 
   render: function() {
-    return React.DOM.div({
-      style: this.state.style
+    return this.props.type({
+      style: this.state.style,
+      className: this.state.className
     }, this.props.children);
   }
 });

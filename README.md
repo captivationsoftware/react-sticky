@@ -40,8 +40,9 @@ When the "stickiness" becomes activated, the following css style rules are appli
   right: 0;
 ```
 
-### Options
+### Props
 
+#### style
 In the event that you wish to override the style rules applied, simply pass in the style object as a prop:
 
 app.jsx
@@ -50,8 +51,53 @@ app.jsx
   <header />
 </Sticky>
 ```
+
 Note:
 For more information on the style object see <http://facebook.github.io/react/tips/inline-styles.html>
+
+#### stickyClass
+You can also specify a class name ('sticky' by default) to be applied when the element becomes sticky:
+
+app.jsx
+```js
+<Sticky stickyClass={customClassName}>
+  <header />
+</Sticky>
+```
+
+If you prefer to use external CSS rules instead of inline styles, you will need to pass an empty object to the stickyStyle property. Doing so will prevent the default inline styles from taking precedence over your own CSS rules. An example of how to do this is found below:
+
+app.jsx
+```js
+<Sticky stickyClass="supersticky" stickyStyle={{}}>
+  <header />
+</Sticky>
+```
+
+#### type
+You can specify the type of element (`React.DOM.div` by default) that will be rendered:
+
+app.jsx
+```js
+<Sticky type={React.DOM.header}>
+  <SomeChild />
+</Sticky>
+```
+
+The above would result in all sticky state attributes (class and style) being applied directly to the element you specify, rather than being wrapped in a React.DOM.div.
+
+#### onStickyStateChange
+
+Use the onStickyStateChange prop to fire a callback function when the sticky state changes:
+
+app.jsx
+```js
+<Sticky onStickyStateChange={this.handleStickyStateChange}>
+  <header />
+</Sticky
+```
+
+## Try it!
 
 A more in-depth example is included, but you will need to build it first using the following command:
 ```sh
@@ -64,9 +110,14 @@ Captivation Software (@teamcaptivation)
 
 Aaron Goin
 
+Alejandro Tardin
+
+Josh Carr (@joshcarr)
+
 By all means, if you see room for improvement, let us know!
+
+
 
 ## License
 
 MIT License
-
