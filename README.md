@@ -4,7 +4,7 @@ react-sticky
 A simple React component polyfill for making any mounted component on your page sticky.
 
 ## Try it!
-[Demo][https://captivationsoftware.github.io/react-sticky]
+[Demo](https://captivationsoftware.github.io/react-sticky)
 
 ## Installation
 ```sh
