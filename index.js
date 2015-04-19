@@ -1,1 +1,1 @@
-module.exports = require('./components/sticky.js');
+module.exports = require('./lib/sticky.js');
