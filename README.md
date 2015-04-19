@@ -2,7 +2,7 @@ react-sticky
 ============
 [Demo](https://captivationsoftware.github.io/react-sticky)
 
-Make any React component on your page sticky using inline styles and/or CSS!
+Make any React component on your page sticky using inline styles or CSS classes!
 
 ## Installation
 ```sh
@@ -43,7 +43,7 @@ When the "stickiness" becomes activated, the following css style rules are appli
 
 ### Props
 
-#### style
+#### stickyStyle
 In the event that you wish to override the style rules applied, simply pass in the style object as a prop:
 
 app.jsx
