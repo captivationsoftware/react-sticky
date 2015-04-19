@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+	<head>
+		<title><Sticky /> Example</title>
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/babel/5.1.10/browser.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.1/react.min.js"></script>
+		<script type="text/javascript">
+			// Manually bundling so override require and module
+			window.require = function() { return window.React; };
+			window.module = {};
+		</script>
+		<link href="styles.css" rel="stylesheet"/>
+		<style>
+		  /* Sticky style (1/2) */
+		  .supersticky {
+			  position: fixed;
+			  top: 0;
+		  }
+
+			.supersticky nav:after {
+				content: ' - activated!';
+			}
+		</style>
+	</head>
+	<body>
+		<div id="example"></div>
+		<script type="text/javascript" src="https://rawgit.com/captivationsoftware/react-sticky/master/components/sticky.js"></script>
+		<script type="text/babel">
+			class Example extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						// Sticky style (2/2)
+						partialStyle: {
+							left: 0,
+							right: 0,
+							background: 'orange'
+						}
+					};
+				}
+
+				handleStickyStateChange(isStuck) {
+					console.log('Sticky?', isStuck ? 'Yep!' : 'Nope!');
+				}
+
+				render() {
+					return (
+						<div>
+							<Sticky stickyClass="supersticky"
+								stickyStyle={this.state.partialStyle}
+								type={React.DOM.header}
+								onStickyStateChange={this.handleStickyStateChange}>
+
+								<nav>Header (sticky)</nav>
+							</Sticky>
+							<main>
+								Main content
+							</main>
+							<footer>
+								Footer content
+							</footer>
+						</div>
+					);
+				}
+			}
+
+			React.render(<Example />, document.getElementById('example'));
+		</script>
+	</body>
+</html>
