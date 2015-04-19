@@ -1,7 +1,6 @@
 react-sticky
 ============
-
-[Demo](https://captivationsoftware.github.io/react-sticky).
+[Demo](https://captivationsoftware.github.io/react-sticky)
 
 Make any React component on your page sticky using inline styles and/or CSS!
 
