@@ -1,4 +1,0 @@
-#!/bin/sh
-mkdir -p example/build
-NODE_ENV= node_modules/.bin/browserify -t reactify example/app.jsx > example/build/app.js
-

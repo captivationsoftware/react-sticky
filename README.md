@@ -3,6 +3,9 @@ react-sticky
 
 A simple React component polyfill for making any mounted component on your page sticky.
 
+## Try it!
+[Demo][https://captivationsoftware.github.io/react-sticky]
+
 ## Installation
 ```sh
 npm install react-sticky
@@ -95,13 +98,6 @@ app.jsx
 <Sticky onStickyStateChange={this.handleStickyStateChange}>
   <header />
 </Sticky
-```
-
-## Try it!
-
-A more in-depth example is included, but you will need to build it first using the following command:
-```sh
-scripts/build-example
 ```
 
 ## Contributors
