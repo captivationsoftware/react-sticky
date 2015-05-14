@@ -53,6 +53,9 @@ app.jsx
 </Sticky>
 ```
 
+#### stickyTopOffset
+If you have sticky top menu and you want to set current component sticked top offset
+
 Note:
 For more information on the style object see <http://facebook.github.io/react/tips/inline-styles.html>
 
