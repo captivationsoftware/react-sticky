@@ -20,14 +20,14 @@
 	</head>
 	<body>
 		<div id="example"></div>
-		<script type="text/javascript" src="lib/sticky.js"></script>
+		<script type="text/javascript" src="https://rawgit.com/captivationsoftware/react-sticky/master/lib/sticky.js"></script>
 		<script type="text/babel">
 			class Example extends React.Component {
 				constructor(props) {
 					super(props);
 					this.state = {
 						stickyText: 'I dunno',
-												
+
 						// Sticky style (2/2)
 						partialStyle: {
 							left: 0,
@@ -47,7 +47,7 @@
 							<Sticky stickyClass="supersticky"
 								stickyStyle={this.state.partialStyle}
 								type={React.DOM.header}
-								onStickyStateChange={this.handleStickyStateChange}>
+								onStickyStateChange={this.handleStickyStateChange.bind(this)}>
 
 								<nav>Am I Stuck? {this.state.stickyText}</nav>
 							</Sticky>
