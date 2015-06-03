@@ -1,6 +1,6 @@
 {
   "name": "react-sticky",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "<Sticky /> component for React",
   "main": "./index",
   "scripts": {
@@ -19,13 +19,18 @@
   "contributors": [{
     "name": "Aaron Goin",
     "email": "aarondgoin@gmail.com"
-  },{
+  },
+  {
     "name": "Alejandro Tardin",
     "email": "alejandro@tardin.com"
   },
   {
     "name": "Josh Carr",
     "email": "joshcarr@gmail.com"
+  },
+  {
+    "name": "George Lifchits",
+    "email": "george.lifchits@gmail.com"
   }],
   "license": "MIT",
   "bugs": {
