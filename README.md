@@ -75,6 +75,16 @@ app.jsx
 </Sticky>
 ```
 
+#### class
+You can apecify a class name that would be applied to the resulting element:
+
+app.jsx
+```js
+<Sticky className={className}>
+  <header />
+</Sticky>
+```
+
 #### type
 You can specify the type of element (`React.DOM.div` by default) that will be rendered:
 
@@ -105,6 +115,8 @@ Captivation Software (@teamcaptivation)
 Aaron Goin
 
 Alejandro Tardin
+
+Ankit Sardesai (@amsardesai)
 
 Josh Carr (@joshcarr)
 
