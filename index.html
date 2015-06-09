@@ -11,6 +11,11 @@
 		</script>
 		<link href="styles.css" rel="stylesheet"/>
 		<style>
+			.custom-header {
+				margin-top: 0px;
+				opacity: 0.8;
+			}
+
 		  /* Sticky style (1/2) */
 		  .supersticky {
 			  position: fixed;
@@ -45,6 +50,7 @@
 					return (
 						<div>
 							<Sticky stickyClass="supersticky"
+							  className="custom-header"
 								stickyStyle={this.state.partialStyle}
 								type={React.DOM.header}
 								onStickyStateChange={this.handleStickyStateChange.bind(this)}>
@@ -61,7 +67,6 @@
 					);
 				}
 			}
-
 			React.render(<Example />, document.getElementById('example'));
 		</script>
 	</body>

@@ -17,11 +17,6 @@ body {
   margin-top: 200px;
 }
 
-header {
-  margin-top: 0px;
-  opacity: 0.8;
-}
-
 header, footer {
   height: 80px;
   width: 100%;
