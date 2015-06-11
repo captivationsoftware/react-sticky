@@ -1,8 +1,8 @@
 {
   "name": "react-sticky",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "<Sticky /> component for React",
-  "main": "./index",
+  "main": "./sticky",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
