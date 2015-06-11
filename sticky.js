@@ -57,14 +57,6 @@ var Sticky = React.createClass({
       this.hasUnhandledEvent = false;
     }
     this.tick();
-    this.verify();
-  },
-
-  verify: function() {
-    if (this.state.isSticky && this.distanceFromTop() !== 0) {
-      console.log('anamoly detected');
-      this.render();
-    }
   },
 
   handleEvent: function() {
