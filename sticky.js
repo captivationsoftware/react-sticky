@@ -39,23 +39,32 @@ var Sticky = React.createClass({
   },
 
   handleTick: function() {
-    var wasSticky = this.state.isSticky;
-    var isSticky = this.scrollPosition() > this.elementOffset;
-
-    if (this.hasUnhandledEvent && isSticky !== wasSticky) {
-      var nextState = { isSticky: isSticky };
-      if (isSticky) {
-        nextState.style = this.props.stickyStyle;
-        nextState.className = this.props.className + ' ' + this.props.stickyClass;
-      } else {
-        nextState.style = {};
-        nextState.className = this.props.className;
+    if (this.hasUnhandledEvent) {
+      var wasSticky = this.state.isSticky;
+      var isSticky = this.scrollPosition() > this.elementOffset;
+      if (isSticky !== wasSticky) {
+        var nextState = { isSticky: isSticky };
+        if (isSticky) {
+          nextState.style = this.props.stickyStyle;
+          nextState.className = this.props.className + ' ' + this.props.stickyClass;
+        } else {
+          nextState.style = {};
+          nextState.className = this.props.className;
+        }
+        this.setState(nextState);
+        this.props.onStickyStateChange(isSticky);
       }
-      this.setState(nextState);
-      this.props.onStickyStateChange(isSticky);
+      this.hasUnhandledEvent = false;
     }
-    this.hasUnhandledEvent = false;
     this.tick();
+    this.verify();
+  },
+
+  verify: function() {
+    if (this.state.isSticky && this.distanceFromTop() !== 0) {
+      console.log('anamoly detected');
+      this.render();
+    }
   },
 
   handleEvent: function() {
