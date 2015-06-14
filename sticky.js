@@ -24,27 +24,25 @@ var Sticky = React.createClass({
     };
   },
 
-  scrollPosition: function() {
-    var html = document.documentElement;
-    var body = document.body;
-    return window.pageYOffset || (html.clientHeight ? html : body).scrollTop;
-  },
-
-  distanceFromTop: function() {
+  top: function() {
     return this.getDOMNode().getBoundingClientRect().top;
   },
 
-  initialize: function() {;
-    this.elementOffset = this.distanceFromTop() + this.scrollPosition();
+  shouldBeSticky: function() {
+    var position = this.getDOMNode().style.position;
+    this.getDOMNode().style.position = 'relative';
+    var shouldBeSticky = this.top() <= -this.props.threshold;
+    this.getDOMNode().style.position = position;
+    return shouldBeSticky;
   },
 
   handleTick: function() {
     if (this.hasUnhandledEvent) {
-      var wasSticky = this.state.isSticky;
-      var isSticky = this.scrollPosition() > this.elementOffset;
-      if (isSticky !== wasSticky) {
-        var nextState = { isSticky: isSticky };
-        if (isSticky) {
+      var isSticky = this.state.isSticky;
+      var shouldBeSticky = this.shouldBeSticky();
+      if (isSticky !== shouldBeSticky) {
+        var nextState = { isSticky: shouldBeSticky };
+        if (shouldBeSticky) {
           nextState.style = this.props.stickyStyle;
           nextState.className = this.props.className + ' ' + this.props.stickyClass;
         } else {
@@ -52,7 +50,7 @@ var Sticky = React.createClass({
           nextState.className = this.props.className;
         }
         this.setState(nextState);
-        this.props.onStickyStateChange(isSticky);
+        this.props.onStickyStateChange(shouldBeSticky);
       }
       this.hasUnhandledEvent = false;
     }
@@ -64,7 +62,6 @@ var Sticky = React.createClass({
   },
 
   componentDidMount: function() {
-    this.initialize();
     this.state.events.forEach(function(type) {
       window.addEventListener(type, this.handleEvent);
     }, this);
