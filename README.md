@@ -75,7 +75,20 @@ app.jsx
 </Sticky>
 ```
 
-#### class
+#### topOffset
+Sticky state will be triggered when the top of the element is <topOffset> pixels from the top of the window (0 by default). Negative numbers are allowed to enable more aggressive sticky behavior.
+
+app.jsx
+```js
+<Sticky topOffset={80}>
+  <SomeChild />
+</Sticky>
+```
+
+The above would result in an element that becomes sticky once its top is greater than or equal to 80px away from the top of the screen.
+
+
+#### className
 You can apecify a class name that would be applied to the resulting element:
 
 app.jsx
@@ -110,7 +123,7 @@ app.jsx
 
 ## Contributors
 
-Captivation Software (@teamcaptivation)
+Captivation Software
 
 Aaron Goin
 

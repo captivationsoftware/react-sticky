@@ -13,6 +13,7 @@ var Sticky = React.createClass({
         left: 0,
         right: 0
       },
+      topOffset: 0,
       onStickyStateChange: function () {}
     };
   },
@@ -31,7 +32,7 @@ var Sticky = React.createClass({
   shouldBeSticky: function() {
     var position = this.getDOMNode().style.position;
     this.getDOMNode().style.position = 'relative';
-    var shouldBeSticky = this.top() <= -this.props.threshold;
+    var shouldBeSticky = this.top() <= -this.props.topOffset;
     this.getDOMNode().style.position = position;
     return shouldBeSticky;
   },
