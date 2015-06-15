@@ -76,7 +76,7 @@ app.jsx
 ```
 
 #### topOffset
-Sticky state will be triggered when the top of the element is <topOffset> pixels from the top of the window (0 by default). Negative numbers are allowed to enable more aggressive sticky behavior.
+Sticky state will be triggered when the top of the element is `topOffset` pixels from the top of the window (0 by default). Negative numbers are allowed to enable more aggressive sticky behavior.
 
 app.jsx
 ```js
