@@ -20,7 +20,7 @@ var Sticky = React.createClass({
 
   getInitialState: function() {
     return {
-      events: ['load', 'scroll', 'resize'],
+      events: ['load', 'scroll', 'resize', 'touchmove', 'touchend'],
       style: {}
     };
   },
@@ -38,7 +38,7 @@ var Sticky = React.createClass({
   },
 
   handleTick: function() {
-    if (this.hasUnhandledEvent) {
+    if (this.hasUnhandledEvent || this.hasTouchEvent) {
       var isSticky = this.state.isSticky;
       var shouldBeSticky = this.shouldBeSticky();
       if (isSticky !== shouldBeSticky) {
@@ -58,8 +58,17 @@ var Sticky = React.createClass({
     this.tick();
   },
 
-  handleEvent: function() {
-    this.hasUnhandledEvent = true;
+  handleEvent: function(event) {
+    switch (event.type) {
+      case 'touchmove':
+        this.hasTouchEvent = true;
+        break;
+      case 'touchend':
+        this.hasTouchEvent = false;
+        break;
+      default:
+        this.hasUnhandledEvent = true;
+    }
   },
 
   componentDidMount: function() {
@@ -75,6 +84,8 @@ var Sticky = React.createClass({
     }, this);
     this.cancel();
   },
+
+
 
   isModernBrowser: function() {
     return requestAnimationFrame && cancelAnimationFrame;
