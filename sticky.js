@@ -85,10 +85,8 @@ var Sticky = React.createClass({
     this.cancel();
   },
 
-
-
   isModernBrowser: function() {
-    return window.requestAnimationFrame && window.cancelAnimationFrame;
+    return window && window.requestAnimationFrame && window.cancelAnimationFrame;
   },
 
   cancel: function() {
