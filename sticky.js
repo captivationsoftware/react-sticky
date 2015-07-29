@@ -32,7 +32,7 @@ var Sticky = React.createClass({
   shouldBeSticky: function() {
     var position = this.getDOMNode().style.position;
     this.getDOMNode().style.position = 'relative';
-    var shouldBeSticky = this.top() <= -this.props.topOffset;
+    var shouldBeSticky = this.top() < -this.props.topOffset;
     this.getDOMNode().style.position = position;
     return shouldBeSticky;
   },
@@ -50,8 +50,11 @@ var Sticky = React.createClass({
           nextState.style = {};
           nextState.className = this.props.className;
         }
-        this.setState(nextState);
-        this.props.onStickyStateChange(shouldBeSticky);
+        if (nextState.style !== this.state.style ||
+            nextState.className !== this.state.className) {
+          this.setState(nextState);
+          this.props.onStickyStateChange(shouldBeSticky);
+        }
       }
       this.hasUnhandledEvent = false;
     }
