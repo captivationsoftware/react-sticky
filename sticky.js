@@ -50,8 +50,11 @@ var Sticky = React.createClass({
           nextState.style = {};
           nextState.className = this.props.className;
         }
-        this.setState(nextState);
-        this.props.onStickyStateChange(shouldBeSticky);
+        if (nextState.style !== this.state.style ||
+            nextState.className !== this.state.className) {
+          this.setState(nextState);
+          this.props.onStickyStateChange(shouldBeSticky);
+        }
       }
       this.hasUnhandledEvent = false;
     }
