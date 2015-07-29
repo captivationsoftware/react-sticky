@@ -1,6 +1,6 @@
 {
   "name": "react-sticky",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Sticky component for React",
   "main": "./sticky",
   "scripts": {
