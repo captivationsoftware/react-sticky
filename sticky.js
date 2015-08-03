@@ -21,7 +21,8 @@ var Sticky = React.createClass({
   getInitialState: function() {
     return {
       events: ['load', 'scroll', 'resize', 'touchmove', 'touchend'],
-      style: {}
+      style: {},
+      className: this.props.className
     };
   },
 
