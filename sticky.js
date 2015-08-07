@@ -73,7 +73,11 @@ var Sticky = React.createClass({
 
   componentDidMount: function() {
     this.state.events.forEach(function(type) {
-      window.addEventListener(type, this.handleEvent);
+      if (window.addEventListener) {
+        window.addEventListener(type, this.handleEvent);
+      } else {
+        window.attachEvent('on' + type, this.handleEvent);
+      }
     }, this);
     this.domNode = React.findDOMNode ? React.findDOMNode(this) : this.getDOMNode();
     this.hasUnhandledEvent = true;
