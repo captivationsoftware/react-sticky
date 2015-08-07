@@ -20,7 +20,7 @@ var Sticky = React.createClass({
 
   getInitialState: function() {
     return {
-      events: ['load', 'pageshow', 'scroll', 'resize', 'touchmove', 'touchend'],
+      events: ['scroll', 'resize', 'touchmove', 'touchend'],
       style: {}
     };
   },
@@ -76,6 +76,7 @@ var Sticky = React.createClass({
       window.addEventListener(type, this.handleEvent);
     }, this);
     this.domNode = React.findDOMNode ? React.findDOMNode(this) : this.getDOMNode();
+    this.hasUnhandledEvent = true;
     this.tick();
   },
 
