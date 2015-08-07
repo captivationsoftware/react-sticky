@@ -20,20 +20,20 @@ var Sticky = React.createClass({
 
   getInitialState: function() {
     return {
-      events: ['load', 'scroll', 'resize', 'touchmove', 'touchend'],
+      events: ['load', 'pageshow', 'scroll', 'resize', 'touchmove', 'touchend'],
       style: {}
     };
   },
 
   top: function() {
-    return this.getDOMNode().getBoundingClientRect().top;
+    return this.domNode.getBoundingClientRect().top;
   },
 
   shouldBeSticky: function() {
-    var position = this.getDOMNode().style.position;
-    this.getDOMNode().style.position = 'relative';
+    var position = this.domNode.style.position;
+    this.domNode.style.position = 'relative';
     var shouldBeSticky = this.top() <= -this.props.topOffset;
-    this.getDOMNode().style.position = position;
+    this.domNode.style.position = position;
     return shouldBeSticky;
   },
 
@@ -75,6 +75,7 @@ var Sticky = React.createClass({
     this.state.events.forEach(function(type) {
       window.addEventListener(type, this.handleEvent);
     }, this);
+    this.domNode = React.findDOMNode ? React.findDOMNode(this) : this.getDOMNode();
     this.tick();
   },
 
@@ -82,6 +83,7 @@ var Sticky = React.createClass({
     this.state.events.forEach(function(type) {
       window.removeEventListener(type, this.handleEvent);
     }, this);
+    this.domNode = null;
     this.cancel();
   },
 
