@@ -6,6 +6,7 @@ var Sticky = React.createClass({
     return {
       type: React.DOM.div,
       className: '',
+      style: {},
       stickyClass: 'sticky',
       stickyStyle: {
         position: 'fixed',
@@ -20,8 +21,7 @@ var Sticky = React.createClass({
 
   getInitialState: function() {
     return {
-      events: ['scroll', 'resize', 'touchmove', 'touchend'],
-      style: {}
+      events: ['scroll', 'resize', 'touchmove', 'touchend']
     };
   },
 
@@ -42,16 +42,7 @@ var Sticky = React.createClass({
       var isSticky = this.state.isSticky;
       var shouldBeSticky = this.shouldBeSticky();
       if (isSticky !== shouldBeSticky) {
-        var nextState = { isSticky: shouldBeSticky };
-        if (shouldBeSticky) {
-          nextState.style = this.props.stickyStyle;
-          nextState.className = this.props.className + ' ' + this.props.stickyClass;
-        } else {
-          nextState.style = {};
-          nextState.className = this.props.className;
-        }
-        this.setState(nextState);
-        this.props.onStickyStateChange(shouldBeSticky);
+        this.nextState(shouldBeSticky);
       }
       this.hasUnhandledEvent = false;
     }
@@ -100,6 +91,35 @@ var Sticky = React.createClass({
   tick: function () {
     var next = this.isModernBrowser() ? requestAnimationFrame : setTimeout;
     this.currentTick = next(this.handleTick, 1000 / 60);
+  },
+
+  nextStyle: function(shouldBeSticky) {
+    if (shouldBeSticky) {
+      var copyStyles = function(dest, source) {
+        for (var rule in source) {
+          dest[rule] = source[rule];
+        };
+        return dest;
+      }
+      return copyStyles(copyStyles({}, this.props.style), this.props.stickyStyle)
+    } else {
+      return this.props.style;
+    }
+  },
+
+  nextClassName: function(shouldBeSticky) {
+    return [this.props.className]
+      .concat(shouldBeSticky ? this.props.stickyClass : undefined)
+      .join(' ');
+  },
+
+  nextState: function(shouldBeSticky) {
+    this.setState({
+      isSticky: shouldBeSticky,
+      style: this.nextStyle(shouldBeSticky),
+      className: this.nextClassName(shouldBeSticky)
+    });
+    this.props.onStickyStateChange(shouldBeSticky);
   },
 
   render: function() {

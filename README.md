@@ -89,7 +89,7 @@ The above would result in an element that becomes sticky once its top is greater
 
 
 #### className
-You can apecify a class name that would be applied to the resulting element:
+You can specify a class name that would be applied to the resulting element:
 
 app.jsx
 ```js
@@ -97,6 +97,18 @@ app.jsx
   <header />
 </Sticky>
 ```
+
+#### style
+You can specify a style object that would be applied to the resulting element:
+
+app.jsx
+```js
+<Sticky style={{background: 'red'}}>
+  <header />
+</Sticky>
+```
+
+Note: In the event that `stickyStyle` rules conflict with `style` rules, `stickyStyle` rules take precedence ONLY while sticky state is active. 
 
 #### type
 You can specify the type of element (`React.DOM.div` by default) that will be rendered:
