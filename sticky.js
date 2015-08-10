@@ -84,7 +84,11 @@ var Sticky = React.createClass({
 
   componentWillUnmount: function() {
     this.state.events.forEach(function(type) {
-      window.removeEventListener(type, this.handleEvent);
+      if (window.removeEventListener) {
+        window.removeEventListener(type, this.handleEvent);
+      } else {
+        window.detachEvent('on' + type, this.handleEvent)
+      }
     }, this);
     this.cancel();
   },
