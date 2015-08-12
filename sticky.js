@@ -116,9 +116,11 @@ var Sticky = React.createClass({
   },
 
   nextClassName: function(shouldBeSticky) {
-    return [this.props.className]
-      .concat(shouldBeSticky ? this.props.stickyClass : undefined)
-      .join(' ');
+    var className = this.props.className;
+    if (shouldBeSticky) {
+      className += ' ' + this.props.stickyClass;
+    }
+    return className;
   },
 
   nextState: function(shouldBeSticky) {
