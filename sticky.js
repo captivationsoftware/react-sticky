@@ -93,7 +93,6 @@ var Sticky = React.createClass({
       var shouldBeSticky = this.shouldBeSticky();
       this.nextState(shouldBeSticky);
       this.hasUnhandledEvent = false;
-      console.log(this.domNode)
     }
   },
 
