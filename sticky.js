@@ -3,21 +3,44 @@ var React = require('react');
 var Sticky = React.createClass({
 
   statics: {
-    instances: [],
+    __frame: null,
+    __instances: [],
     register: function(instance) {
-      Sticky.instances.push(instance);
-      Sticky.instances.sort(function(a, b) {
+      Sticky.__instances.push(instance);
+      Sticky.__instances.sort(function(a, b) {
         if (a.top() > b.top()) return 1;
         if (b.top() > a.top()) return -1;
         return 0;
       });
+      if (Sticky.__frame === null) Sticky.resumeLoop();
     },
     unregister: function(instance) {
-      var index = Sticky.instances.indexOf(instance);
-      if (index > 0) Sticky.instances.splice(index, 1);
+      var index = Sticky.__instances.indexOf(instance);
+      if (index > -1) Sticky.__instances.splice(index, 1);
+      if (Sticky.__instances.length === 0) Sticky.cancelLoop();
     },
     instancesAbove: function(instance) {
-      return Sticky.instances.slice(0, Sticky.instances.indexOf(instance));
+      return Sticky.__instances.slice(0, Sticky.__instances.indexOf(instance));
+    },
+    isModernBrowser: function() {
+      return window && window.requestAnimationFrame && window.cancelAnimationFrame;
+    },
+    resumeLoop: function() {
+      var nextFrame = Sticky.isModernBrowser() ? requestAnimationFrame : setTimeout;
+      Sticky.__frame = nextFrame(Sticky.onFrame, 1000 / 60);
+    },
+    cancelLoop: function() {
+      var cancel = Sticky.isModernBrowser() ? cancelAnimationFrame : clearTimeout;
+      cancel(Sticky.__frame);
+      Sticky.__frame = null;
+    },
+    onFrame: function() {
+      for (var i = 0; i < Sticky.__instances.length; i++) {
+        var sticky = Sticky.__instances[i];
+        if (sticky.isMounted()) sticky.handleFrame();
+        else Sticky.unregister(sticky);
+      }
+      Sticky.resumeLoop();
     }
   },
 
@@ -65,13 +88,13 @@ var Sticky = React.createClass({
     return this.pageOffset() > this.unstickY + this.props.topOffset;
   },
 
-  handleTick: function() {
+  handleFrame: function() {
     if (this.hasUnhandledEvent || this.hasTouchEvent) {
       var shouldBeSticky = this.shouldBeSticky();
       this.nextState(shouldBeSticky);
       this.hasUnhandledEvent = false;
+      console.log(this.domNode)
     }
-    this.tick();
   },
 
   handleEvent: function(event) {
@@ -99,7 +122,6 @@ var Sticky = React.createClass({
     this.unstickY = this.top() + this.pageOffset();
     Sticky.register(this);
     this.hasUnhandledEvent = true;
-    this.tick();
   },
 
   componentWillUnmount: function() {
@@ -112,21 +134,6 @@ var Sticky = React.createClass({
     }, this);
     this.domNode = null;
     Sticky.unregister(this);
-    this.cancel();
-  },
-
-  isModernBrowser: function() {
-    return window && window.requestAnimationFrame && window.cancelAnimationFrame;
-  },
-
-  cancel: function() {
-    var cancel = this.isModernBrowser() ? cancelAnimationFrame : clearTimeout;
-    cancel(this.currentTick);
-  },
-
-  tick: function () {
-    var next = this.isModernBrowser() ? requestAnimationFrame : setTimeout;
-    this.currentTick = next(this.handleTick, 1000 / 60);
   },
 
   nextStyle: function(shouldBeSticky) {
