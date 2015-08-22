@@ -39,11 +39,8 @@ var Sticky = React.createClass({
 
   handleTick: function() {
     if (this.hasUnhandledEvent || this.hasTouchEvent) {
-      var isSticky = this.state.isSticky;
       var shouldBeSticky = this.shouldBeSticky();
-      if (isSticky !== shouldBeSticky) {
-        this.nextState(shouldBeSticky);
-      }
+      this.nextState(shouldBeSticky);
       this.hasUnhandledEvent = false;
     }
     this.tick();
@@ -129,7 +126,9 @@ var Sticky = React.createClass({
       style: this.nextStyle(shouldBeSticky),
       className: this.nextClassName(shouldBeSticky)
     });
-    this.props.onStickyStateChange(shouldBeSticky);
+    var isSticky = this.state.isSticky;
+    if (isSticky !== shouldBeSticky)
+      this.props.onStickyStateChange(shouldBeSticky);
   },
 
   render: function() {
