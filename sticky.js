@@ -12,7 +12,8 @@ var Sticky = React.createClass({
         position: 'fixed',
         top: 0,
         left: 0,
-        right: 0
+        right: 0,
+        zIndex: 1
       },
       topOffset: 0,
       onStickyStateChange: function () {}
