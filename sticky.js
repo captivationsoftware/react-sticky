@@ -85,7 +85,7 @@ var Sticky = React.createClass({
   },
 
   shouldBeSticky: function() {
-    return this.pageOffset() > this.unstickY + this.props.topOffset;
+    return this.pageOffset() > this.origin + this.props.topOffset;
   },
 
   handleFrame: function() {
@@ -118,9 +118,9 @@ var Sticky = React.createClass({
       }
     }, this);
     this.domNode = React.findDOMNode ? React.findDOMNode(this) : this.getDOMNode();
-    this.unstickY = this.top() + this.pageOffset();
-    Sticky.register(this);
+    this.origin = this.top() + this.pageOffset();
     this.hasUnhandledEvent = true;
+    Sticky.register(this);
   },
 
   componentWillUnmount: function() {
