@@ -2,6 +2,25 @@ var React = require('react');
 
 var Sticky = React.createClass({
 
+  statics: {
+    instances: [],
+    register: function(instance) {
+      Sticky.instances.push(instance);
+      Sticky.instances.sort(function(a, b) {
+        if (a.top() > b.top()) return 1;
+        if (b.top() > a.top()) return -1;
+        return 0;
+      });
+    },
+    unregister: function(instance) {
+      var index = Sticky.instances.indexOf(instance);
+      if (index > 0) Sticky.instances.splice(index, 1);
+    },
+    instancesAbove: function(instance) {
+      return Sticky.instances.slice(0, Sticky.instances.indexOf(instance));
+    }
+  },
+
   getDefaultProps: function() {
     return {
       type: React.DOM.div,
@@ -26,16 +45,24 @@ var Sticky = React.createClass({
     };
   },
 
+  pageOffset: function() {
+    var otherStickies = Sticky.instancesAbove(this);
+    var otherStickyOffsets = 0;
+    for (var i = 0; i < otherStickies.length; i++) {
+      var otherSticky = otherStickies[i];
+      if (otherSticky.state.isSticky) {
+        otherStickyOffsets += otherSticky.domNode.getBoundingClientRect().height;
+      }
+    }
+    return (window.pageYOffset || document.documentElement.scrollTop) + otherStickyOffsets;
+  },
+
   top: function() {
     return this.domNode.getBoundingClientRect().top;
   },
 
   shouldBeSticky: function() {
-    var position = this.domNode.style.position;
-    this.domNode.style.position = 'relative';
-    var shouldBeSticky = this.top() <= -this.props.topOffset;
-    this.domNode.style.position = position;
-    return shouldBeSticky;
+    return this.pageOffset() > this.unstickY + this.props.topOffset;
   },
 
   handleTick: function() {
@@ -69,6 +96,8 @@ var Sticky = React.createClass({
       }
     }, this);
     this.domNode = React.findDOMNode ? React.findDOMNode(this) : this.getDOMNode();
+    this.unstickY = this.top() + this.pageOffset();
+    Sticky.register(this);
     this.hasUnhandledEvent = true;
     this.tick();
   },
@@ -82,6 +111,7 @@ var Sticky = React.createClass({
       }
     }, this);
     this.domNode = null;
+    Sticky.unregister(this);
     this.cancel();
   },
 
@@ -122,14 +152,13 @@ var Sticky = React.createClass({
   },
 
   nextState: function(shouldBeSticky) {
+    var hasChanged = this.state.isSticky !== shouldBeSticky;
     this.setState({
       isSticky: shouldBeSticky,
       style: this.nextStyle(shouldBeSticky),
       className: this.nextClassName(shouldBeSticky)
     });
-    var isSticky = this.state.isSticky;
-    if (isSticky !== shouldBeSticky)
-      this.props.onStickyStateChange(shouldBeSticky);
+    if (hasChanged) this.props.onStickyStateChange(shouldBeSticky);
   },
 
   render: function() {
