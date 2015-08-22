@@ -37,8 +37,7 @@ var Sticky = React.createClass({
     onFrame: function() {
       for (var i = 0; i < Sticky.__instances.length; i++) {
         var sticky = Sticky.__instances[i];
-        if (sticky.isMounted()) sticky.handleFrame();
-        else Sticky.unregister(sticky);
+        sticky.handleFrame();
       }
       Sticky.resumeLoop();
     }
@@ -85,7 +84,7 @@ var Sticky = React.createClass({
   },
 
   shouldBeSticky: function() {
-    return this.pageOffset() > this.origin + this.props.topOffset;
+    return this.pageOffset() >= this.origin + this.props.topOffset;
   },
 
   handleFrame: function() {
