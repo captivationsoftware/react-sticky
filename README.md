@@ -2,7 +2,7 @@ react-sticky
 ============
 [Demo](https://captivationsoftware.github.io/react-sticky)
 
-Make any React component on your page sticky using inline styles or CSS classes!
+Now featuring support for multiple Sticky elements on the page at once! Make any React component on your page sticky using your inline styles, CSS classes or our sane defaults! 
 
 ## Installation
 ```sh
@@ -108,7 +108,7 @@ app.jsx
 </Sticky>
 ```
 
-Note: In the event that `stickyStyle` rules conflict with `style` rules, `stickyStyle` rules take precedence ONLY while sticky state is active. 
+Note: In the event that `stickyStyle` rules conflict with `style` rules, `stickyStyle` rules take precedence ONLY while sticky state is active.
 
 #### type
 You can specify the type of element (`React.DOM.div` by default) that will be rendered:
