@@ -8,7 +8,7 @@ Highlights:
   - Only 12K, with 0 external dependencies (besides React, of course)!
   - Allows multiple Sticky elements on the page at once!
 
-## [Demo](https://captivationsoftware.github.io/react-sticky)
+#### [Demo](https://captivationsoftware.github.io/react-sticky)
 
 ## Installation
 ```sh
