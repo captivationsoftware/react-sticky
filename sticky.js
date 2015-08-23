@@ -258,7 +258,7 @@ var Sticky = React.createClass({
     if (hasChanged) this.props.onStickyStateChange(shouldBeSticky);
   },
   /*
-   * Finally, just draw the damn thing...
+   * The special sauce.
    */
   render: function() {
     return this.props.type({
