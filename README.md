@@ -19,7 +19,7 @@ your project's needs, or simply rely on the ready-to-go defaults.
 npm install react-sticky
 ```
 
-Tip: Run `npm install` to build the compressed UMD version suitable for inclusion via CommonJS/AMD/manual `<script />` includes.
+Tip: Run `npm install` to build the compressed UMD version suitable for inclusion via CommonJS, AMD, or by good old fashioned `<script>` tags.
 
 ## Code Example
 
