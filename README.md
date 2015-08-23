@@ -149,7 +149,7 @@ app.jsx
 
 ## Contributors
 
-Captivation Software
+##### [Captivation Software](http://www.captivationsoftware.com)
 
 Aaron Goin
 
