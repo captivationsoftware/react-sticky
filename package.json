@@ -2,8 +2,9 @@
   "name": "react-sticky",
   "version": "2.5.0",
   "description": "Sticky component for React",
-  "main": "./sticky",
+  "main": "./lib/sticky",
   "scripts": {
+    "prepublish": "browserify --external react -p [minifyify --map sticky.js.map --output ./dist/sticky.js.map --uglify --compress --dead_code--comparisons 0 ] -s Sticky ./lib/sticky.js --debug > ./dist/sticky.min.js",
     "test": "mocha --compilers js:babel/register"
   },
   "repository": {
@@ -44,9 +45,11 @@
   },
   "devDependencies": {
     "babel": "^5.8.21",
+    "browserify": "^11.0.1",
     "chai": "^3.2.0",
     "jsdom": "3.x",
     "lodash": "^3.10.1",
+    "minifyify": "^7.0.5",
     "mocha": "^2.2.5"
   }
 }

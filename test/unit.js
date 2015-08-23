@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { jsdom } from 'jsdom';
 import React from 'react/addons';
-import Sticky from '../sticky';
+import Sticky from '../lib/sticky';
 import _ from 'lodash';
 
 let { TestUtils } = React.addons;
