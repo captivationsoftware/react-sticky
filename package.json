@@ -4,7 +4,7 @@
   "description": "Sticky component for React",
   "main": "./sticky",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --compilers js:babel/register"
   },
   "repository": {
     "type": "git",
@@ -16,22 +16,24 @@
     "Sticky"
   ],
   "author": "Captivation Software",
-  "contributors": [{
-    "name": "Aaron Goin",
-    "email": "aarondgoin@gmail.com"
-  },
-  {
-    "name": "Alejandro Tardin",
-    "email": "alejandro@tardin.com"
-  },
-  {
-    "name": "Josh Carr",
-    "email": "joshcarr@gmail.com"
-  },
-  {
-    "name": "George Lifchits",
-    "email": "george.lifchits@gmail.com"
-  }],
+  "contributors": [
+    {
+      "name": "Aaron Goin",
+      "email": "aarondgoin@gmail.com"
+    },
+    {
+      "name": "Alejandro Tardin",
+      "email": "alejandro@tardin.com"
+    },
+    {
+      "name": "Josh Carr",
+      "email": "joshcarr@gmail.com"
+    },
+    {
+      "name": "George Lifchits",
+      "email": "george.lifchits@gmail.com"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/captivationsoftware/react-sticky/issues"
@@ -39,5 +41,11 @@
   "homepage": "https://github.com/captivationsoftware/react-sticky",
   "peerDependencies": {
     "react": "0.x"
+  },
+  "devDependencies": {
+    "babel": "^5.8.21",
+    "chai": "^3.2.0",
+    "jsdom": "3.x",
+    "mocha": "^2.2.5"
   }
 }
