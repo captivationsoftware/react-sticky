@@ -1,6 +1,6 @@
 react-sticky
 ============
-https://travis-ci.org/captivationsoftware/react-sticky.svg?branch=master
+[![Build Status](https://travis-ci.org/captivationsoftware/react-sticky.svg?branch=master)](https://travis-ci.org/captivationsoftware/react-sticky)
 
 [Demo](https://captivationsoftware.github.io/react-sticky)
 Now featuring support for multiple Sticky elements on the page at once!
