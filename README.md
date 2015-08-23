@@ -3,7 +3,9 @@ react-sticky [![Build Status](https://travis-ci.org/captivationsoftware/react-st
 
 ### [Demo](https://captivationsoftware.github.io/react-sticky)
 
-Make any React component on your page sticky! 
+Make your React components sticky! Perfect for Headers, Menus, or any other element
+where you want to maximize usability as your users scroll. Tons of options to make
+this component fit your project's needs, or simply rely on the ready-to-go defaults.
 
 Highlights:
   - Not bound to any version of React so it will scale along with the community!
