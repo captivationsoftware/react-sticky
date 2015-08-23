@@ -3,7 +3,7 @@ react-sticky [![Build Status](https://travis-ci.org/captivationsoftware/react-st
 
 ### [Demo](https://captivationsoftware.github.io/react-sticky)
 
-Make any React component on your page sticky using your inline styles, CSS classes or our sane defaults!
+Make any React component on your page sticky! 
 
 Highlights:
   - Not bound to any version of React so it will scale along with the community!
