@@ -11,7 +11,7 @@ your project's needs, or simply rely on the ready-to-go defaults.
 
 ##### Highlights:
   - Not bound to any version of React so it will scale along with the community!
-  - Only 12K, with 0 external dependencies (besides React, of course)!
+  - Only 12K minified, with 0 external dependencies (besides React, of course)!
   - Allows multiple Sticky elements on the page at once!
 
 ## Installation
