@@ -1,10 +1,26 @@
 var React = require('react');
 
 var Sticky = React.createClass({
-
+  /*
+   * Using statics to facilitate positional awareness
+   * between multiple Sticky instances residing in the
+   * DOM at the same time.
+   */
   statics: {
+    /*
+     * Internal variables. Should not be used beyond
+     * the scope of other statics methods or testing.
+     */
     __frame: null,
     __instances: [],
+    /*
+     * Adds the supplied Sticky instance to the
+     * internal list of mounted Sticky instances,
+     * sorted by the .top() value for each instance.
+     *
+     * If the animation frame loop (or fallback)
+     * isn't running, start it now.
+     */
     register: function(instance) {
       Sticky.__instances.push(instance);
       Sticky.__instances.sort(function(a, b) {
@@ -14,26 +30,50 @@ var Sticky = React.createClass({
       });
       if (Sticky.__frame === null) Sticky.resumeLoop();
     },
+    /*
+     * Remove the supplied Sticky instance from the
+     * internal list of mounted Sticky instances.
+     *
+     * If the animation frame loop (or fallback)
+     * is no longer in use, stop it now.
+     */
     unregister: function(instance) {
       var index = Sticky.__instances.indexOf(instance);
       if (index > -1) Sticky.__instances.splice(index, 1);
       if (Sticky.__instances.length === 0) Sticky.cancelLoop();
     },
+    /*
+     * Return every Sticky instance that is
+     * positioned above the supplied instance.
+     */
     instancesAbove: function(instance) {
       return Sticky.__instances.slice(0, Sticky.__instances.indexOf(instance));
     },
+    /*
+     * Returns true if the browser environment can support
+     * requestAnimationFrame. Otherwise returns false;
+     */
     isModernBrowser: function() {
       return window && window.requestAnimationFrame && window.cancelAnimationFrame;
     },
+    /*
+     * Creates the next frame in the animation loop.
+     */
     resumeLoop: function() {
       var nextFrame = Sticky.isModernBrowser() ? requestAnimationFrame : setTimeout;
       Sticky.__frame = nextFrame(Sticky.onFrame, 1000 / 60);
     },
+    /*
+     * Cancels the animation loop.
+     */
     cancelLoop: function() {
       var cancel = Sticky.isModernBrowser() ? cancelAnimationFrame : clearTimeout;
       cancel(Sticky.__frame);
       Sticky.__frame = null;
     },
+    /*
+     * Loop iteration routine.
+     */
     onFrame: function() {
       for (var i = 0; i < Sticky.__instances.length; i++) {
         var sticky = Sticky.__instances[i];
@@ -42,7 +82,9 @@ var Sticky = React.createClass({
       Sticky.resumeLoop();
     }
   },
-
+  /*
+   * Default properties. Self-explanatory...
+   */
   getDefaultProps: function() {
     return {
       type: React.DOM.div,
@@ -60,13 +102,20 @@ var Sticky = React.createClass({
       onStickyStateChange: function () {}
     };
   },
-
+  /*
+   * Return the list of events this instance
+   * should react to.
+   */
   getInitialState: function() {
     return {
       events: ['scroll', 'resize', 'touchmove', 'touchend']
     };
   },
-
+  /*
+   * Return the distance of the scrollbar from the
+   * top of the window plus the total height of all
+   * stuck Sticky instances above this one.
+   */
   pageOffset: function() {
     var otherStickies = Sticky.instancesAbove(this);
     var otherStickyOffsets = 0;
@@ -78,15 +127,25 @@ var Sticky = React.createClass({
     }
     return (window.pageYOffset || document.documentElement.scrollTop) + otherStickyOffsets;
   },
-
+  /*
+   * Returns the y-coordinate of the top of this element.
+   */
   top: function() {
     return this.domNode.getBoundingClientRect().top;
   },
-
+  /*
+   * Returns true/false depending on if this should be sticky.
+   */
   shouldBeSticky: function() {
     return this.pageOffset() >= this.origin + this.props.topOffset;
   },
-
+  /*
+   * Loop iteration for this instance.
+   *
+   * Should only fire any time there is an event
+   * that hasn't been handled. This serves as a
+   * throttle for continuous events (i.e. scroll).
+   */
   handleFrame: function() {
     if (this.hasUnhandledEvent || this.hasTouchEvent) {
       var shouldBeSticky = this.shouldBeSticky();
@@ -94,7 +153,11 @@ var Sticky = React.createClass({
       this.hasUnhandledEvent = false;
     }
   },
-
+  /*
+   * Lightweight event listener for window events.
+   *
+   * See http://www.html5rocks.com/en/tutorials/speed/animations/
+   */
   handleEvent: function(event) {
     switch (event.type) {
       case 'touchmove':
@@ -107,7 +170,18 @@ var Sticky = React.createClass({
         this.hasUnhandledEvent = true;
     }
   },
-
+  /*
+   * Instance was mounted on the page.
+   *
+   * In order, this function should:
+   *  - Register events listeners with window.
+   *  - Cache the domNode using React.findDOMNode
+   *    or fallback to deprecated getDOMNode().
+   *  - Store the initial y-position (origin) of this
+   *    instance.
+   *  - Register this instance, subscribing to animation
+   *    loop.
+   */
   componentDidMount: function() {
     this.state.events.forEach(function(type) {
       if (window.addEventListener) {
@@ -121,7 +195,11 @@ var Sticky = React.createClass({
     this.hasUnhandledEvent = true;
     Sticky.register(this);
   },
-
+  /*
+   * Instance was removed from the page.
+   *
+   * Undo everything during mounting.
+   */
   componentWillUnmount: function() {
     this.state.events.forEach(function(type) {
       if (window.removeEventListener) {
@@ -133,7 +211,10 @@ var Sticky = React.createClass({
     this.domNode = null;
     Sticky.unregister(this);
   },
-
+  /*
+   * If sticky, merge this.props.stickyStyle with this.props.style.
+   * If not, just return this.props.style.
+   */
   nextStyle: function(shouldBeSticky) {
     if (shouldBeSticky) {
       var copyStyles = function(dest, source) {
@@ -147,7 +228,10 @@ var Sticky = React.createClass({
       return this.props.style;
     }
   },
-
+  /*
+   * If sticky, merge this.props.stickyClass with this.props.className.
+   * If not, just return this.props.className.
+   */
   nextClassName: function(shouldBeSticky) {
     var className = this.props.className;
     if (shouldBeSticky) {
@@ -155,7 +239,15 @@ var Sticky = React.createClass({
     }
     return className;
   },
-
+  /*
+   * Transition to the next state.
+   *
+   * Updates the isSticky, style, and className state
+   * variables.
+   *
+   * If sticky state is different than the previous,
+   * fire the onStickyStateChange callback.
+   */
   nextState: function(shouldBeSticky) {
     var hasChanged = this.state.isSticky !== shouldBeSticky;
     this.setState({
@@ -165,7 +257,9 @@ var Sticky = React.createClass({
     });
     if (hasChanged) this.props.onStickyStateChange(shouldBeSticky);
   },
-
+  /*
+   * Finally, just draw the damn thing...
+   */
   render: function() {
     return this.props.type({
       style: this.state.style,

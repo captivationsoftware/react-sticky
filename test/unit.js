@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { jsdom } from 'jsdom';
 import React from 'react/addons';
 import Sticky from '../sticky';
+import _ from 'lodash';
 
 let { TestUtils } = React.addons;
 
@@ -83,6 +84,25 @@ describe('Sticky component', function() {
 
       // is 0 > (100 - 0)? No, so should not sticky
       expect(this.sticky.shouldBeSticky()).to.be.false;
+    });
+
+    describe('style transitions', () => {
+      it ('should add the sticky class when sticky', () => {
+        let shouldBeSticky = true;
+        _.extend(this.sticky.props.style, { foo: 1, baz: 4 });
+        this.sticky.props.stickyStyle = { bar: 2, baz: 3 };
+        this.sticky.nextState(shouldBeSticky);
+        expect(this.sticky.state.style).to.deep.equal(
+          _.extend(this.sticky.props.style, this.sticky.props.stickyStyle));
+      });
+
+      it ('should omit the sticky class when not sticky', () => {
+        let shouldBeSticky = false;
+        _.extend(this.sticky.props.style, { foo: 1, baz: 4 });
+        this.sticky.props.stickyStyle = { bar: 2, baz: 3 };
+        this.sticky.nextState(shouldBeSticky);
+        expect(this.sticky.state.style).to.equal(this.sticky.props.style);
+      });
     });
 
     describe('className transitions', () => {

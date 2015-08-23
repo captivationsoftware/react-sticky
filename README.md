@@ -2,7 +2,9 @@ react-sticky
 ============
 [Demo](https://captivationsoftware.github.io/react-sticky)
 
-Now featuring support for multiple Sticky elements on the page at once! Make any React component on your page sticky using your inline styles, CSS classes or our sane defaults! 
+Now featuring support for multiple Sticky elements on the page at once!
+
+Make any React component on your page sticky using your inline styles, CSS classes or our sane defaults! 
 
 ## Installation
 ```sh
