@@ -180,15 +180,6 @@ describe('Sticky component', function() {
       expect(aboveBottomMost[1]).to.equal(this.inBetween);
     });
 
-    it ('should know which components above it are sticky', () => {
-      this.sticky.state.isSticky = false;
-      this.inBetween.state.isSticky = false;
-      expect(Sticky.stickyInstancesAbove(this.bottomMost)).to.be.empty;
-
-      this.inBetween.state.isSticky = true;
-      expect(Sticky.stickyInstancesAbove(this.bottomMost)).to.deep.equal([this.inBetween]);
-    });
-
     it ('should incorporate height of other sticky elements above it when computing offset', () => {
       expect(this.inBetween.pageOffset()).to.equal(0);
       this.sticky.state.isSticky = false;
@@ -213,25 +204,19 @@ describe('Sticky component', function() {
       this.sticky.hasUnhandledEvent = false;
     });
 
-    it ('should react to scroll events', () => {
-      expect(this.sticky.hasUnhandledEvent).to.be.false;
+    it ('should react to scroll events', (done) => {
+      this.sticky.nextState = () => done();
       emitEvent('scroll');
-      expect(this.sticky.hasUnhandledEvent).to.be.true;
     });
 
-    it ('should react to resize events', () => {
-      expect(this.sticky.hasUnhandledEvent).to.be.false;
+    it ('should react to resize events', (done) => {
+      this.sticky.nextState = () => done();
       emitEvent('resize');
-      expect(this.sticky.hasUnhandledEvent).to.be.true;
     });
 
-    it ('should react to touch events', () => {
-      expect(this.sticky.hasUnhandledEvent).to.be.false;
+    it ('should react to touch events', (done) => {
+      this.sticky.nextState = () => done();
       emitEvent('touchmove');
-      expect(this.sticky.hasUnhandledEvent).to.be.false;
-      expect(this.sticky.hasTouchEvent).to.be.true;
-      emitEvent('touchend');
-      expect(this.sticky.hasTouchEvent).to.be.false;
     });
   });
 });
