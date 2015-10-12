@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 import { jsdom } from 'jsdom';
-import React from 'react/addons';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import Sticky from '../lib/sticky';
 import _ from 'lodash';
-
-let { TestUtils } = React.addons;
+import ReactTestUtils from 'react-addons-test-utils';
 
 // Initialize jsdom
 global.document = jsdom('<body></body>');
@@ -14,11 +14,11 @@ describe('Sticky component', function() {
   function mount(JSX) {
     let container = document.createElement('div');
     document.body.appendChild(container);
-    return React.render(JSX, container);
+    return ReactDOM.render(JSX, container);
   }
 
   function unmount(sticky) {
-    React.unmountComponentAtNode(React.findDOMNode(sticky).parentNode);
+    ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(sticky).parentNode);
   }
 
   beforeEach(() => {
@@ -53,7 +53,7 @@ describe('Sticky component', function() {
       var distanceFromTopOfPage = 10;
 
       this.sticky.pageOffset = () => scrollPosition;
-      this.sticky.props.topOffset = topOffset;
+      this.sticky.props = _.extend(this.sticky.props, {topOffset});
       this.sticky.origin = distanceFromTopOfPage;
 
       // is 100 > (10 - 50)? Yes, so should be sticky
@@ -66,7 +66,7 @@ describe('Sticky component', function() {
       var distanceFromTopOfPage = 100;
 
       this.sticky.pageOffset = () => scrollPosition;
-      this.sticky.props.topOffset = topOffset;
+      this.sticky.props = _.extend(this.sticky.props, {topOffset});
       this.sticky.origin = distanceFromTopOfPage;
 
       // is 100 > (100 - 0)? Yes, so should be sticky
@@ -79,7 +79,7 @@ describe('Sticky component', function() {
       var distanceFromTopOfPage = 100;
 
       this.sticky.pageOffset = () => scrollPosition;
-      this.sticky.props.topOffset = topOffset;
+      this.sticky.props = _.extend(this.sticky.props, {topOffset});
       this.sticky.origin = distanceFromTopOfPage;
 
       // is 0 > (100 - 0)? No, so should not sticky
@@ -89,8 +89,12 @@ describe('Sticky component', function() {
     describe('style transitions', () => {
       it ('should add the sticky class when sticky', () => {
         let shouldBeSticky = true;
-        _.extend(this.sticky.props.style, { foo: 1, baz: 4 });
-        this.sticky.props.stickyStyle = { bar: 2, baz: 3 };
+
+        this.sticky.props = _.extend(this.sticky.props, {
+          style: _.extend(this.sticky.props.style, { foo: 1, baz: 4 }),
+          stickyStyle: { bar: 2, baz: 3 }
+        })
+
         this.sticky.nextState(shouldBeSticky);
         expect(this.sticky.state.style).to.deep.equal(
           _.extend(this.sticky.props.style, this.sticky.props.stickyStyle));
@@ -98,8 +102,10 @@ describe('Sticky component', function() {
 
       it ('should omit the sticky class when not sticky', () => {
         let shouldBeSticky = false;
-        _.extend(this.sticky.props.style, { foo: 1, baz: 4 });
-        this.sticky.props.stickyStyle = { bar: 2, baz: 3 };
+        this.sticky.props = _.extend(this.sticky.props, {
+          style: _.extend(this.sticky.props.style, { foo: 1, baz: 4 }),
+          stickyStyle: { bar: 2, baz: 3 }
+        });
         this.sticky.nextState(shouldBeSticky);
         expect(this.sticky.state.style).to.equal(this.sticky.props.style);
       });
@@ -108,7 +114,9 @@ describe('Sticky component', function() {
     describe('className transitions', () => {
       it ('should add the sticky class when sticky', () => {
         let shouldBeSticky = true;
-        this.sticky.props.className = 'foo';
+        this.sticky.props = _.extend({}, this.sticky.props, {
+          className: 'foo'
+        });
         this.sticky.state.isSticky = !shouldBeSticky;
         this.sticky.nextState(shouldBeSticky);
         expect(this.sticky.state.className).to.equal('foo sticky');
@@ -116,7 +124,9 @@ describe('Sticky component', function() {
 
       it ('should omit the sticky class when not sticky', () => {
         let shouldBeSticky = false;
-        this.sticky.props.className = 'foo';
+        this.sticky.props = _.extend({}, this.sticky.props, {
+          className: 'foo'
+        });
         this.sticky.state.isSticky = !shouldBeSticky;
         this.sticky.nextState(shouldBeSticky);
         expect(this.sticky.state.className).to.equal('foo');
@@ -126,20 +136,39 @@ describe('Sticky component', function() {
     describe('change events', () => {
       it ('should fire the onStickyStateChange event when sticky state changes', (done) => {
         let shouldBeSticky = true;
-        this.sticky.props.onStickyStateChange = (isSticky) => {
+
+        unmount(this.sticky);
+
+        function onStickyStateChange(isSticky) {
           expect(isSticky).to.equal(shouldBeSticky);
           done();
         }
+
+        this.sticky = mount(
+          <Sticky onStickyStateChange={onStickyStateChange}>
+            Test
+          </Sticky>
+        );
+
         this.sticky.state.isSticky = !shouldBeSticky;
         this.sticky.nextState(shouldBeSticky);
       });
 
       it ('should not fire the onStickyStateChange event when sticky state remains the same', (done) => {
         var shouldBeSticky = true;
-        this.sticky.props.onStickyStateChange = (isSticky) => {
-          // fail
+
+        unmount(this.sticky);
+
+        function onStickyStateChange(isSticky) {
           expect(false).to.be.true;
         }
+
+        this.sticky = mount(
+          <Sticky onStickyStateChange={onStickyStateChange}>
+            Test
+          </Sticky>
+        );
+
         this.sticky.state.isSticky = shouldBeSticky;
         this.sticky.nextState(shouldBeSticky);
         setTimeout(done, 20);
