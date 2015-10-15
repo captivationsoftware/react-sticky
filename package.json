@@ -41,7 +41,8 @@
   },
   "homepage": "https://github.com/captivationsoftware/react-sticky",
   "peerDependencies": {
-    "react": "0.x"
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0"
   },
   "devDependencies": {
     "babel": "^5.8.21",
@@ -50,6 +51,7 @@
     "jsdom": "3.x",
     "lodash": "^3.10.1",
     "minifyify": "^7.0.5",
-    "mocha": "^2.2.5"
+    "mocha": "^2.2.5",
+    "react-addons-test-utils": "^0.14.0"
   }
 }
