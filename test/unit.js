@@ -8,7 +8,7 @@ import ReactTestUtils from 'react-addons-test-utils';
 
 // Initialize jsdom
 global.document = jsdom('<body></body>');
-global.window = document.parentWindow;
+global.window = document.defaultView;
 
 describe('Sticky component', function() {
   function mount(JSX) {
@@ -224,7 +224,7 @@ describe('Sticky component', function() {
 
   describe('event listeners', () => {
     function emitEvent(type) {
-      let evt = document.createEvent(type);
+      let evt = document.createEvent('Event');
       evt.initEvent(type, true, true);
       window.dispatchEvent(evt);
     }

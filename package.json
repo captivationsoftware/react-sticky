@@ -48,7 +48,7 @@
     "babel": "^5.8.21",
     "browserify": "^11.0.1",
     "chai": "^3.2.0",
-    "jsdom": "3.x",
+    "jsdom": "6.x",
     "lodash": "^3.10.1",
     "minifyify": "^7.0.5",
     "mocha": "^2.2.5",
