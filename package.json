@@ -40,7 +40,7 @@
     "url": "https://github.com/captivationsoftware/react-sticky/issues"
   },
   "homepage": "https://github.com/captivationsoftware/react-sticky",
-  "peerDependencies": {
+  "dependencies": {
     "react": "^0.14.0",
     "react-dom": "^0.14.0"
   },

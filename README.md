@@ -10,7 +10,8 @@ usability as your users scroll. Tons of options to make this component fit
 your project's needs, or simply rely on the ready-to-go defaults.
 
 ##### Highlights:
-  - ~~Not bound to any version of React so it will scale along with the community!~~ Note: this changes as of version 3.0.0  
+  - ~~Not bound to any version of React so it will scale along with the community!~~
+    Note: this changed with version 3.0.0  
   - Only 12K minified, with 0 external dependencies (besides React, of course)!
   - Allows multiple Sticky elements on the page at once!
 
