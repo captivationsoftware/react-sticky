@@ -131,6 +131,28 @@ describe('Sticky component', function() {
         this.sticky.nextState(shouldBeSticky);
         expect(this.sticky.state.className).to.equal('foo');
       });
+
+      it ('should add the sticky bottom class when in bottom offset area', () => {
+        let isInBottomOffset = true;
+        this.sticky.props = _.extend({}, this.sticky.props, {
+          className: 'foo',
+          bottomOffset: 200
+        });
+        this.sticky.state.isSticky = !isInBottomOffset;
+        this.sticky.nextState(false, isInBottomOffset);
+        expect(this.sticky.state.className).to.equal('foo sticky-bottom');
+      });
+
+      it ('should omit the sticky bottom class when not in bottom offset area', () => {
+        let isInBottomOffset = false;
+        this.sticky.props = _.extend({}, this.sticky.props, {
+          className: 'foo',
+          bottomOffset: 0
+        });
+        this.sticky.state.isSticky = !isInBottomOffset;
+        this.sticky.nextState(true, isInBottomOffset);
+        expect(this.sticky.state.className).to.equal('foo sticky');
+      });
     });
 
     describe('change events', () => {

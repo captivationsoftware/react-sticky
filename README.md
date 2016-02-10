@@ -100,6 +100,27 @@ app.jsx
 
 The above would result in an element that becomes sticky once its top is greater than or equal to 80px away from the top of the screen.
 
+#### bottomOffset
+Sticky state will not be triggered when the bottom of the element is `bottomOffset` pixels from the bottom of the window (0 by default).
+
+app.jsx
+```js
+<Sticky bottomOffset={80}>
+  <SomeChild />
+</Sticky>
+```
+
+The above would result in an element that loses sticky state once its bottom is greater than or equal to 80px away from the bottom of the screen.
+
+### stickyBottomClass
+You can also specify a class name ('sticky-bottom' by default) to be applied when the element is `bottomOffset` pixels from the bottom of the window:
+
+app.jsx
+```js
+<Sticky stickyBottomClass={className}>
+  <header />
+</Sticky>
+```
 
 #### className
 You can specify a class name that would be applied to the resulting element:
