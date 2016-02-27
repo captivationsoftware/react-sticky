@@ -11,9 +11,12 @@ global.document = jsdom('<body></body>');
 global.window = document.defaultView;
 
 describe('Sticky component', function() {
-  function mount(JSX) {
-    let container = document.createElement('div');
-    document.body.appendChild(container);
+  function mount(JSX, element) {
+    let container = element || null;
+    if (!container) {
+      container = document.createElement('div');
+      document.body.appendChild(container);
+    }
     return ReactDOM.render(JSX, container);
   }
 
@@ -47,6 +50,7 @@ describe('Sticky component', function() {
   });
 
   describe('state', () => {
+  
     it ('should be sticky when scroll position is greater than original position plus topOffset', () => {
       var scrollPosition = 100;
       var topOffset = -50;
@@ -177,8 +181,19 @@ describe('Sticky component', function() {
     });
   });
 
-  describe('properties', () => {
+  describe('props', () => {
+    it ('should force update whenever props change', () => {
+      unmount(this.sticky);
 
+      let container = mount(<div></div>);
+      this.sticky = mount(<Sticky style={{top: 0}}>Foo</Sticky>, container);
+      this.sticky.handleFrame();
+      expect(this.sticky.hasUnhandledEvent).to.be.false;
+      this.sticky = mount(<Sticky style={{top: 1}}>Foo</Sticky>, container);
+      expect(this.sticky.hasUnhandledEvent).to.be.true;
+
+      unmount(container);
+    });
   });
 
   describe('interaction with other Sticky components', () => {
