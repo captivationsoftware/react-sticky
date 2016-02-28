@@ -4,7 +4,7 @@
   "description": "Sticky component for React",
   "main": "./lib",
   "scripts": {
-    "prepublish": "browserify -u react -u react-dom -t babelify -t [ exposify --expose [ --react React --react-dom ReactDOM ] ] -s Sticky ./lib --debug > ./dist/sticky.min.js",
+    "prepublish": "browserify -u react -u react-dom -t babelify -t [ exposify --expose [ --react React --react-dom ReactDOM ] ] -p [minifyify --map index.js.map --output ./dist/sticky.js.map --uglify --compress --dead_code--comparisons 0 ] -s Sticky ./lib --debug > ./dist/sticky.min.js",
     "test": "mocha --compilers js:babel/register"
   },
   "repository": {
