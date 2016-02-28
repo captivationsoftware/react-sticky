@@ -24,7 +24,7 @@ Tip: run `npm install` to build the compressed UMD version suitable for inclusio
 
 ## Code Example
 
-First, you will want to wrap the element you want to be sticky with <Sticky></Sticky> tags. By default, the Sticky component will stick to the `document.body` element. However, placing the optional `sticky-container` class on an ancestor of the Sticky element will constrain the sticky effect to the boundary of the `sticky-container`.
+First, you will want to wrap the element you want to be sticky with `<Sticky />` tags. By default, the Sticky component will stick to the `document.body` element. However, wrapping your `<Sticky />` component in a  `<Sticky.Container>` component element will constrain the sticky effect to the boundary of the <Sticky.Container>, which is just a `<div />`.
 
 app.jsx
 ```js
@@ -34,7 +34,7 @@ var React = require('react'),
 var Header = React.createClass({
   render: function() {
     return (
-      <div className="sticky-container">
+      <Sticky.Container>
         ...
         <Sticky>
           <header>
@@ -42,7 +42,7 @@ var Header = React.createClass({
           </header>
         </Sticky>
         ...
-      </div>
+      </Sticky.Container>
     );
   },
 });
@@ -139,18 +139,6 @@ app.jsx
 
 Note: In the event that `stickyStyle` rules conflict with `style` rules, `stickyStyle` rules take precedence ONLY while sticky state is active.
 
-#### type
-You can specify the type of element (`React.DOM.div` by default) that will be rendered:
-
-app.jsx
-```js
-<Sticky type={React.DOM.header}>
-  <SomeChild />
-</Sticky>
-```
-
-The above would result in all sticky state attributes (class and style) being applied directly to the element you specify, rather than being wrapped in a React.DOM.div.
-
 #### onStickyStateChange
 
 Use the onStickyStateChange prop to fire a callback function when the sticky state changes:
@@ -162,21 +150,9 @@ app.jsx
 </Sticky
 ```
 
-## Contributors
+## Supported By
 
 ##### [Captivation Software](http://www.captivationsoftware.com)
-
-Aaron Goin
-
-Alejandro Tardin
-
-Ankit Sardesai (@amsardesai)
-
-Josh Carr (@joshcarr)
-
-By all means, if you see room for improvement, let us know!
-
-
 
 ## License
 

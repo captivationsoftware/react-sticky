@@ -1,2 +1,6 @@
 node_modules
 *.log
+
+# demo files
+index.html
+styles.css
