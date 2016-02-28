@@ -50,46 +50,47 @@ describe('Sticky component', function() {
   });
 
   describe('state', () => {
-  
-    it ('should be sticky when scroll position is greater than original position plus topOffset', () => {
-      var scrollPosition = 100;
-      var topOffset = -50;
-      var distanceFromTopOfPage = 10;
+    describe('topOffset', () => {
+      it ('should be sticky when scroll position is greater than original position plus topOffset', () => {
+        var scrollPosition = 100;
+        var topOffset = -50;
+        var distanceFromTopOfPage = 10;
 
-      this.sticky.pageOffset = () => scrollPosition;
-      this.sticky.props = _.extend(this.sticky.props, {topOffset});
-      this.sticky.origin = distanceFromTopOfPage;
+        this.sticky.pageOffset = () => scrollPosition;
+        this.sticky.props = _.extend(this.sticky.props, {topOffset});
+        this.sticky.origin = distanceFromTopOfPage;
 
-      // is 100 > (10 - 50)? Yes, so should be sticky
-      expect(this.sticky.shouldBeSticky()).to.be.true;
+        // is 100 > (10 - 50)? Yes, so should be sticky
+        expect(this.sticky.shouldBeSticky()).to.be.true;
+      });
+
+      it ('should be sticky when scroll position is equal to original position plus topOffset', () => {
+        var scrollPosition = 100;
+        var topOffset = 0;
+        var distanceFromTopOfPage = 100;
+
+        this.sticky.pageOffset = () => scrollPosition;
+        this.sticky.props = _.extend(this.sticky.props, {topOffset});
+        this.sticky.origin = distanceFromTopOfPage;
+
+        // is 100 > (100 - 0)? Yes, so should be sticky
+        expect(this.sticky.shouldBeSticky()).to.be.true;
+      });
+
+      it ('should not be sticky when scroll position is less that original position plus topOffset', () => {
+        var scrollPosition = 0;
+        var topOffset = 0;
+        var distanceFromTopOfPage = 100;
+
+        this.sticky.pageOffset = () => scrollPosition;
+        this.sticky.props = _.extend(this.sticky.props, {topOffset});
+        this.sticky.origin = distanceFromTopOfPage;
+
+        // is 0 > (100 - 0)? No, so should not sticky
+        expect(this.sticky.shouldBeSticky()).to.be.false;
+      });
     });
-
-    it ('should be sticky when scroll position is equal to original position plus topOffset', () => {
-      var scrollPosition = 100;
-      var topOffset = 0;
-      var distanceFromTopOfPage = 100;
-
-      this.sticky.pageOffset = () => scrollPosition;
-      this.sticky.props = _.extend(this.sticky.props, {topOffset});
-      this.sticky.origin = distanceFromTopOfPage;
-
-      // is 100 > (100 - 0)? Yes, so should be sticky
-      expect(this.sticky.shouldBeSticky()).to.be.true;
-    });
-
-    it ('should not be sticky when scroll position is less that original position plus topOffset', () => {
-      var scrollPosition = 0;
-      var topOffset = 0;
-      var distanceFromTopOfPage = 100;
-
-      this.sticky.pageOffset = () => scrollPosition;
-      this.sticky.props = _.extend(this.sticky.props, {topOffset});
-      this.sticky.origin = distanceFromTopOfPage;
-
-      // is 0 > (100 - 0)? No, so should not sticky
-      expect(this.sticky.shouldBeSticky()).to.be.false;
-    });
-
+    
     describe('style transitions', () => {
       it ('should add the sticky class when sticky', () => {
         let shouldBeSticky = true;
