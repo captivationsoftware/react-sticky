@@ -24,7 +24,7 @@ Tip: run `npm install` to build the compressed UMD version suitable for inclusio
 
 ## Code Example
 
-First, you will want to wrap the element you want to be sticky with <Sticky></Sticky> tags. When the element is scrolled past the point where it would start to move off screen, the stickiness is activated.
+First, you will want to wrap the element you want to be sticky with <Sticky></Sticky> tags. By default, the Sticky component will stick to the `document.body` element. However, placing the optional `sticky-container` class on an ancestor of the Sticky element will constrain the sticky effect to the boundary of the `sticky-container`.
 
 app.jsx
 ```js
@@ -34,11 +34,15 @@ var React = require('react'),
 var Header = React.createClass({
   render: function() {
     return (
-      <Sticky>
-        <header>
-          <nav />
-        </header>
-      </Sticky>
+      <div className="sticky-container">
+        ...
+        <Sticky>
+          <header>
+            <nav />
+          </header>
+        </Sticky>
+        ...
+      </div>
     );
   },
 });
@@ -51,10 +55,22 @@ When the "stickiness" becomes activated, the following css style rules are appli
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
+  width: < width of sticky-container or, if that is absent, the width of document.body >
 ```
 
 ### Props
+
+#### stickyContainerClass
+If you would like to use another name for sticky container's besides `sticky-container`, you may supply the class name you would like to use:
+
+app.jsx
+```js
+<div class="my-container"
+  <Sticky stickyContainerClass="my-container">
+    <header />
+  </Sticky>
+</div>
+```
 
 #### stickyStyle
 In the event that you wish to override the style rules applied, simply pass in the style object as a prop:
