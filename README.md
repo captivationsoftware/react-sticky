@@ -5,15 +5,15 @@ react-sticky [![Build Status](https://travis-ci.org/captivationsoftware/react-st
 
 Make your React components sticky!
 
+NOTE: Version 4.0.0 is in progress -- 3.0.0 was the last stable version. 
+
 Perfect for headers, menus, or any other element where you want to maximize
 usability as your users scroll. Tons of options to make this component fit
 your project's needs, or simply rely on the ready-to-go defaults.
 
 ##### Highlights:
-  - ~~Not bound to any version of React so it will scale along with the community!~~
-    Note: this changed with version 3.0.0  
-  - Only 12K minified, with 0 external dependencies (besides React, of course)!
-  - Allows multiple Sticky elements on the page at once!
+  - High Performance
+  - Allows multiple Sticky elements on the page at once with compositional awareness!
 
 ## Installation
 ```sh
