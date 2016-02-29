@@ -24,7 +24,7 @@ Tip: run `npm install` to build the compressed UMD version suitable for inclusio
 
 ## Code Example
 
-First, you will want to wrap the element you want to be sticky with `<Sticky />` tags. By default, the Sticky component will stick to the `document.body` element. However, wrapping your `<Sticky />` component in a  `<Sticky.Container>` component element will constrain the sticky effect to the boundary of the <Sticky.Container>, which is just a `<div />`.
+Create a `<Sticky.Container />` and then add `<Sticky />` elements like so:
 
 app.jsx
 ```js
@@ -55,7 +55,7 @@ When the "stickiness" becomes activated, the following css style rules are appli
   position: fixed;
   top: 0;
   left: 0;
-  width: < width of sticky-container or, if that is absent, the width of document.body >
+  width: < width of sticky-container >
 ```
 
 ### Props
