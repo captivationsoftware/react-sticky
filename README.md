@@ -29,13 +29,13 @@ Create a `<Sticky.Container />` and then add `<Sticky />` elements like so:
 
 app.jsx
 ```js
-var React = require('react'),
-  Sticky = require('react-sticky');
+import React from 'react';
+import { StickyContainer, Sticky } from 'react-sticky';
 
 var Header = React.createClass({
   render: function() {
     return (
-      <Sticky.Container>
+      <StickyContainer>
         ...
         <Sticky>
           <header>
@@ -43,7 +43,7 @@ var Header = React.createClass({
           </header>
         </Sticky>
         ...
-      </Sticky.Container>
+      </StickyContainer>
     );
   },
 });
