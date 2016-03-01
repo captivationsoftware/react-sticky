@@ -9,7 +9,7 @@
     "build:lib": "babel src --loose --out-dir lib",
     "build": "npm run build:lib && npm run build:umd",
     "prepublish": "npm run clean && npm run build",
-    "test": "NODE_ENV=test mocha --compilers js:babel/register"
+    "test": "NODE_ENV=test mocha --compilers js:babel-core/register"
   },
   "repository": {
     "type": "git",
@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.6.0",
+    "babel-core": "^6.6.0",
     "babel-plugin-add-module-exports": "^0.1.2",
     "babel-plugin-transform-object-assign": "^6.5.0",
     "babel-preset-es2015": "^6.5.0",
