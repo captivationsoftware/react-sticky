@@ -20,14 +20,14 @@ class Sticky extends React.Component {
   }
 
   componentDidMount() {
-    watcher.on(this.transition.bind(this));
+    watcher.on(this.transition);
 
     let origin = this.calculateOrigin();
     this.setState({ origin });
   }
 
   componentWillUnmount() {
-    watcher.off(this.transition.bind(this));
+    watcher.off(this.transition);
   }
 
   /*
@@ -57,7 +57,7 @@ class Sticky extends React.Component {
     return stickyTopConditionsMet && stickyBottomConditionsMet;
   }
 
-  transition() {
+  transition = () => {
     if (this.context.container) {
       this.nextState(this.shouldBeSticky());
     }
