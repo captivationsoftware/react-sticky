@@ -1,14 +1,17 @@
+
 import { expect } from 'chai';
 import { jsdom } from 'jsdom';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Sticky from '../lib/sticky';
 import _ from 'lodash';
 import ReactTestUtils from 'react-addons-test-utils';
 
 // Initialize jsdom
 global.document = jsdom('<body></body>');
 global.window = document.defaultView;
+
+const { Sticky, StickyContainer } = require('../lib');
+
 
 describe('Sticky component', function() {
   function mount(JSX, element) {
@@ -25,28 +28,11 @@ describe('Sticky component', function() {
   }
 
   beforeEach(() => {
-    expect(Sticky.__frame).to.be.null;
-    expect(Sticky.__instances).to.be.empty;
-    this.sticky = mount(<Sticky>Test</Sticky>);
+    this.sticky = mount(<StickyContainer><Sticky>Test</Sticky></StickyContainer>);
   });
 
   afterEach(() => {
     unmount(this.sticky);
-    expect(Sticky.__instances).to.be.empty;
-    expect(Sticky.__frame).to.be.null;
-  });
-
-  it ('should be added to the list of static instances', () => {
-    expect(Sticky.__instances).to.contain(this.sticky);
-  });
-
-  it ('should update the frame while mounted', (done) => {
-    let frame = Sticky.__frame;
-    setTimeout(() => {
-      expect(Sticky.__frame).to.not.equal(frame);
-      expect(Sticky.__frame).to.not.be.null;
-      done();
-    }, 20);
   });
 
   describe('state', () => {
@@ -90,7 +76,7 @@ describe('Sticky component', function() {
         expect(this.sticky.shouldBeSticky()).to.be.false;
       });
     });
-    
+
     describe('style transitions', () => {
       it ('should add the sticky class when sticky', () => {
         let shouldBeSticky = true;
@@ -201,8 +187,6 @@ describe('Sticky component', function() {
     beforeEach(() => {
       this.bottomMost = mount(<Sticky>1</Sticky>);
       this.inBetween = mount(<Sticky>2</Sticky>);
-      Sticky.unregister(this.bottomMost);
-      Sticky.unregister(this.inBetween);
       this.bottomMost.top = function () { return 300; };
       this.inBetween.top = function () { return 100; };
       Sticky.register(this.bottomMost);
@@ -215,14 +199,7 @@ describe('Sticky component', function() {
     });
 
     it ('should know what components are above it', () => {
-      expect(Sticky.instancesAbove(this.sticky)).to.be.empty;
 
-      var aboveInBetween = Sticky.instancesAbove(this.inBetween);
-      expect(aboveInBetween[0]).to.equal(this.sticky);
-
-      var aboveBottomMost = Sticky.instancesAbove(this.bottomMost);
-      expect(aboveBottomMost[0]).to.equal(this.sticky);
-      expect(aboveBottomMost[1]).to.equal(this.inBetween);
     });
 
     it ('should incorporate height of other sticky elements above it when computing offset', () => {
