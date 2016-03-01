@@ -4,3 +4,5 @@ node_modules
 # demo files
 index.html
 styles.css
+lib
+dist
