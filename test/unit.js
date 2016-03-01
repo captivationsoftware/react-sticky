@@ -10,7 +10,7 @@ import ReactTestUtils from 'react-addons-test-utils';
 global.document = jsdom('<body></body>');
 global.window = document.defaultView;
 
-const { Sticky, StickyContainer } = require('../lib');
+const { Sticky, StickyContainer } = require('../src');
 
 
 describe('Sticky component', function() {
