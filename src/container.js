@@ -1,47 +1,29 @@
 import React from 'react';
 import Sticky from './sticky';
 
-class Container extends React.Component {
+export default class Container extends React.Component {
+
+  static contextTypes = {
+    container: React.PropTypes.any,
+    topCorrection: React.PropTypes.number
+  }
+
+  static childContextTypes = {
+    container: React.PropTypes.any,
+    topCorrection: React.PropTypes.number
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      topCorrection: 0,
-      cumulativeTopCorrection: 0
+      topCorrection: 0
     };
   }
 
   getChildContext() {
-    return {
-      container: this
-    }
-  }
-
-  componentDidMount() {
-    this.updateCumulativeTopCorrection();
-  }
-
-
-  componentDidUpdate() {
-    this.updateCumulativeTopCorrection();
-  }
-
-  cumulativeTopCorrection() {
-    let topCorrection = 0;
-    if (this.context.container) {
-      let container = this.context.container;
-      while (container) {
-        topCorrection += container.state.topCorrection;
-        container = container.context.container;
-      };
-    }
-    return topCorrection;
-  }
-
-  updateCumulativeTopCorrection() {
-    let cumulativeTopCorrection = this.cumulativeTopCorrection();
-    if (cumulativeTopCorrection !== this.state.cumulativeTopCorrection) {
-      this.setState({ cumulativeTopCorrection });
-    }
+    let container = this;
+    let topCorrection = (this.context.topCorrection || 0) + this.state.topCorrection;
+    return { container, topCorrection }
   }
 
   nextState(state) {
@@ -60,13 +42,3 @@ class Container extends React.Component {
     </div>
   }
 }
-
-Container.contextTypes = {
-  container: React.PropTypes.any
-}
-
-Container.childContextTypes = {
-  container: React.PropTypes.any
-}
-
-export default Container;

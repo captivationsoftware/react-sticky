@@ -1,46 +1,61 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import watcher from './watcher';
+import Watcher from './watcher';
 
-class Sticky extends React.Component {
+export default class Sticky extends React.Component {
+
+  static contextTypes = {
+    container: React.PropTypes.any,
+    topCorrection: React.PropTypes.number
+  }
+
+  static defaultProps = {
+    className: '',
+    style: {},
+    stickyClass: 'sticky',
+    stickyStyle: {},
+    topOffset: 0,
+    onStickyStateChange: function () {}
+  }
+
+  static scrollWatcher = new Watcher(['scroll', 'touchstart', 'touchend']);
+  static resizeWatcher = new Watcher(['resize']);
 
   constructor(props) {
     super(props);
-    this.state = { };
+
+    this.state = {
+      height: 0,
+      top: 0
+    };
   }
 
   /*
    * Anytime new props are received, force re-evaluation
    */
   componentWillReceiveProps() {
-    let origin = this.calculateOrigin();
-    this.setState({ origin });
-
-    watcher.emit();
+    Sticky.resizeWatcher.emit();
+    Sticky.scrollWatcher.emit();
   }
 
   componentDidMount() {
-    watcher.on(this.transition);
+    this.updateOrigin();
 
-    let origin = this.calculateOrigin();
-    this.setState({ origin });
+    let height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
+    let top = Math.max((this.context.topCorrection || 0) - height, 0);
+    this.setState({ height, top });
+
+    Sticky.resizeWatcher.on(this.updateOrigin);
+    Sticky.scrollWatcher.on(this.updateStickyState);
   }
 
   componentWillUnmount() {
-    watcher.off(this.transition);
+    Sticky.resizeWatcher.off(this.updateOrigin);
+    Sticky.scrollWatcher.off(this.updateStickyState);
   }
 
-  /*
-   * Return the distance of the scrollbar from the
-   * top of the window plus the total height of all
-   * stuck Sticky instances above this one.
-   */
   pageOffset() {
-    return (window.pageYOffset || document.documentElement.scrollTop);
-  }
-
-  cumulativeTopCorrection() {
-    return this.context.container.state.cumulativeTopCorrection;
+    return window.pageYOffset || document.documentElement.scrollTop;
   }
 
   /*
@@ -48,7 +63,8 @@ class Sticky extends React.Component {
    */
   shouldBeSticky() {
     let offset = this.pageOffset();
-    let origin =  this.state.origin - this.cumulativeTopCorrection();
+    let origin =  this.state.origin - this.state.top;
+
     let containerNode = ReactDOM.findDOMNode(this.context.container);
 
     // check conditions
@@ -57,16 +73,35 @@ class Sticky extends React.Component {
     return stickyTopConditionsMet && stickyBottomConditionsMet;
   }
 
-  transition = () => {
-    if (this.context.container) {
-      this.nextState(this.shouldBeSticky());
+  updateStickyState = () => {
+    let shouldBeSticky = this.shouldBeSticky();
+
+    let hasChanged = (this.state.isSticky !== shouldBeSticky);
+
+    // Update this state
+    this.setState({
+      isSticky: shouldBeSticky,
+      style: this.nextStyle(shouldBeSticky),
+      className: this.nextClassName(shouldBeSticky)
+    });
+
+    if (hasChanged) {
+
+      // Update container state
+      if (this.context.container) {
+        this.context.container.nextState({
+          isSticky: shouldBeSticky,
+          height: this.state.height
+        });
+      }
+
+      // Publish sticky state change
+      this.props.onStickyStateChange(shouldBeSticky);
     }
   }
 
-  /*
-   * Returns the y-coordinate of the top of this element.
-   */
-  calculateOrigin() {
+
+  updateOrigin = () => {
     let node = React.findDOMNode(this);
 
     // Do some ugly DOM manipulation to where this element's non-sticky position would be
@@ -74,26 +109,26 @@ class Sticky extends React.Component {
     node.style.position = '';
     let origin = node.getBoundingClientRect().top + this.pageOffset();
     node.style.position = previousPosition;
-    return origin;
+
+    this.setState({origin});
   }
+
   /*
    * If sticky, merge this.props.stickyStyle with this.props.style.
    * If not, just return this.props.style.
    */
   nextStyle(shouldBeSticky) {
     if (shouldBeSticky) {
-      let node = ReactDOM.findDOMNode(this);
-      let containerNode = ReactDOM.findDOMNode(this.context.container);
+      let containerRect = ReactDOM.findDOMNode(this.context.container).getBoundingClientRect();
 
       // inherit the boundaries of the container
-      var rect = containerNode.getBoundingClientRect();
-      var style = Object.assign({}, this.props.style);
+      let style = Object.assign({}, this.props.style);
       style.position = 'fixed';
-      style.left = rect.left;
-      style.width = rect.width;
-      style.top = this.cumulativeTopCorrection();
+      style.left = containerRect.left;
+      style.width = containerRect.width;
+      style.top = this.state.top;
 
-      let bottomLimit = rect.bottom - node.getBoundingClientRect().height;
+      let bottomLimit = containerRect.bottom - this.state.height;
       if (style.top > bottomLimit) style.top = bottomLimit;
 
       // Finally, override the best-fit style with any user props
@@ -116,39 +151,6 @@ class Sticky extends React.Component {
   }
 
   /*
-   * Transition to the next state.
-   *
-   * Updates the isSticky, style, and className state
-   * variables.
-   *
-   * If sticky state is different than the previous,
-   * fire the onStickyStateChange callback.
-   */
-  nextState(shouldBeSticky) {
-    var hasChanged = this.state.isSticky !== shouldBeSticky;
-
-    // Update this state
-    this.setState({
-      isSticky: shouldBeSticky,
-      style: this.nextStyle(shouldBeSticky),
-      className: this.nextClassName(shouldBeSticky)
-    });
-
-    if (hasChanged) {
-      // Update container state
-      if (this.context.container) {
-        this.context.container.nextState({
-          isSticky: shouldBeSticky,
-          height: ReactDOM.findDOMNode(this).getBoundingClientRect().height
-        });
-      }
-
-      // Publish sticky state change
-      this.props.onStickyStateChange(shouldBeSticky);
-    }
-  }
-
-  /*
    * The special sauce.
    */
   render() {
@@ -159,22 +161,3 @@ class Sticky extends React.Component {
     );
   }
 }
-
-Sticky.contextTypes = {
-  container: React.PropTypes.any
-}
-
-
-/*
- * Default properties...
- */
-Sticky.defaultProps = {
-  className: '',
-  style: {},
-  stickyClass: 'sticky',
-  stickyStyle: {},
-  topOffset: 0,
-  onStickyStateChange: function () {}
-}
-
-export default Sticky;

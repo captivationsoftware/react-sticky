@@ -1,20 +1,22 @@
 import raf from 'raf';
 import Signal from 'simple-signal';
 
-const signal = new Signal();
+export default function Watcher(events) {
+  const signal = new Signal();
 
-const handleEvent = () => raf(signal.emit);
+  const handleEvent = () => raf(signal.emit);
 
-/**
-  * Wire up event listeners
-  */
-['scroll', 'resize', 'touchmove', 'touchend']
-  .forEach(function(evt) {
-    if (window.addEventListener) {
-      window.addEventListener(evt, handleEvent);
-    } else {
-      window.attachEvent('on' + evt, handleEvent);
-    }
-  });
+  /**
+    * Wire up event listeners
+    */
+  events
+    .forEach(function(evt) {
+      if (window.addEventListener) {
+        window.addEventListener(evt, handleEvent);
+      } else {
+        window.attachEvent('on' + evt, handleEvent);
+      }
+    });
 
-export default signal;
+  return signal;
+}
