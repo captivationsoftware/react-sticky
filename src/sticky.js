@@ -40,18 +40,15 @@ export default class Sticky extends React.Component {
 
   componentDidMount() {
     this.updateOrigin();
+    this.updateRect();
 
-    let height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
-    let top = Math.max((this.context.topCorrection || 0) - height, 0);
-    this.setState({ height, top });
-
-    Sticky.resizeWatcher.on(this.updateOrigin);
-    Sticky.scrollWatcher.on(this.updateStickyState);
+    Sticky.resizeWatcher.on(this.onResize);
+    Sticky.scrollWatcher.on(this.onScroll);
   }
 
   componentWillUnmount() {
-    Sticky.resizeWatcher.off(this.updateOrigin);
-    Sticky.scrollWatcher.off(this.updateStickyState);
+    Sticky.resizeWatcher.off(this.onResize);
+    Sticky.scrollWatcher.off(this.onScroll);
   }
 
   pageOffset() {
@@ -73,7 +70,7 @@ export default class Sticky extends React.Component {
     return stickyTopConditionsMet && stickyBottomConditionsMet;
   }
 
-  updateStickyState = () => {
+  onScroll = () => {
     let shouldBeSticky = this.shouldBeSticky();
 
     let hasChanged = (this.state.isSticky !== shouldBeSticky);
@@ -85,23 +82,28 @@ export default class Sticky extends React.Component {
       className: this.nextClassName(shouldBeSticky)
     });
 
+    // Update container state
+    if (this.context.container) {
+      this.context.container.nextState({
+        isSticky: shouldBeSticky,
+        height: this.state.height
+      });
+    }
+
     if (hasChanged) {
-
-      // Update container state
-      if (this.context.container) {
-        this.context.container.nextState({
-          isSticky: shouldBeSticky,
-          height: this.state.height
-        });
-      }
-
       // Publish sticky state change
       this.props.onStickyStateChange(shouldBeSticky);
     }
   }
 
 
-  updateOrigin = () => {
+  onResize = () => {
+    this.updateOrigin();
+    // emit a scroll event to re-calculate container top offsets
+    Sticky.scrollWatcher.emit();
+  }
+
+  updateOrigin() {
     let node = React.findDOMNode(this);
 
     // Do some ugly DOM manipulation to where this element's non-sticky position would be
@@ -111,6 +113,13 @@ export default class Sticky extends React.Component {
     node.style.position = previousPosition;
 
     this.setState({origin});
+
+  }
+
+  updateRect() {
+    let height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
+    let top = Math.max((this.context.topCorrection || 0) - height, 0);
+    this.setState({ height, top });
   }
 
   /*

@@ -1,5 +1,6 @@
 import React from 'react';
 import Sticky from './sticky';
+import Watcher from './watcher';
 
 export default class Container extends React.Component {
 
@@ -13,6 +14,8 @@ export default class Container extends React.Component {
     topCorrection: React.PropTypes.number
   }
 
+  static resizeWatcher = new Watcher(['resize']);
+
   constructor(props) {
     super(props);
     this.state = {
@@ -25,6 +28,19 @@ export default class Container extends React.Component {
     let topCorrection = (this.context.topCorrection || 0) + this.state.topCorrection;
     return { container, topCorrection }
   }
+
+  componentDidMount() {
+    Container.resizeWatcher.on(this.onResize);
+  }
+
+  componentWillUnmount() {
+    Container.resizeWatcher.off(this.onResize);
+  }
+
+  onResize = () => {
+    this.setState({topCorrection: 0});
+  }
+
 
   nextState(state) {
     let topCorrection = state.isSticky ? state.height : 0;
