@@ -25,17 +25,8 @@ export default class Sticky extends React.Component {
     super(props);
 
     this.state = {
-      height: 0,
-      top: 0
+      height: 0
     };
-  }
-
-  /*
-   * Anytime new props are received, force re-evaluation
-   */
-  componentWillReceiveProps() {
-    Sticky.resizeWatcher.emit();
-    Sticky.scrollWatcher.emit();
   }
 
   componentDidMount() {
@@ -51,23 +42,15 @@ export default class Sticky extends React.Component {
     Sticky.scrollWatcher.off(this.onScroll);
   }
 
-  pageOffset() {
-    return window.pageYOffset || document.documentElement.scrollTop;
+  /*
+   * Anytime new props are received, force re-evaluation
+   */
+  componentWillReceiveProps() {
+    this.updateRect();
   }
 
-  /*
-   * Returns true/false depending on if this should be sticky.
-   */
-  shouldBeSticky() {
-    let offset = this.pageOffset();
-    let origin =  this.state.origin - this.state.top;
-
-    let containerNode = ReactDOM.findDOMNode(this.context.container);
-
-    // check conditions
-    let stickyTopConditionsMet = offset >= origin + this.props.topOffset;
-    let stickyBottomConditionsMet = offset < containerNode.getBoundingClientRect().height + origin;
-    return stickyTopConditionsMet && stickyBottomConditionsMet;
+  pageOffset() {
+    return window.pageYOffset || document.documentElement.scrollTop;
   }
 
   onScroll = () => {
@@ -82,20 +65,29 @@ export default class Sticky extends React.Component {
       className: this.nextClassName(shouldBeSticky)
     });
 
-    // Update container state
-    if (this.context.container) {
-      this.context.container.nextState({
-        isSticky: shouldBeSticky,
-        height: this.state.height
-      });
-    }
-
+    // Publish sticky state change
     if (hasChanged) {
-      // Publish sticky state change
+      let topCorrection = shouldBeSticky ? this.state.height : 0;
+      this.context.container.updateTopCorrection(topCorrection);
+
       this.props.onStickyStateChange(shouldBeSticky);
     }
   }
 
+  /*
+   * Returns true/false depending on if this should be sticky.
+   */
+  shouldBeSticky() {
+    let offset = this.pageOffset();
+    let origin =  this.state.origin - (this.context.topCorrection || 0);
+
+    let containerNode = ReactDOM.findDOMNode(this.context.container);
+
+    // check conditions
+    let stickyTopConditionsMet = offset >= origin + this.props.topOffset;
+    let stickyBottomConditionsMet = offset < containerNode.getBoundingClientRect().height + origin;
+    return stickyTopConditionsMet && stickyBottomConditionsMet;
+  }
 
   onResize = () => {
     this.updateOrigin();
@@ -135,7 +127,7 @@ export default class Sticky extends React.Component {
       style.position = 'fixed';
       style.left = containerRect.left;
       style.width = containerRect.width;
-      style.top = this.state.top;
+      style.top = (this.context.topCorrection || 0);
 
       let bottomLimit = containerRect.bottom - this.state.height;
       if (style.top > bottomLimit) style.top = bottomLimit;

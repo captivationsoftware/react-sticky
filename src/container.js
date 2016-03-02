@@ -25,7 +25,7 @@ export default class Container extends React.Component {
 
   getChildContext() {
     let container = this;
-    let topCorrection = (this.context.topCorrection || 0) + this.state.topCorrection;
+    let topCorrection = (this.context.topCorrection || 0)+ this.state.topCorrection;
     return { container, topCorrection }
   }
 
@@ -41,9 +41,7 @@ export default class Container extends React.Component {
     this.setState({topCorrection: 0});
   }
 
-
-  nextState(state) {
-    let topCorrection = state.isSticky ? state.height : 0;
+  updateTopCorrection(topCorrection) {
     this.setState({ topCorrection });
   }
 
