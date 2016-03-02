@@ -14,8 +14,6 @@ export default class Container extends React.Component {
     topCorrection: React.PropTypes.number
   }
 
-  static resizeWatcher = new Watcher(['resize']);
-
   constructor(props) {
     super(props);
     this.state = {
@@ -27,18 +25,6 @@ export default class Container extends React.Component {
     let container = this;
     let topCorrection = (this.context.topCorrection || 0)+ this.state.topCorrection;
     return { container, topCorrection }
-  }
-
-  componentDidMount() {
-    Container.resizeWatcher.on(this.onResize);
-  }
-
-  componentWillUnmount() {
-    Container.resizeWatcher.off(this.onResize);
-  }
-
-  onResize = () => {
-    this.setState({topCorrection: 0});
   }
 
   updateTopCorrection(topCorrection) {

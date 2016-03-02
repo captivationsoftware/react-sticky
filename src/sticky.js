@@ -31,7 +31,7 @@ export default class Sticky extends React.Component {
 
   componentDidMount() {
     this.updateOrigin();
-    this.updateRect();
+    this.updateHeight();
 
     Sticky.resizeWatcher.on(this.onResize);
     Sticky.scrollWatcher.on(this.onScroll);
@@ -46,7 +46,7 @@ export default class Sticky extends React.Component {
    * Anytime new props are received, force re-evaluation
    */
   componentWillReceiveProps() {
-    this.updateRect();
+    this.updateHeight();
   }
 
   pageOffset() {
@@ -98,20 +98,18 @@ export default class Sticky extends React.Component {
   updateOrigin() {
     let node = React.findDOMNode(this);
 
-    // Do some ugly DOM manipulation to where this element's non-sticky position would be
+    // Do some DOM manipulation to where this element's non-sticky position would be
     let previousPosition = node.style.position;
     node.style.position = '';
     let origin = node.getBoundingClientRect().top + this.pageOffset();
     node.style.position = previousPosition;
 
     this.setState({origin});
-
   }
 
-  updateRect() {
+  updateHeight() {
     let height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
-    let top = Math.max((this.context.topCorrection || 0) - height, 0);
-    this.setState({ height, top });
+    this.setState({ height });
   }
 
   /*
