@@ -26,7 +26,8 @@ export default class Sticky extends React.Component {
     super(props);
 
     this.state = {
-      height: 0
+      height: 0,
+      stickyStyle: {}
     };
   }
 
@@ -54,31 +55,10 @@ export default class Sticky extends React.Component {
     return window.pageYOffset || document.documentElement.scrollTop;
   }
 
-  onScroll = () => {
-    let shouldBeSticky = this.shouldBeSticky();
-
-    let hasChanged = (this.state.isSticky !== shouldBeSticky);
-
-    // Update this state
-    this.setState({
-      isSticky: shouldBeSticky,
-      style: this.nextStyle(shouldBeSticky),
-      className: this.nextClassName(shouldBeSticky)
-    });
-
-    // Publish sticky state change
-    if (hasChanged) {
-      let topCorrection = shouldBeSticky ? this.state.height : 0;
-      this.context.container.updateTopCorrection(topCorrection);
-
-      this.props.onStickyStateChange(shouldBeSticky);
-    }
-  }
-
   /*
    * Returns true/false depending on if this should be sticky.
    */
-  shouldBeSticky() {
+  stickyConditionsMet() {
     let offset = this.pageOffset();
     let origin =  this.state.origin - (this.context.offset || 0);
     let containerNode = ReactDOM.findDOMNode(this.context.container);
@@ -87,6 +67,38 @@ export default class Sticky extends React.Component {
     let stickyTopConditionsMet = offset >= origin + this.props.topOffset;
     let stickyBottomConditionsMet = offset + this.props.bottomOffset < origin + containerNode.getBoundingClientRect().height;
     return stickyTopConditionsMet && stickyBottomConditionsMet;
+  }
+
+  onScroll = () => {
+    let isSticky = this.stickyConditionsMet();
+
+    let hasChanged = this.state.isSticky !== isSticky;
+
+    let stickyStyle = {};
+    if (isSticky) {
+      let containerRect = ReactDOM.findDOMNode(this.context.container).getBoundingClientRect();
+      stickyStyle = {
+        position: 'fixed',
+        top: this.context.offset || 0,
+        left: containerRect.left,
+        width: containerRect.width
+      };
+
+      let bottomLimit = containerRect.bottom - this.state.height - this.props.bottomOffset;
+      if (stickyStyle.top > bottomLimit) {
+        stickyStyle.top = bottomLimit;
+      }
+    }
+
+    this.setState({ isSticky, stickyStyle });
+
+    // Publish sticky state change
+    if (hasChanged) {
+      let topCorrection = isSticky ? this.state.height : 0;
+      this.context.container.updateTopCorrection(topCorrection);
+
+      this.props.onStickyStateChange(isSticky);
+    }
   }
 
   onResize = () => {
@@ -113,50 +125,18 @@ export default class Sticky extends React.Component {
   }
 
   /*
-   * If sticky, merge this.props.stickyStyle with this.props.style.
-   * If not, just return this.props.style.
-   */
-  nextStyle(shouldBeSticky) {
-    if (shouldBeSticky) {
-      let containerRect = ReactDOM.findDOMNode(this.context.container).getBoundingClientRect();
-
-      // inherit the boundaries of the container
-      let style = Object.assign({}, this.props.style);
-      style.position = 'fixed';
-      style.left = containerRect.left;
-      style.width = containerRect.width;
-      style.top = (this.context.offset || 0);
-
-      let bottomLimit = containerRect.bottom - this.state.height - this.props.bottomOffset;
-      if (style.top > bottomLimit) {
-        style.top = bottomLimit;
-      }
-
-      // Finally, override the best-fit style with any user props
-      return Object.assign(style, this.props.stickyStyle);
-    } else {
-      return this.props.style;
-    }
-  }
-
-  /*
-   * If sticky, merge this.props.stickyClass with this.props.className.
-   * If not, just return this.props.className.
-   */
-  nextClassName(shouldBeSticky) {
-    var className = this.props.className;
-    if (shouldBeSticky) {
-      className += ' ' + this.props.stickyClass;
-    }
-    return className;
-  }
-
-  /*
    * The special sauce.
    */
   render() {
+    let className = `${this.props.className} ${this.state.isSticky ? this.props.stickyClass : ''}`
+
+    let style = this.props.style;
+    if (this.state.isSticky) {
+      style = Object.assign({}, this.props.style, this.state.stickyStyle, this.props.stickyStyle);
+    }
+
     return (
-      <div style={this.state.style} className={this.state.className}>
+      <div className={className} style={style}>
         {this.props.children}
       </div>
     );
