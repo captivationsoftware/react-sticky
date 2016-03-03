@@ -115,11 +115,11 @@ app.jsx
 </StickyContainer>
 ```
 
-The above would result in an element that becomes sticky once its top is greater than or equal to 80px away from the top of the <StickyContainer />.
+The above would result in an element that becomes sticky once its top is greater than or equal to 80px away from the top of the `<StickyContainer />`.
 
 
 #### bottomOffset _(default: 0)_
-Sticky state will be triggered when the bottom of the element is `bottomOffset` pixels from the bottom of the closest <StickyContainer />.
+Sticky state will be triggered when the bottom of the element is `bottomOffset` pixels from the bottom of the closest `<StickyContainer />`.
 
 app.jsx
 ```js
