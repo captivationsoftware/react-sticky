@@ -23,7 +23,7 @@ Tip: run `npm build` to build the compressed UMD version suitable for inclusion 
 ## Overview & Basic Example
 
 It all starts with a `<StickyContainer />`. This is basically a plain ol' `<div />` with a React-managed `padding-top` css attribute. As you scroll down the page, all `<Sticky />` tags within
-will be constrained to the bounds of its immediate parent `<StickyContainer />`.
+will be constrained to the bounds of its closest `<StickyContainer />` parent node.
 
 The elements you actually want to "stick" should be wrapped in the, you guessed it, `<Sticky />` tag. The full list of props are available below, but typical usage will look something like so:
 
@@ -36,21 +36,18 @@ class App extends React.Component ({
   render() {
     return (
       <StickyContainer>
-
         <Sticky>
           <header>
             <h1>Million Dollar App Idea</h1>
           </header>
         </Sticky>
-
-        <h3>Reasons to trust me</h3>
+        <h3>Reasons to trust me:</h3>
         <ul>
           <li>I have great hygeine</li>
           <li>I signal before most turns</li>
           ...
-          <li>I bought a newspaper subscription to help a kid go to college</li>
+          <li>I once paid for a newspaper subscription to help a kid attend college</li>
         </ul>
-
       </StickyContainer>
     );
   },
@@ -68,7 +65,7 @@ When the "stickiness" becomes activated, the following css style rules are appli
 ```
 
 ### `<StickyContainer />` Props
-`<StickyContainer />` passes along all props you provide to it without interference*. That's right - no restrictions - go `prop` crazy!  
+`<StickyContainer />` passes along all props you provide to it without interference*. That's right - no restrictions - go nuts!  
 
 * IMPORTANT: The `style` attribute `padding-top` is managed by React, so avoid setting it with CSS rules.
 
@@ -95,19 +92,6 @@ app.jsx
 <StickyContainer>
   ...
   <Sticky stickyClass={customClassName}>
-    <header />
-  </Sticky>
-  ...
-</StickyContainer>
-```
-
-If you wish to use external CSS rules instead of inline styles, first ask yourself if you're sure, because you probably don't. But, if you feel like being reckless, pass an empty object to the stickyStyle property. Doing so will prevent the default inline styles from taking precedence over your own CSS rules. An example of how to do this is found below:
-
-app.jsx
-```js
-<StickyContainer>
-  ...
-  <Sticky stickyClass="supersticky" stickyStyle={{}}>
     <header />
   </Sticky>
   ...
