@@ -6,7 +6,7 @@ export default class Sticky extends React.Component {
 
   static contextTypes = {
     container: React.PropTypes.any,
-    topCorrection: React.PropTypes.number
+    offset: React.PropTypes.number
   }
 
   static defaultProps = {
@@ -79,8 +79,7 @@ export default class Sticky extends React.Component {
    */
   shouldBeSticky() {
     let offset = this.pageOffset();
-    let origin =  this.state.origin - (this.context.topCorrection || 0);
-
+    let origin =  this.state.origin - (this.context.offset || 0);
     let containerNode = ReactDOM.findDOMNode(this.context.container);
 
     // check conditions
@@ -125,7 +124,7 @@ export default class Sticky extends React.Component {
       style.position = 'fixed';
       style.left = containerRect.left;
       style.width = containerRect.width;
-      style.top = (this.context.topCorrection || 0);
+      style.top = (this.context.offset || 0);
 
       let bottomLimit = containerRect.bottom - this.state.height;
       if (style.top > bottomLimit) style.top = bottomLimit;

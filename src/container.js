@@ -1,6 +1,5 @@
 import React from 'react';
 import Sticky from './sticky';
-import Watcher from './watcher';
 
 export default class Container extends React.Component {
 
@@ -11,7 +10,8 @@ export default class Container extends React.Component {
 
   static childContextTypes = {
     container: React.PropTypes.any,
-    topCorrection: React.PropTypes.number
+    topCorrection: React.PropTypes.number,
+    offset: React.PropTypes.number
   }
 
   constructor(props) {
@@ -23,8 +23,9 @@ export default class Container extends React.Component {
 
   getChildContext() {
     let container = this;
-    let topCorrection = (this.context.topCorrection || 0)+ this.state.topCorrection;
-    return { container, topCorrection }
+    let topCorrection = (this.context.topCorrection || 0) + this.state.topCorrection;
+    let offset = topCorrection - this.state.topCorrection;
+    return { container, topCorrection, offset };
   }
 
   updateTopCorrection(topCorrection) {
