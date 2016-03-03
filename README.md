@@ -31,18 +31,22 @@ app.jsx
 ```js
 import React from 'react';
 import { StickyContainer, Sticky } from 'react-sticky';
+...
 
 class App extends React.Component ({
   render() {
     return (
+      ...
       <StickyContainer>
+        ...
         <Sticky>
           <header>
-            <h1>Million Dollar Idea</h1>
+            ...
           </header>
         </Sticky>
-        <MillionDollarIdea />
+        ...
       </StickyContainer>
+      ...
     );
   },
 });
