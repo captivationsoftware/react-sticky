@@ -55,7 +55,7 @@ class App extends React.Component ({
 
 ```
 
-When the "stickiness" becomes activated, the following css style rules are applied to the Sticky element:
+When the "stickiness" becomes activated, the following inline style rules are applied to the Sticky element:
 
 ```css
   position: fixed;
@@ -73,7 +73,7 @@ When the "stickiness" becomes activated, the following css style rules are appli
 
 ### `<Sticky />` Props
 
-#### stickyStyle
+#### stickyStyle _(default: {})_
 In the event that you wish to override the style rules applied, simply pass in the style object as a prop:
 
 app.jsx
@@ -87,8 +87,8 @@ app.jsx
 
 Note: You likely want to avoid messing with the following attributes in your stickyStyle: `left`, `top`, and `width`.
 
-#### stickyClass
-You can also specify a class name ('sticky' by default) to be applied when the element becomes sticky:
+#### stickyClass _(default: 'sticky')_
+You can also specify a class name to be applied when the element becomes sticky:
 
 app.jsx
 ```js
@@ -101,8 +101,8 @@ app.jsx
 </StickyContainer>
 ```
 
-#### topOffset
-Sticky state will be triggered when the top of the element is `topOffset` pixels from the top of the window (0 by default). Positive numbers give the impression of a lazy sticky state, whereas negative numbers are more eager in their attachment.
+#### topOffset _(default: 0)_
+Sticky state will be triggered when the top of the element is `topOffset` pixels from the top of the closest `<StickyContainer />`. Positive numbers give the impression of a lazy sticky state, whereas negative numbers are more eager in their attachment.
 
 app.jsx
 ```js
@@ -118,7 +118,22 @@ app.jsx
 The above would result in an element that becomes sticky once its top is greater than or equal to 80px away from the top of the <StickyContainer />.
 
 
-#### className
+#### bottomOffset _(default: 0)_
+Sticky state will be triggered when the bottom of the element is `bottomOffset` pixels from the bottom of the closest <StickyContainer />.
+
+app.jsx
+```js
+<StickyContainer>
+  ...
+  <Sticky bottomOffset={80}>
+    <SomeChild />
+  </Sticky>
+  ...
+</StickyContainer>
+```
+
+
+#### className _(default: '')_
 You can specify a class name that would be applied to the resulting element:
 
 app.jsx
@@ -132,7 +147,7 @@ app.jsx
 </StickyContainer>
 ```
 
-#### style
+#### style _(default: {})_
 You can also specify a style object that would be applied to the resulting element:
 
 app.jsx

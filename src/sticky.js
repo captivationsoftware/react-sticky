@@ -15,6 +15,7 @@ export default class Sticky extends React.Component {
     stickyClass: 'sticky',
     stickyStyle: {},
     topOffset: 0,
+    bottomOffset: 0,
     onStickyStateChange: function () {}
   }
 
@@ -84,7 +85,7 @@ export default class Sticky extends React.Component {
 
     // check conditions
     let stickyTopConditionsMet = offset >= origin + this.props.topOffset;
-    let stickyBottomConditionsMet = offset < containerNode.getBoundingClientRect().height + origin;
+    let stickyBottomConditionsMet = offset + this.props.bottomOffset < origin + containerNode.getBoundingClientRect().height;
     return stickyTopConditionsMet && stickyBottomConditionsMet;
   }
 
@@ -126,8 +127,10 @@ export default class Sticky extends React.Component {
       style.width = containerRect.width;
       style.top = (this.context.offset || 0);
 
-      let bottomLimit = containerRect.bottom - this.state.height;
-      if (style.top > bottomLimit) style.top = bottomLimit;
+      let bottomLimit = containerRect.bottom - this.state.height - this.props.bottomOffset;
+      if (style.top > bottomLimit) {
+        style.top = bottomLimit;
+      }
 
       // Finally, override the best-fit style with any user props
       return Object.assign(style, this.props.stickyStyle);
