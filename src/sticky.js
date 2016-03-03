@@ -71,34 +71,33 @@ export default class Sticky extends React.Component {
 
   onScroll = () => {
     let isSticky = this.stickyConditionsMet();
-
     let hasChanged = this.state.isSticky !== isSticky;
-
+    let topCorrection = 0;
     let stickyStyle = {};
+
     if (isSticky) {
+      let offset = this.context.offset || 0;
       let containerRect = ReactDOM.findDOMNode(this.context.container).getBoundingClientRect();
       stickyStyle = {
         position: 'fixed',
-        top: this.context.offset || 0,
+        top: offset,
         left: containerRect.left,
         width: containerRect.width
       };
+      topCorrection = this.state.height;
 
       let bottomLimit = containerRect.bottom - this.state.height - this.props.bottomOffset;
-      if (stickyStyle.top > bottomLimit) {
+      if (offset > bottomLimit) {
         stickyStyle.top = bottomLimit;
       }
     }
 
+    // Update state
     this.setState({ isSticky, stickyStyle });
+    this.context.container.updateTopCorrection(topCorrection);
 
     // Publish sticky state change
-    if (hasChanged) {
-      let topCorrection = isSticky ? this.state.height : 0;
-      this.context.container.updateTopCorrection(topCorrection);
-
-      this.props.onStickyStateChange(isSticky);
-    }
+    if (hasChanged) this.props.onStickyStateChange(isSticky);
   }
 
   onResize = () => {

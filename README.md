@@ -162,7 +162,7 @@ app.jsx
 
 Note: In the event that `stickyStyle` rules conflict with `style` rules, `stickyStyle` rules take precedence ONLY while sticky state is active.
 
-#### onStickyStateChange _(default: function noop() {})_
+#### onStickyStateChange _(default: function() {})_
 
 Use the onStickyStateChange prop to fire a callback function when the sticky state changes:
 
