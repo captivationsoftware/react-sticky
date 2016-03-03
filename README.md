@@ -159,10 +159,8 @@ app.jsx
 </StickyContainer>
 ```
 
-## Supported By
-
-##### [![Captivation Software](http://www.captivationsoftware.com/images/logo-dark.png)](http://www.captivationsoftware.com/)
-
 ## License
-
 MIT License
+
+
+### Supported by [![Captivation Software](http://www.captivationsoftware.com/images/logo-dark.png)](http://www.captivationsoftware.com/)
