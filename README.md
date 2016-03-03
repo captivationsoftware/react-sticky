@@ -38,16 +38,10 @@ class App extends React.Component ({
       <StickyContainer>
         <Sticky>
           <header>
-            <h1>Million Dollar App Idea</h1>
+            <h1>Million Dollar Idea</h1>
           </header>
         </Sticky>
-        <h3>Reasons to trust me:</h3>
-        <ul>
-          <li>I have great hygeine</li>
-          <li>I signal before most turns</li>
-          ...
-          <li>I once paid for a newspaper subscription to help a kid attend college</li>
-        </ul>
+        <MillionDollarIdea />
       </StickyContainer>
     );
   },
