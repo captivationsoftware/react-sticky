@@ -65,11 +65,14 @@ When the "stickiness" becomes activated, the following css style rules are appli
 ```
 
 ### `<StickyContainer />` Props
+
 `<StickyContainer />` passes along all props you provide to it without interference*. That's right - no restrictions - go nuts!  
 
 * IMPORTANT: The `style` attribute `padding-top` is managed by React, so avoid setting it with CSS rules.
 
+
 ### `<Sticky />` Props
+
 #### stickyStyle
 In the event that you wish to override the style rules applied, simply pass in the style object as a prop:
 
@@ -163,5 +166,4 @@ app.jsx
 MIT License
 
 
-### Brought to you by 
 ### [![Captivation Software](http://www.captivationsoftware.com/images/logo-dark.png)](http://www.captivationsoftware.com/)
