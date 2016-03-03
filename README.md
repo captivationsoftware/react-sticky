@@ -9,8 +9,8 @@ NOTE: Version 4.0.0 is in progress -- [3.0.0](https://github.com/captivationsoft
 The most powerful Sticky library available for React!
 
 ##### Highlights:
-  - Fully-nestable, allowing for awesome layouts that work the way you'd expect
-  - Sane defaults - spend less time configuring!
+  - Fully-nestable, allowing you to build awesome layouts with familiar syntax
+  - Sane defaults so you spend less time configuring
   - Allows multiple Sticky elements on the page at once with compositional awareness!
 
 ## Installation
