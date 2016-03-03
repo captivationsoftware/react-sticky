@@ -163,5 +163,4 @@ app.jsx
 MIT License
 
 
-#### Brought to you by:
-#### [![Captivation Software](http://www.captivationsoftware.com/images/logo-dark.png)](http://www.captivationsoftware.com/)
+## Brought to you by [![Captivation Software](http://www.captivationsoftware.com/images/logo-dark.png)](http://www.captivationsoftware.com/)
