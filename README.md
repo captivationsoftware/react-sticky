@@ -23,7 +23,7 @@ Tip: run `npm build` to build the compressed UMD version suitable for inclusion 
 ## Overview & Basic Example
 
 It all starts with a `<StickyContainer />`. This is basically a plain ol' `<div />` with a React-managed `padding-top` css attribute. As you scroll down the page, all `<Sticky />` tags within
-will be constrained to the bounds of its closest `<StickyContainer />` parent node.
+will be constrained to the bounds of its closest `<StickyContainer />` parent.
 
 The elements you actually want to "stick" should be wrapped in the, you guessed it, `<Sticky />` tag. The full list of props are available below, but typical usage will look something like so:
 
