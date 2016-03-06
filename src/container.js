@@ -11,21 +11,29 @@ export default class Container extends React.Component {
   static childContextTypes = {
     container: React.PropTypes.any,
     topCorrection: React.PropTypes.number,
-    offset: React.PropTypes.number
+    offset: React.PropTypes.number,
+    rect: React.PropTypes.any
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      topCorrection: 0
+      topCorrection: 0,
+      rect: {}
     };
   }
 
   getChildContext() {
-    let container = this;
-    let topCorrection = (this.context.topCorrection || 0) + this.state.topCorrection;
-    let offset = topCorrection - this.state.topCorrection;
-    return { container, topCorrection, offset };
+    const container = this;
+    const topCorrection = (this.context.topCorrection || 0) + this.state.topCorrection;
+    const offset = topCorrection - this.state.topCorrection;
+    const rect = this.state.node ? this.state.node.getBoundingClientRect() : {};
+    return { container, topCorrection, offset, rect };
+  }
+
+  componentDidMount() {
+    const node = ReactDOM.findDOMNode(this);
+    this.setState({ node });
   }
 
   updateTopCorrection(topCorrection) {
@@ -33,12 +41,7 @@ export default class Container extends React.Component {
   }
 
   render() {
-    let style = Object.assign({}, this.props.style || {});
-
-    let paddingTop = style.paddingTop || 0;
-    style.paddingTop = paddingTop + this.state.topCorrection;
-
-    return <div {...this.props} style={style}>
+    return <div refs="container" {...this.props}>
       {this.props.children}
     </div>
   }

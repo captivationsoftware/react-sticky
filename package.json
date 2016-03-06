@@ -1,13 +1,13 @@
 {
   "name": "react-sticky",
-  "version": "4.0.0",
+  "version": "4.0.0-rc7",
   "description": "Sticky component for React",
   "main": "lib/index.js",
   "scripts": {
     "clean": "rimraf lib dist",
-    "build:umd": "mkdir -p dist && browserify -u react -u react-dom -t babelify -t [ exposify --expose [ --react React --react-dom ReactDOM ] ] -p [minifyify --map index.js.map --output ./dist/sticky.js.map --uglify --compress --dead_code--comparisons 0 ] -s ReactSticky ./src --debug > ./dist/sticky.min.js",
-    "build:lib": "babel src --loose --out-dir lib",
-    "build": "npm run build:lib && npm run build:umd",
+    "transpile": "babel src --loose --out-dir lib",
+    "dist": "webpack lib/index.js dist/react-sticky.js --display-modules --progress && NODE_ENV=production webpack lib/index.js dist/react-sticky.min.js --display-modules --progress",
+    "build": "npm run transpile && npm run dist",
     "prepublish": "npm run clean && npm run build",
     "test": "NODE_ENV=test mocha --compilers js:babel-core/register"
   },
@@ -21,25 +21,7 @@
     "Sticky"
   ],
   "author": "Captivation Software",
-  "contributors": [
-    {
-      "name": "Aaron Goin",
-      "email": "aarondgoin@gmail.com"
-    },
-    {
-      "name": "Alejandro Tardin",
-      "email": "alejandro@tardin.com"
-    },
-    {
-      "name": "Josh Carr",
-      "email": "joshcarr@gmail.com"
-    },
-    {
-      "name": "George Lifchits",
-      "email": "george.lifchits@gmail.com"
-    }
-  ],
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "bugs": {
     "url": "https://github.com/captivationsoftware/react-sticky/issues"
   },
@@ -58,15 +40,12 @@
     "babel-preset-es2015": "^6.5.0",
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
-    "babelify": "^7.2.0",
-    "browserify": "^11.0.1",
     "chai": "^3.2.0",
-    "exposify": "^0.5.0",
     "jsdom": "8.0.4",
     "lodash": "^3.10.1",
-    "minifyify": "^7.0.5",
     "mocha": "^2.2.5",
     "react-addons-test-utils": "^0.14.0",
-    "rimraf": "^2.5.2"
+    "rimraf": "^2.5.2",
+    "webpack": "^1.12.14"
   }
 }

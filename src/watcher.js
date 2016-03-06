@@ -4,19 +4,21 @@ import Signal from 'simple-signal';
 export default function Watcher(events) {
   const signal = new Signal();
 
-  const handleEvent = () => raf(signal.emit);
+  const handleEvent = (e) => raf(() => signal.emit(e));
 
   /**
-    * Wire up event listeners
+    * Wire up event listeners if in a browser-type environment
     */
-  events
-    .forEach(function(evt) {
-      if (window.addEventListener) {
-        window.addEventListener(evt, handleEvent);
-      } else {
-        window.attachEvent('on' + evt, handleEvent);
-      }
-    });
+  if (typeof window !== "undefined") {
+    events
+      .forEach(function(evt) {
+        if (window.addEventListener) {
+          window.addEventListener(evt, handleEvent);
+        } else {
+          window.attachEvent('on' + evt, handleEvent);
+        }
+      });
+  }
 
   return signal;
 }
