@@ -1,7 +1,8 @@
 react-sticky [![Build Status](https://travis-ci.org/captivationsoftware/react-sticky.svg?branch=master)](https://travis-ci.org/captivationsoftware/react-sticky)
 ============
 
-### [Demo](https://captivationsoftware.github.io/react-sticky)
+### Demos
+[Timeline](https://rawgit.com/captivationsoftware/react-sticky/master/examples/timeline/index.html)
 
 NOTE: Version 4.0.0 is in progress -- [3.0.0](https://github.com/captivationsoftware/react-sticky/tree/3.0.0)
  was the last stable version.
