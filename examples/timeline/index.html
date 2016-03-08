@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Timeline Demo</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.5.1/lodash.min.js"></script>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+	<link href="http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+	<link href="styles.css" rel="stylesheet" />
+</head>
+
+<body>
+	<div id="example"></div>
+	<script type="text/javascript" src="../../dist/react-sticky.js"></script>
+	<script type="text/babel">
+
+	const { StickyContainer, Sticky } = ReactSticky;
+
+	class Timeline extends React.Component {
+		render() {
+			let timeline = [2000, 2010].map((decade) => {
+				return (
+					<StickyContainer style={{zIndex: 4}}>
+						<Sticky style={{zIndex: 3}}>
+							<h2>{decade}s</h2>
+						</Sticky>
+						{ _.range(0,10).map((i) => {
+							return (
+								<StickyContainer style={{zIndex: 2}}>
+									<Sticky>
+										<h3>{decade + i}</h3>
+									</Sticky>
+									<p>
+										Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+										in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+									</p>
+									<p>
+										Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+										in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+									</p>
+								</StickyContainer>
+							);
+						})	}
+					</StickyContainer>
+				);
+			})
+
+			return (
+				<StickyContainer>
+					<Sticky style={{zIndex: 5}}>
+						<header>
+							<h1 className="pull-left">&lt;Sticky /&gt; Demo</h1>
+							<div className="pull-right">
+								<a href="http://www.captivationsoftware.com" target="_blank">
+									<img src="http://www.captivationsoftware.com/images/logo-white.png" className="hidden-xs hidden-sm" alt="Captivation Software" />
+									<img src="http://www.captivationsoftware.com/images/symbol-white.png" className="hidden-md hidden-lg" alt="Captivation Software" />
+								</a>
+							</div>
+						</header>
+					</Sticky>
+					<div className="container" style={{marginTop: 40}}>
+						<div className="row-flex row-flex-wrap">
+							<div className="flex-col column hidden-xs hidden-sm col-xs-12 col-md-2">
+								<StickyContainer style={{height: '100%'}}>
+									<Sticky>
+										<h3>Timeline</h3>
+									</Sticky>
+								</StickyContainer>
+							</div>
+							<div className="flex-col column col-xs-12 col-md-10">
+								{ timeline }
+							</div>
+						</div>
+					</div>
+				</StickyContainer>
+			);
+		}
+	}
+
+	ReactDOM.render(<Timeline />, document.getElementById('example'));
+	</script>
+</body>
+
+</html>

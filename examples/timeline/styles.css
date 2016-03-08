@@ -1,0 +1,88 @@
+/* Unrelated styles */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-size: 18px;
+  font-family: 'Lato', helvetica, sans-serif;
+  background-color: #eee;
+}
+
+header {
+  height: 80px;
+  width: 100%;
+  line-height: 80px;
+  background-color: #333;
+  padding: 0 20px;
+  text-align: center;
+  color: #ffa700;
+}
+
+.column {
+  background-color: #fff;
+  border: solid 5px #eee;
+}
+
+
+.row-flex, .row-flex > div[class*='col-'] {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex:1 1 auto;
+}
+
+.row-flex-wrap {
+	-webkit-flex-flow: row wrap;
+    align-content: flex-start;
+    flex:0;
+}
+
+.row-flex > div[class*='col-'], .container-flex > div[class*='col-'] {
+	 margin:-.2px; /* hack adjust for wrapping */
+}
+
+.container-flex > div[class*='col-'] div,.row-flex > div[class*='col-'] div {
+	width:100%;
+}
+
+
+.flex-col {
+    display: flex;
+    display: -webkit-flex;
+    flex: 1 100%;
+	flex-flow: column nowrap;
+}
+
+.flex-grow {
+	display: flex;
+    -webkit-flex: 2;
+    flex: 2;
+}
+
+h1 {
+  line-height: 80px;
+  font-size: 1.5em;
+  padding: 0;
+  margin: 0;
+}
+
+h2, h3 {
+  text-align: left;
+  background-color: #fff;
+  margin: 0;
+  padding: 20px 0;
+}
+
+h3 {
+  border-bottom: solid 1px #333;
+}
+
+p {
+  padding: 15px 0;
+}
