@@ -35,7 +35,8 @@ export default class Sticky extends React.Component {
     const height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
     const pageY = window.pageYOffset;
     const origin = this.refs.static.getBoundingClientRect().top + pageY;
-    this.setState({ pageY, height, origin });
+    const isSticky = this.isSticky(pageY, origin);
+    this.setState({ height, origin, isSticky });
 
     Sticky.resizeWatcher.on(this.onResize);
     Sticky.scrollWatcher.on(this.onScroll);
@@ -46,13 +47,16 @@ export default class Sticky extends React.Component {
     Sticky.scrollWatcher.off(this.onScroll);
   }
 
+  isSticky(pageY, origin) {
+    return pageY + this.context.offset - this.props.topOffset >= origin
+      && this.context.offset + this.props.bottomOffset <= origin + (this.context.rect.bottom || 0);
+  }
+
   onScroll = () => {
     const pageY = window.pageYOffset;
-    const isSticky =
-      pageY + this.context.offset - this.props.topOffset >= this.state.origin
-      && this.context.offset + this.props.bottomOffset < this.state.origin + this.context.rect.bottom;
+    const isSticky = this.isSticky(pageY, this.state.origin);
 
-    this.setState({ pageY, isSticky });
+    this.setState({ isSticky });
     this.context.container.updateTopCorrection(isSticky ? this.state.height : 0);
 
     if (this.state.isSticky !== isSticky) this.props.onStickyStateChange(isSticky);

@@ -117,11 +117,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Sticky).call(this, props));
 
-	    _this.onScroll = function (e) {
+	    _this.onScroll = function () {
 	      var pageY = window.pageYOffset;
-	      var isSticky = pageY + _this.context.offset - _this.props.topOffset >= _this.state.origin && _this.context.offset + _this.props.bottomOffset < _this.state.origin + _this.context.rect.bottom;
+	      var isSticky = _this.isSticky(pageY, _this.state.origin);
 
-	      _this.setState({ pageY: pageY, isSticky: isSticky });
+	      _this.setState({ isSticky: isSticky });
 	      _this.context.container.updateTopCorrection(isSticky ? _this.state.height : 0);
 
 	      if (_this.state.isSticky !== isSticky) _this.props.onStickyStateChange(isSticky);
@@ -145,7 +145,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var height = _reactDom2.default.findDOMNode(this).getBoundingClientRect().height;
 	      var pageY = window.pageYOffset;
 	      var origin = this.refs.static.getBoundingClientRect().top + pageY;
-	      this.setState({ pageY: pageY, height: height, origin: origin });
+	      var isSticky = this.isSticky(pageY, origin);
+	      this.setState({ height: height, origin: origin, isSticky: isSticky });
 
 	      Sticky.resizeWatcher.on(this.onResize);
 	      Sticky.scrollWatcher.on(this.onScroll);
@@ -155,6 +156,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function componentWillUnmount() {
 	      Sticky.resizeWatcher.off(this.onResize);
 	      Sticky.scrollWatcher.off(this.onScroll);
+	    }
+	  }, {
+	    key: 'isSticky',
+	    value: function isSticky(pageY, origin) {
+	      return pageY + this.context.offset - this.props.topOffset >= origin && this.context.offset + this.props.bottomOffset <= origin + (this.context.rect.bottom || 0);
 	    }
 	  }, {
 	    key: 'render',
