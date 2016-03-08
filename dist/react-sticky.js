@@ -118,7 +118,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Sticky).call(this, props));
 
 	    _this.onScroll = function (e) {
-	      var pageY = e.pageY;
+	      var pageY = window.pageYOffset;
 	      var isSticky = pageY + _this.context.offset - _this.props.topOffset >= _this.state.origin && _this.context.offset + _this.props.bottomOffset < _this.state.origin + _this.context.rect.bottom;
 
 	      _this.setState({ pageY: pageY, isSticky: isSticky });

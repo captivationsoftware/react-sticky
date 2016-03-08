@@ -46,8 +46,8 @@ export default class Sticky extends React.Component {
     Sticky.scrollWatcher.off(this.onScroll);
   }
 
-  onScroll = (e) => {
-    const pageY = e.pageY;
+  onScroll = () => {
+    const pageY = window.pageYOffset;
     const isSticky =
       pageY + this.context.offset - this.props.topOffset >= this.state.origin
       && this.context.offset + this.props.bottomOffset < this.state.origin + this.context.rect.bottom;
