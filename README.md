@@ -7,7 +7,7 @@ NOTE: Version 4.0.0 is in progress -- [3.0.0](https://github.com/captivationsoft
 The most powerful Sticky library available for React!
 
 #### Demos
-  - [Timeline](https://rawgit.com/captivationsoftware/react-sticky/master/examples/timeline/index.html)
+  - [Timeline](http://rawgit.com/captivationsoftware/react-sticky/master/examples/timeline/index.html)
 
 #### Highlights
   - Fully-nestable, allowing you to build awesome layouts with familiar syntax
