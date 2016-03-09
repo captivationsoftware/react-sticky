@@ -6,6 +6,7 @@ NOTE: Version 4.0.0 is in progress and unavailable on npm -- 3.0.0 [source](http
 The most powerful Sticky library available for React!
 
 #### Demos
+  - [Basic](http://rawgit.com/captivationsoftware/react-sticky/master/examples/basic/index.html)
   - [Timeline](http://rawgit.com/captivationsoftware/react-sticky/master/examples/timeline/index.html)
 
 #### Highlights
@@ -82,14 +83,14 @@ app.jsx
 
 Note: You likely want to avoid messing with the following attributes in your stickyStyle: `left`, `top`, and `width`.
 
-#### stickyClass _(default: 'sticky')_
+#### stickyClassName _(default: 'sticky')_
 You can also specify a class name to be applied when the element becomes sticky:
 
 app.jsx
 ```js
 <StickyContainer>
   ...
-  <Sticky stickyClass={customClassName}>
+  <Sticky stickyClassName={customClassName}>
     <header />
   </Sticky>
   ...

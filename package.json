@@ -1,6 +1,6 @@
 {
   "name": "react-sticky",
-  "version": "4.0.0-rc7",
+  "version": "4.0.0-rc8",
   "description": "Sticky component for React",
   "main": "lib/index.js",
   "scripts": {
@@ -27,10 +27,8 @@
   },
   "homepage": "https://github.com/captivationsoftware/react-sticky",
   "dependencies": {
-    "raf": "^3.2.0",
     "react": "^0.14.0",
-    "react-dom": "^0.14.0",
-    "simple-signal": "0.0.2"
+    "react-dom": "^0.14.0"
   },
   "devDependencies": {
     "babel-cli": "^6.6.0",
@@ -44,8 +42,10 @@
     "jsdom": "8.0.4",
     "lodash": "^3.10.1",
     "mocha": "^2.2.5",
+    "mocha-phantomjs": "^4.0.2",
     "react-addons-test-utils": "^0.14.0",
     "rimraf": "^2.5.2",
-    "webpack": "^1.12.14"
+    "webpack": "^1.12.14",
+    "zombie": "^4.2.1"
   }
 }

@@ -13,14 +13,31 @@ global.window = document.defaultView;
 const { Sticky, StickyContainer } = require('../src');
 
 
+describe('exports', () => {
+  it ('should export Sticky element', () => {
+    expect(Sticky).to.not.be.undefined;
+  });
+
+  it ('should export StickyContainer element', () => {
+    expect(StickyContainer).to.not.be.undefined;
+  });
+})
+
+const emitEvent = (type) => {
+  let evt = document.createEvent('Event');
+  evt.initEvent(type, true, true);
+  global.window.dispatchEvent(evt);
+}
+
+
 describe('Sticky component', function() {
-  function mount(JSX, element) {
+  function mount(Component, element) {
     let container = element || null;
     if (!container) {
       container = document.createElement('div');
       document.body.appendChild(container);
     }
-    return ReactDOM.render(JSX, container);
+    return ReactDOM.render(Component, container);
   }
 
   function unmount(sticky) {
@@ -28,107 +45,71 @@ describe('Sticky component', function() {
   }
 
   beforeEach(() => {
-    this.sticky = mount(<StickyContainer><Sticky>Test</Sticky></StickyContainer>);
+    this.stickyContainer = mount(<StickyContainer></StickyContainer>);
+    this.container = ReactDOM.findDOMNode(this.stickyContainer);
+    this.sticky = mount(<Sticky>Test</Sticky>, this.container);
+
+    // Mock out some commonly called functions (override them again later as needed)
+    this.sticky.context.offset = 0;
+    this.sticky.context.rect = {};
+    this.sticky.context.container = { updateOffset: () => {} }
   });
 
   afterEach(() => {
     unmount(this.sticky);
+    unmount(this.stickyContainer);
   });
 
   describe('state', () => {
-    describe('topOffset', () => {
+    describe('topOffset and bottomOffset', () => {
       it ('should be sticky when scroll position is greater than original position plus topOffset', () => {
-        var scrollPosition = 100;
-        var topOffset = -50;
-        var distanceFromTopOfPage = 10;
+        let scrollPosition = 100;
+        let topOffset = 50;
+        let origin = 10;
 
-        this.sticky.pageOffset = () => scrollPosition;
-        this.sticky.props = _.extend(this.sticky.props, {topOffset});
-        this.sticky.origin = distanceFromTopOfPage;
+        this.sticky = mount(<Sticky topOffset={topOffset}>Test</Sticky>, this.container);
 
-        // is 100 > (10 - 50)? Yes, so should be sticky
-        expect(this.sticky.shouldBeSticky()).to.be.true;
+        // is 100 + 0 - 50 >= 10? Yes, so should be sticky
+        expect(this.sticky.isSticky(scrollPosition, origin)).to.be.true;
       });
 
       it ('should be sticky when scroll position is equal to original position plus topOffset', () => {
-        var scrollPosition = 100;
-        var topOffset = 0;
-        var distanceFromTopOfPage = 100;
-
-        this.sticky.pageOffset = () => scrollPosition;
-        this.sticky.props = _.extend(this.sticky.props, {topOffset});
-        this.sticky.origin = distanceFromTopOfPage;
+        let scrollPosition = 100;
+        let origin = 100;
 
         // is 100 > (100 - 0)? Yes, so should be sticky
-        expect(this.sticky.shouldBeSticky()).to.be.true;
+        expect(this.sticky.isSticky(scrollPosition, origin)).to.be.true;
       });
 
       it ('should not be sticky when scroll position is less that original position plus topOffset', () => {
-        var scrollPosition = 0;
-        var topOffset = 0;
-        var distanceFromTopOfPage = 100;
+        let scrollPosition = 0;
+        let origin = 100;
 
-        this.sticky.pageOffset = () => scrollPosition;
-        this.sticky.props = _.extend(this.sticky.props, {topOffset});
-        this.sticky.origin = distanceFromTopOfPage;
-
-        // is 0 > (100 - 0)? No, so should not sticky
-        expect(this.sticky.shouldBeSticky()).to.be.false;
-      });
-    });
-
-    describe('style transitions', () => {
-      it ('should add the sticky class when sticky', () => {
-        let shouldBeSticky = true;
-
-        this.sticky.props = _.extend(this.sticky.props, {
-          style: _.extend(this.sticky.props.style, { foo: 1, baz: 4 }),
-          stickyStyle: { bar: 2, baz: 3 }
-        })
-
-        this.sticky.nextState(shouldBeSticky);
-        expect(this.sticky.state.style).to.deep.equal(
-          _.extend(this.sticky.props.style, this.sticky.props.stickyStyle));
+        // is 0 + 0 - 0 > 100? No, so should not sticky
+        expect(this.sticky.isSticky(scrollPosition, origin)).to.be.false;
       });
 
-      it ('should omit the sticky class when not sticky', () => {
-        let shouldBeSticky = false;
-        this.sticky.props = _.extend(this.sticky.props, {
-          style: _.extend(this.sticky.props.style, { foo: 1, baz: 4 }),
-          stickyStyle: { bar: 2, baz: 3 }
-        });
-        this.sticky.nextState(shouldBeSticky);
-        expect(this.sticky.state.style).to.equal(this.sticky.props.style);
-      });
-    });
+      it ('should not be sticky when container height minus bottom offset is less than offset', () => {
+        let scrollPosition = 101;
+        let bottomOffset = 999;
+        let origin = 100;
+        let containerHeight = 1000;
 
-    describe('className transitions', () => {
-      it ('should add the sticky class when sticky', () => {
-        let shouldBeSticky = true;
-        this.sticky.props = _.extend({}, this.sticky.props, {
-          className: 'foo'
-        });
-        this.sticky.state.isSticky = !shouldBeSticky;
-        this.sticky.nextState(shouldBeSticky);
-        expect(this.sticky.state.className).to.equal('foo sticky');
-      });
+        this.sticky = mount(<Sticky bottomOffset={bottomOffset}>Test</Sticky>, this.container);
+        this.sticky.context.offset = 10;
+        this.sticky.context.rect = { bottom: containerHeight };
 
-      it ('should omit the sticky class when not sticky', () => {
-        let shouldBeSticky = false;
-        this.sticky.props = _.extend({}, this.sticky.props, {
-          className: 'foo'
-        });
-        this.sticky.state.isSticky = !shouldBeSticky;
-        this.sticky.nextState(shouldBeSticky);
-        expect(this.sticky.state.className).to.equal('foo');
+        // 101 + 10 - 0 >= 100 AND 10 <= 1000 - 999
+        expect(this.sticky.isSticky(scrollPosition, origin)).to.be.false;
       });
     });
 
     describe('change events', () => {
       it ('should fire the onStickyStateChange event when sticky state changes', (done) => {
         let shouldBeSticky = true;
-
-        unmount(this.sticky);
+        let scrollPosition = 100;
+        let topOffset = 0;
+        let origin = 100;
 
         function onStickyStateChange(isSticky) {
           expect(isSticky).to.equal(shouldBeSticky);
@@ -136,82 +117,119 @@ describe('Sticky component', function() {
         }
 
         this.sticky = mount(
-          <Sticky onStickyStateChange={onStickyStateChange}>
-            Test
-          </Sticky>
-        );
+          <Sticky onStickyStateChange={onStickyStateChange}>Test</Sticky>, this.container);
 
         this.sticky.state.isSticky = !shouldBeSticky;
-        this.sticky.nextState(shouldBeSticky);
+        this.sticky.onScroll();
       });
 
       it ('should not fire the onStickyStateChange event when sticky state remains the same', (done) => {
-        var shouldBeSticky = true;
-
-        unmount(this.sticky);
+        let shouldBeSticky = true;
+        let scrollPosition = 100;
+        let topOffset = 0;
+        let origin = 100;
 
         function onStickyStateChange(isSticky) {
           expect(false).to.be.true;
         }
 
-        this.sticky = mount(
-          <Sticky onStickyStateChange={onStickyStateChange}>
-            Test
-          </Sticky>
-        );
+        this.sticky = mount(<Sticky onStickyStateChange={onStickyStateChange}>Test</Sticky>, this.container);
 
         this.sticky.state.isSticky = shouldBeSticky;
-        this.sticky.nextState(shouldBeSticky);
+        this.sticky.onScroll();
         setTimeout(done, 20);
       });
 
     });
   });
 
-  describe('props', () => {
-    it ('should force update whenever props change', () => {
-      unmount(this.sticky);
+  describe('className', () => {
+    it ('should render the correct className depending on sticky state', () => {
+      this.sticky = mount(<Sticky className="handle">Test</Sticky>, this.container);
 
-      let container = mount(<div></div>);
-      this.sticky = mount(<Sticky style={{top: 0}}>Foo</Sticky>, container);
-      this.sticky.handleFrame();
-      expect(this.sticky.hasUnhandledEvent).to.be.false;
-      this.sticky = mount(<Sticky style={{top: 1}}>Foo</Sticky>, container);
-      expect(this.sticky.hasUnhandledEvent).to.be.true;
+      this.sticky.setState({ isSticky: false });
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.sticky.handle')).to.be.null;
 
-      unmount(container);
+      this.sticky.setState({ isSticky:  true });
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.sticky.handle')).to.not.be.null;
+    });
+
+    it ('should allow overriding sticky class name', () => {
+      this.sticky = mount(<Sticky className="handle" stickyClassName="stuck">Test</Sticky>, this.container);
+
+      this.sticky.setState({ isSticky:  true });
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.stuck.handle')).to.not.be.null;
     });
   });
 
-  describe('interaction with other Sticky components', () => {
-    beforeEach(() => {
-      this.bottomMost = mount(<Sticky>1</Sticky>);
-      this.inBetween = mount(<Sticky>2</Sticky>);
-      this.bottomMost.top = function () { return 300; };
-      this.inBetween.top = function () { return 100; };
-      Sticky.register(this.bottomMost);
-      Sticky.register(this.inBetween);
+  describe('style', () => {
+    it ('should render the correct style depending on sticky state', () => {
+      this.sticky = mount(<Sticky className="handle" style={{height: 100, opacity: 0.5}} stickyStyle={{height: 200}}>Test</Sticky>, this.container);
+
+      this.sticky.setState({ isSticky: false });
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.height).to.equal('100px');
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.opacity).to.equal('0.5');
+
+      this.sticky.setState({ isSticky:  true });
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.height).to.equal('200px');
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.opacity).to.equal('0.5');
+    });
+  });
+
+
+  describe('compensation and offsets', () => {
+    it ('should correctly pad the placeholder element depending on sticky state', () => {
+      this.sticky = mount(<Sticky className="handle">Test</Sticky>, this.container);
+
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('div:first-child').style.paddingBottom).to.equal('0px');
+
+      this.sticky.setState({ isSticky: true, height: 100 });
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('div:first-child').style.paddingBottom).to.equal('100px');
     });
 
-    afterEach(() => {
-      unmount(this.bottomMost);
-      unmount(this.inBetween);
+    it ('should report its height to its container', () => {
+      let contextOffset = 0;
+      this.sticky.context.container = { updateOffset: (offset) => { contextOffset = offset; } }
+      this.sticky.setState({ origin: 100, height: 100 });
+
+      // Sticky
+      window.pageYOffset = 100;
+      this.sticky.onScroll();
+      expect(contextOffset).to.equal(100);
+
+      // Not Sticky
+      window.pageYOffset = 10;
+      this.sticky.onScroll();
+      expect(contextOffset).to.equal(0);
     });
 
-    it ('should know what components are above it', () => {
+    it ('should attempt to use the top from the context container', () => {
+      this.sticky = mount(<Sticky className="handle" style={{top: 1}}>Test</Sticky>, this.container);
+      this.sticky.context.offset = 100;
+      this.sticky.context.rect = { bottom: 1000 };
 
+      this.sticky.setState({ isSticky:  false });
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('1px');
+
+      this.sticky.setState({ isSticky:  true });
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('100px');
     });
 
-    it ('should incorporate height of other sticky elements above it when computing offset', () => {
-      expect(this.inBetween.pageOffset()).to.equal(0);
-      this.sticky.state.isSticky = false;
-      this.inBetween.state.isSticky = true;
+    it ('should stop scrolling if at the bottom of the context container', () => {
+      this.sticky = mount(<Sticky className="handle" style={{top: 1}}>Test</Sticky>, this.container);
+      this.sticky.setState({ origin: 0, height: 100 });
 
-      let rects = { height: 30 };
-      this.inBetween.domNode = { getBoundingClientRect() { return rects; } };
+      this.sticky.context.rect = { bottom: 100 };
+      this.sticky.onScroll();
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('0px');
 
-      expect(this.inBetween.pageOffset()).to.equal(0);
-      expect(this.bottomMost.pageOffset()).to.equal(rects.height);
+      this.sticky.context.rect = { bottom: 90 };
+      this.sticky.onScroll();
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('-10px');
+
+      this.sticky.context.rect = { bottom: 0 };
+      this.sticky.onScroll();
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('-100px');
     });
   });
 
@@ -222,23 +240,29 @@ describe('Sticky component', function() {
       window.dispatchEvent(evt);
     }
 
-    beforeEach(() => {
-      this.sticky.hasUnhandledEvent = false;
-    });
-
     it ('should react to scroll events', (done) => {
-      this.sticky.nextState = () => done();
+      this.sticky.setState = () => done();
       emitEvent('scroll');
     });
 
     it ('should react to resize events', (done) => {
-      this.sticky.nextState = () => done();
+      this.sticky.setState = () => done();
       emitEvent('resize');
     });
 
-    it ('should react to touch events', (done) => {
-      this.sticky.nextState = () => done();
+    it ('should react to touchstart events', (done) => {
+      this.sticky.setState = () => done();
+      emitEvent('touchstart');
+    });
+
+    it ('should react to touchmove events', (done) => {
+      this.sticky.setState = () => done();
       emitEvent('touchmove');
+    });
+
+    it ('should react to touchend events', (done) => {
+      this.sticky.setState = () => done();
+      emitEvent('touchend');
     });
   });
 });

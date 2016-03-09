@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Watcher from './watcher';
 
 export default class Sticky extends React.Component {
 
@@ -13,15 +12,12 @@ export default class Sticky extends React.Component {
   static defaultProps = {
     className: '',
     style: {},
-    stickyClass: 'sticky',
+    stickyClassName: 'sticky',
     stickyStyle: {},
     topOffset: 0,
     bottomOffset: 0,
     onStickyStateChange: function () {}
   }
-
-  static scrollWatcher = new Watcher(['scroll', 'touchstart', 'touchend']);
-  static resizeWatcher = new Watcher(['resize']);
 
   constructor(props) {
     super(props);
@@ -32,40 +28,60 @@ export default class Sticky extends React.Component {
   }
 
   componentDidMount() {
-    const height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
-    const pageY = window.pageYOffset;
-    const origin = this.refs.static.getBoundingClientRect().top + pageY;
-    const isSticky = this.isSticky(pageY, origin);
-    this.setState({ height, origin, isSticky });
+    this.update();
+    this.on(['scroll', 'touchstart', 'touchmove', 'touchend'], this.onScroll);
+    this.on(['resize'], this.onResize);
+  }
 
-    Sticky.resizeWatcher.on(this.onResize);
-    Sticky.scrollWatcher.on(this.onScroll);
+  componentWillReceiveProps() {
+    this.update();
   }
 
   componentWillUnmount() {
-    Sticky.resizeWatcher.off(this.onResize);
-    Sticky.scrollWatcher.off(this.onScroll);
+    this.off(['scroll', 'touchstart', 'touchmove', 'touchend'], this.onScroll);
+    this.off(['resize'], this.onResize);
+  }
+
+  update() {
+    const height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
+    const pageY = window.pageYOffset;
+    const origin = this.refs.placeholder.getBoundingClientRect().top + pageY;
+    const isSticky = this.isSticky(pageY, origin);
+    this.setState({ height, origin, isSticky });
   }
 
   isSticky(pageY, origin) {
     return pageY + this.context.offset - this.props.topOffset >= origin
-      && this.context.offset + this.props.bottomOffset <= origin + (this.context.rect.bottom || 0);
+      && this.context.offset <= (this.context.rect.bottom || 0) - this.props.bottomOffset;
   }
 
   onScroll = () => {
     const pageY = window.pageYOffset;
     const isSticky = this.isSticky(pageY, this.state.origin);
+    const hasChanged = this.state.isSticky !== isSticky;
 
     this.setState({ isSticky });
-    this.context.container.updateTopCorrection(isSticky ? this.state.height : 0);
+    this.context.container.updateOffset(isSticky ? this.state.height : 0);
 
-    if (this.state.isSticky !== isSticky) this.props.onStickyStateChange(isSticky);
+    if (hasChanged) this.props.onStickyStateChange(isSticky);
   }
 
   onResize = () => {
     const height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
-    const origin = this.refs.static.getBoundingClientRect().top + window.pageYOffset;
+    const origin = this.refs.placeholder.getBoundingClientRect().top + window.pageYOffset;
     this.setState({ height, origin });
+  }
+
+  on(events, callback) {
+    events.forEach((evt) => {
+      window.addEventListener(evt, callback);
+    });
+  }
+
+  off(events, callback) {
+    events.forEach((evt) => {
+      window.removeEventListener(evt, callback);
+    });
   }
 
   /*
@@ -74,15 +90,17 @@ export default class Sticky extends React.Component {
   render() {
     const isSticky = this.state.isSticky;
 
-    const className = `${this.props.className} ${isSticky ? this.props.stickyClass : ''}`
+    let className = this.props.className;
+    if (isSticky) className += ` ${this.props.stickyClassName}`;
 
     let style = this.props.style;
     if (isSticky) {
+      const placeholderRect = this.refs.placeholder.getBoundingClientRect();
       const stickyStyle = {
         position: 'fixed',
         top: this.context.offset,
-        left: this.refs.static.getBoundingClientRect().left,
-        width: this.refs.static.getBoundingClientRect().width
+        left: placeholderRect.left,
+        width: placeholderRect.width
       };
 
       const bottomLimit = (this.context.rect.bottom || 0) - this.state.height - this.props.bottomOffset;
@@ -95,8 +113,8 @@ export default class Sticky extends React.Component {
 
     return (
       <div>
-        <div ref="static" style={{ paddingBottom: isSticky ? this.state.height : 0 }}></div>
-        <div ref="fixed" className={className} style={style}>
+        <div ref="placeholder" style={{ paddingBottom: isSticky ? this.state.height : 0 }}></div>
+        <div {...this.props} className={className} style={style}>
           {this.props.children}
         </div>
       </div>
