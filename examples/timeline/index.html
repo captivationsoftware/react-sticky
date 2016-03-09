@@ -25,64 +25,64 @@
       let timeline = [2000, 2010].map((decade) => {
         return (
           <StickyContainer style={{zIndex: 4}}>
-						<Sticky style={{zIndex: 3}}>
-							<h2>{decade}s</h2>
-						</Sticky>
-						{ _.range(0,10).map((i) => {
-							return (
-								<StickyContainer style={{zIndex: 2}}>
-									<Sticky>
-										<h3>{decade + i}</h3>
-									</Sticky>
-									<p>
-										Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-										in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-									</p>
-									<p>
-										Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-										in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-									</p>
-								</StickyContainer>
-							);
-						})	}
-					</StickyContainer>
-				);
-			})
+            <Sticky style={{zIndex: 3}}>
+              <h2>{decade}s</h2>
+            </Sticky>
+            { _.range(0,10).map((i) => {
+              return (
+                <StickyContainer style={{zIndex: 2}}>
+                  <Sticky>
+                    <h3>{decade + i}</h3>
+                  </Sticky>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                    in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                  </p>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                    in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                  </p>
+                </StickyContainer>
+              );
+            })  }
+          </StickyContainer>
+        );
+      })
 
-			return (
-				<StickyContainer>
-					<Sticky style={{zIndex: 5}}>
-						<header>
-							<h1 className="pull-left">react-sticky | Timeline</h1>
-							<div className="pull-right">
-								<a href="http://www.captivationsoftware.com" target="_blank">
-									<img src="http://www.captivationsoftware.com/images/logo-white.png" className="hidden-xs hidden-sm" alt="Captivation Software" />
-									<img src="http://www.captivationsoftware.com/images/symbol-white.png" className="hidden-md hidden-lg" alt="Captivation Software" />
-								</a>
-							</div>
-						</header>
-					</Sticky>
-					<div className="container" style={{marginTop: 40}}>
-						<div className="row-flex row-flex-wrap">
-							<div className="flex-col column hidden-xs hidden-sm col-xs-12 col-md-2">
-								<StickyContainer style={{height: '100%'}}>
-									<Sticky>
-										<h3>Timeline</h3>
-									</Sticky>
-								</StickyContainer>
-							</div>
-							<div className="flex-col column col-xs-12 col-md-10">
-								{ timeline }
-							</div>
-						</div>
-					</div>
-				</StickyContainer>
-			);
-		}
-	}
+      return (
+        <StickyContainer>
+          <Sticky style={{zIndex: 5}}>
+            <header>
+              <h1 className="pull-left">react-sticky | Timeline</h1>
+              <div className="pull-right">
+                <a href="http://www.captivationsoftware.com" target="_blank">
+                  <img src="http://www.captivationsoftware.com/images/logo-white.png" className="hidden-xs hidden-sm" alt="Captivation Software" />
+                  <img src="http://www.captivationsoftware.com/images/symbol-white.png" className="hidden-md hidden-lg" alt="Captivation Software" />
+                </a>
+              </div>
+            </header>
+          </Sticky>
+          <div className="container" style={{marginTop: 40}}>
+            <div className="row-flex row-flex-wrap">
+              <div className="flex-col column hidden-xs hidden-sm col-xs-12 col-md-2">
+                <StickyContainer style={{height: '100%'}}>
+                  <Sticky>
+                    <h3>Timeline</h3>
+                  </Sticky>
+                </StickyContainer>
+              </div>
+              <div className="flex-col column col-xs-12 col-md-10">
+                { timeline }
+              </div>
+            </div>
+          </div>
+        </StickyContainer>
+      );
+    }
+  }
 
-	ReactDOM.render(<Timeline />, document.getElementById('example'));
-	</script>
+  ReactDOM.render(<Timeline />, document.getElementById('example'));
+  </script>
 </body>
 
 </html>
