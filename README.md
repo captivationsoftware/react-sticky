@@ -25,7 +25,7 @@ Tip: run `npm build` to build the compressed UMD version suitable for inclusion 
 It all starts with a `<StickyContainer />`. This is basically a plain ol' `<div />` with a React-managed `padding-top` css attribute. As you scroll down the page, all `<Sticky />` tags within
 will be constrained to the bounds of its closest `<StickyContainer />` parent.
 
-The elements you actually want to "stick" should be wrapped in the, you guessed it, `<Sticky />` tag. The full list of props are available below, but typical usage will look something like so:
+The elements you actually want to "stick" should be wrapped in the `<Sticky />` tag. The full list of props are available below, but typical usage will look something like so:
 
 app.jsx
 ```js
@@ -64,10 +64,7 @@ When the "stickiness" becomes activated, the following inline style rules are ap
 
 ### `<StickyContainer />` Props
 
-`<StickyContainer />` passes along all props you provide to it without interference*. That's right - no restrictions - go nuts!  
-
-* IMPORTANT: The `style` attribute `padding-top` is managed by React, so avoid setting it with CSS rules.
-
+`<StickyContainer />` passes along all props you provide to it without interference. That's right - no restrictions - go nuts!  
 
 ### `<Sticky />` Props
 
@@ -174,9 +171,6 @@ app.jsx
   ...
 </StickyContainer>
 ```
-
-## License
-MIT License
 
 
 ### [![Captivation Software](http://www.captivationsoftware.com/images/logo-dark.png)](http://www.captivationsoftware.com/)
