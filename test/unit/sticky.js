@@ -1,48 +1,17 @@
-
 import { expect } from 'chai';
 import { jsdom } from 'jsdom';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'lodash';
 import ReactTestUtils from 'react-addons-test-utils';
+import { mount, unmount, emitEvent } from '../utils';
 
 // Initialize jsdom
 global.document = jsdom('<body></body>');
 global.window = document.defaultView;
 
-const { Sticky, StickyContainer } = require('../src');
-
-
-describe('exports', () => {
-  it ('should export Sticky element', () => {
-    expect(Sticky).to.not.be.undefined;
-  });
-
-  it ('should export StickyContainer element', () => {
-    expect(StickyContainer).to.not.be.undefined;
-  });
-})
-
-const emitEvent = (type) => {
-  let evt = document.createEvent('Event');
-  evt.initEvent(type, true, true);
-  global.window.dispatchEvent(evt);
-}
-
+const { Sticky, StickyContainer } = require('../../src');
 
 describe('Sticky component', function() {
-  function mount(Component, element) {
-    let container = element || null;
-    if (!container) {
-      container = document.createElement('div');
-      document.body.appendChild(container);
-    }
-    return ReactDOM.render(Component, container);
-  }
-
-  function unmount(sticky) {
-    ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(sticky).parentNode);
-  }
 
   beforeEach(() => {
     this.stickyContainer = mount(<StickyContainer></StickyContainer>);
@@ -230,39 +199,6 @@ describe('Sticky component', function() {
       this.sticky.context.rect = { bottom: 0 };
       this.sticky.onScroll();
       expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('-100px');
-    });
-  });
-
-  describe('event listeners', () => {
-    function emitEvent(type) {
-      let evt = document.createEvent('Event');
-      evt.initEvent(type, true, true);
-      window.dispatchEvent(evt);
-    }
-
-    it ('should react to scroll events', (done) => {
-      this.sticky.setState = () => done();
-      emitEvent('scroll');
-    });
-
-    it ('should react to resize events', (done) => {
-      this.sticky.setState = () => done();
-      emitEvent('resize');
-    });
-
-    it ('should react to touchstart events', (done) => {
-      this.sticky.setState = () => done();
-      emitEvent('touchstart');
-    });
-
-    it ('should react to touchmove events', (done) => {
-      this.sticky.setState = () => done();
-      emitEvent('touchmove');
-    });
-
-    it ('should react to touchend events', (done) => {
-      this.sticky.setState = () => done();
-      emitEvent('touchend');
     });
   });
 });

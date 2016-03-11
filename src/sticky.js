@@ -29,8 +29,8 @@ export default class Sticky extends React.Component {
 
   componentDidMount() {
     this.update();
-    this.on(['scroll', 'touchstart', 'touchmove', 'touchend'], this.onScroll);
-    this.on(['resize'], this.onResize);
+    this.on(['scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.onScroll);
+    this.on(['resize', 'pageshow', 'load'], this.onResize);
   }
 
   componentWillReceiveProps() {
@@ -38,8 +38,8 @@ export default class Sticky extends React.Component {
   }
 
   componentWillUnmount() {
-    this.off(['scroll', 'touchstart', 'touchmove', 'touchend'], this.onScroll);
-    this.off(['resize'], this.onResize);
+    this.off(['scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.onScroll);
+    this.off(['resize', 'pageshow', 'load'], this.onResize);
   }
 
   update() {

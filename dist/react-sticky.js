@@ -242,8 +242,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      this.update();
-	      this.on(['scroll', 'touchstart', 'touchmove', 'touchend'], this.onScroll);
-	      this.on(['resize'], this.onResize);
+	      this.on(['scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.onScroll);
+	      this.on(['resize', 'pageshow', 'load'], this.onResize);
 	    }
 	  }, {
 	    key: 'componentWillReceiveProps',
@@ -295,7 +295,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var isSticky = this.state.isSticky;
 
 	      var className = this.props.className;
-	      if (isSticky) className += ' ' + this.props.stickyClass;
+	      if (isSticky) className += ' ' + this.props.stickyClassName;
 
 	      var style = this.props.style;
 	      if (isSticky) {
@@ -339,7 +339,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Sticky.defaultProps = {
 	  className: '',
 	  style: {},
-	  stickyClass: 'sticky',
+	  stickyClassName: 'sticky',
 	  stickyStyle: {},
 	  topOffset: 0,
 	  bottomOffset: 0,

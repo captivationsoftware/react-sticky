@@ -1,6 +1,6 @@
 {
   "name": "react-sticky",
-  "version": "4.0.0-rc8",
+  "version": "4.0.1",
   "description": "Sticky component for React",
   "main": "lib/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "dist": "webpack lib/index.js dist/react-sticky.js --display-modules --progress && NODE_ENV=production webpack lib/index.js dist/react-sticky.min.js --display-modules --progress",
     "build": "npm run transpile && npm run dist",
     "prepublish": "npm run clean && npm run build",
-    "test": "NODE_ENV=test mocha --compilers js:babel-core/register"
+    "test": "mocha --compilers js:babel-core/register test/unit"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
     "Sticky"
   ],
   "author": "Captivation Software",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/captivationsoftware/react-sticky/issues"
   },
@@ -40,12 +40,9 @@
     "babel-preset-stage-0": "^6.5.0",
     "chai": "^3.2.0",
     "jsdom": "8.0.4",
-    "lodash": "^3.10.1",
     "mocha": "^2.2.5",
-    "mocha-phantomjs": "^4.0.2",
     "react-addons-test-utils": "^0.14.0",
     "rimraf": "^2.5.2",
-    "webpack": "^1.12.14",
-    "zombie": "^4.2.1"
+    "webpack": "^1.12.14"
   }
 }
