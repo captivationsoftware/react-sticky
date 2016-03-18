@@ -60,6 +60,7 @@ When the "stickiness" becomes activated, the following inline style rules are ap
   left: 0;
   width: < width is inherited from the closest StickyContainer >
 ```
+Note that the calculation of the Sticky element's height does not currently take margins into account. If you have margins on this element it may result in unexpected behavior.
 
 ### `<StickyContainer />` Props
 
