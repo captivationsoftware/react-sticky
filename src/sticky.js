@@ -59,8 +59,9 @@ export default class Sticky extends React.Component {
     const pageY = window.pageYOffset;
     const isSticky = this.isSticky(pageY, this.state.origin);
     const hasChanged = this.state.isSticky !== isSticky;
+    const origin = this.refs.placeholder.getBoundingClientRect().top + window.pageYOffset;
 
-    this.setState({ isSticky });
+    this.setState({ isSticky, origin });
     this.context.container.updateOffset(isSticky ? this.state.height : 0);
 
     if (hasChanged) this.props.onStickyStateChange(isSticky);

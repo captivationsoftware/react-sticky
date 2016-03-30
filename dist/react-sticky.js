@@ -219,8 +219,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var pageY = window.pageYOffset;
 	      var isSticky = _this.isSticky(pageY, _this.state.origin);
 	      var hasChanged = _this.state.isSticky !== isSticky;
+	      var origin = _this.refs.placeholder.getBoundingClientRect().top + window.pageYOffset;
 
-	      _this.setState({ isSticky: isSticky });
+	      _this.setState({ isSticky: isSticky, origin: origin });
 	      _this.context.container.updateOffset(isSticky ? _this.state.height : 0);
 
 	      if (hasChanged) _this.props.onStickyStateChange(isSticky);
@@ -253,8 +254,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
-	      this.off(['scroll', 'touchstart', 'touchmove', 'touchend'], this.onScroll);
-	      this.off(['resize'], this.onResize);
+	      this.off(['scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.onScroll);
+	      this.off(['resize', 'pageshow', 'load'], this.onResize);
 	    }
 	  }, {
 	    key: 'update',
