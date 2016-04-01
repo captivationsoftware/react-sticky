@@ -217,10 +217,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _this.onScroll = function () {
 	      var pageY = window.pageYOffset;
+	      var origin = _this.getOrigin(pageY);
 	      var isSticky = _this.isSticky(pageY, _this.state.origin);
 	      var hasChanged = _this.state.isSticky !== isSticky;
 
-	      _this.setState({ isSticky: isSticky });
+	      _this.setState({ isSticky: isSticky, origin: origin });
 	      _this.context.container.updateOffset(isSticky ? _this.state.height : 0);
 
 	      if (hasChanged) _this.props.onStickyStateChange(isSticky);
@@ -228,7 +229,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _this.onResize = function () {
 	      var height = _reactDom2.default.findDOMNode(_this).getBoundingClientRect().height;
-	      var origin = _this.refs.placeholder.getBoundingClientRect().top + window.pageYOffset;
+	      var origin = _this.getOrigin(window.pageYOffset);
 	      _this.setState({ height: height, origin: origin });
 	    };
 
@@ -253,15 +254,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
-	      this.off(['scroll', 'touchstart', 'touchmove', 'touchend'], this.onScroll);
-	      this.off(['resize'], this.onResize);
+	      this.off(['scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.onScroll);
+	      this.off(['resize', 'pageshow', 'load'], this.onResize);
+	    }
+	  }, {
+	    key: 'getOrigin',
+	    value: function getOrigin(pageY) {
+	      return this.refs.placeholder.getBoundingClientRect().top + pageY;
 	    }
 	  }, {
 	    key: 'update',
 	    value: function update() {
 	      var height = _reactDom2.default.findDOMNode(this).getBoundingClientRect().height;
 	      var pageY = window.pageYOffset;
-	      var origin = this.refs.placeholder.getBoundingClientRect().top + pageY;
+	      var origin = this.getOrigin(pageY);
 	      var isSticky = this.isSticky(pageY, origin);
 	      this.setState({ height: height, origin: origin, isSticky: isSticky });
 	    }
