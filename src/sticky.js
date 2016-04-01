@@ -42,10 +42,14 @@ export default class Sticky extends React.Component {
     this.off(['resize', 'pageshow', 'load'], this.onResize);
   }
 
+  getOrigin(pageY) {
+    return this.refs.placeholder.getBoundingClientRect().top + pageY;
+  }
+
   update() {
     const height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
     const pageY = window.pageYOffset;
-    const origin = this.refs.placeholder.getBoundingClientRect().top + pageY;
+    const origin = this.getOrigin(pageY);
     const isSticky = this.isSticky(pageY, origin);
     this.setState({ height, origin, isSticky });
   }
@@ -57,9 +61,9 @@ export default class Sticky extends React.Component {
 
   onScroll = () => {
     const pageY = window.pageYOffset;
+    const origin = this.getOrigin(pageY);
     const isSticky = this.isSticky(pageY, this.state.origin);
     const hasChanged = this.state.isSticky !== isSticky;
-    const origin = this.refs.placeholder.getBoundingClientRect().top + window.pageYOffset;
 
     this.setState({ isSticky, origin });
     this.context.container.updateOffset(isSticky ? this.state.height : 0);
@@ -69,7 +73,7 @@ export default class Sticky extends React.Component {
 
   onResize = () => {
     const height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
-    const origin = this.refs.placeholder.getBoundingClientRect().top + window.pageYOffset;
+    const origin = this.getOrigin(window.pageYOffset);
     this.setState({ height, origin });
   }
 
