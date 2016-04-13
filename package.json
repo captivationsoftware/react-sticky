@@ -1,6 +1,6 @@
 {
   "name": "react-sticky",
-  "version": "4.0.2",
+  "version": "5.0.0",
   "description": "Sticky component for React",
   "main": "lib/index.js",
   "scripts": {
@@ -26,9 +26,9 @@
     "url": "https://github.com/captivationsoftware/react-sticky/issues"
   },
   "homepage": "https://github.com/captivationsoftware/react-sticky",
-  "dependencies": {
-    "react": "^0.14.0",
-    "react-dom": "^0.14.0"
+  "peerDependencies": {
+    "react": "^0.14.0 || ^15.0.0",
+    "react-dom": "^0.14.0 || ^15.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.6.0",
