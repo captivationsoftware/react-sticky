@@ -343,7 +343,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  rect: _react2.default.PropTypes.object
 	};
 	Sticky.propTypes = {
-	  isActive: _react2.default.PropTypes.boolean
+	  isActive: _react2.default.PropTypes.bool
 	};
 	Sticky.defaultProps = {
 	  isActive: true,
