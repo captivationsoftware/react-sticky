@@ -9,7 +9,12 @@ export default class Sticky extends React.Component {
     rect: React.PropTypes.object
   }
 
+  static propTypes = {
+    isActive: React.PropTypes.bool
+  }
+
   static defaultProps = {
+    isActive: true,
     className: '',
     style: {},
     stickyClassName: 'sticky',
@@ -55,7 +60,7 @@ export default class Sticky extends React.Component {
   }
 
   isSticky(pageY, origin) {
-    return pageY + this.context.offset - this.props.topOffset >= origin
+    return this.props.isActive && pageY + this.context.offset - this.props.topOffset >= origin
       && this.context.offset <= (this.context.rect.bottom || 0) - this.props.bottomOffset;
   }
 

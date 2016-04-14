@@ -201,4 +201,16 @@ describe('Sticky component', function() {
       expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('-100px');
     });
   });
+
+  describe('isActive', () => {
+    it ('should not be sticky when isActive prop is set to false', () => {
+      let scrollPosition = 100;
+      let topOffset = 50;
+      let origin = 10;
+
+      this.sticky = mount(<Sticky isActive={false} topOffset={topOffset}>Test</Sticky>, this.container);
+
+      expect(this.sticky.isSticky(scrollPosition, origin)).to.be.false;
+    });
+  });
 });
