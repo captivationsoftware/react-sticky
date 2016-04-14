@@ -274,7 +274,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'isSticky',
 	    value: function isSticky(pageY, origin) {
-	      return pageY + this.context.offset - this.props.topOffset >= origin && this.context.offset <= (this.context.rect.bottom || 0) - this.props.bottomOffset;
+	      return this.props.isActive && pageY + this.context.offset - this.props.topOffset >= origin && this.context.offset <= (this.context.rect.bottom || 0) - this.props.bottomOffset;
 	    }
 	  }, {
 	    key: 'on',
@@ -342,7 +342,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  offset: _react2.default.PropTypes.number,
 	  rect: _react2.default.PropTypes.object
 	};
+	Sticky.propTypes = {
+	  isActive: _react2.default.PropTypes.boolean
+	};
 	Sticky.defaultProps = {
+	  isActive: true,
 	  className: '',
 	  style: {},
 	  stickyClassName: 'sticky',

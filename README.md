@@ -172,5 +172,20 @@ app.jsx
 </StickyContainer>
 ```
 
+#### isActive _(default: true)_
+
+Use the isActive prop to manually turn sticky on or off:
+
+app.jsx
+```js
+<StickyContainer>
+  ...
+  <Sticky isActive={false}>
+    <header />
+  </Sticky
+  ...
+</StickyContainer>
+```
+
 ### License
 MIT
