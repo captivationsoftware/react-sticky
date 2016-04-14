@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 export default class Container extends React.Component {
 
@@ -32,8 +31,7 @@ export default class Container extends React.Component {
   }
 
   componentDidMount() {
-    const node = ReactDOM.findDOMNode(this);
-    this.setState({ node });
+    this.setState({ node: this._node });
   }
 
   updateOffset(offset) {
@@ -41,7 +39,7 @@ export default class Container extends React.Component {
   }
 
   render() {
-    return <div {...this.props}>
+    return <div ref={ node => this._node = node } {...this.props}>
       {this.props.children}
     </div>
   }
