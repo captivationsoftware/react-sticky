@@ -216,12 +216,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Sticky).call(this, props));
 
 	    _this.onScroll = function () {
+	      var height = _reactDom2.default.findDOMNode(_this).getBoundingClientRect().height;
 	      var pageY = window.pageYOffset;
 	      var origin = _this.getOrigin(pageY);
 	      var isSticky = _this.isSticky(pageY, _this.state.origin);
 	      var hasChanged = _this.state.isSticky !== isSticky;
 
-	      _this.setState({ isSticky: isSticky, origin: origin });
+	      _this.setState({ isSticky: isSticky, origin: origin, height: height });
 	      _this.context.container.updateOffset(isSticky ? _this.state.height : 0);
 
 	      if (hasChanged) _this.props.onStickyStateChange(isSticky);
