@@ -65,12 +65,13 @@ export default class Sticky extends React.Component {
   }
 
   onScroll = () => {
+    const height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
     const pageY = window.pageYOffset;
     const origin = this.getOrigin(pageY);
     const isSticky = this.isSticky(pageY, this.state.origin);
     const hasChanged = this.state.isSticky !== isSticky;
 
-    this.setState({ isSticky, origin });
+    this.setState({ isSticky, origin, height });
     this.context.container.updateOffset(isSticky ? this.state.height : 0);
 
     if (hasChanged) this.props.onStickyStateChange(isSticky);
