@@ -60,7 +60,10 @@ export default class Sticky extends React.Component {
     const pageY = window.pageYOffset;
     const origin = this.getOrigin(pageY);
     const isSticky = this.isSticky(pageY, origin);
-    this.setState({ height, origin, isSticky });
+
+	  const s = this.state;
+	  if(s.height !== height || s.origin !== origin || s.isSticky !== isSticky)
+      this.setState({ height, origin, isSticky });
   }
 
   isSticky(pageY, origin) {
@@ -75,7 +78,10 @@ export default class Sticky extends React.Component {
     const isSticky = this.isSticky(pageY, this.state.origin);
     const hasChanged = this.state.isSticky !== isSticky;
 
-    this.setState({ isSticky, origin, height });
+	  const s = this.state;
+	  if(s.height !== height || s.origin !== origin || s.isSticky !== isSticky)
+	    this.setState({ isSticky, origin, height });
+
     this.context.container.updateOffset(isSticky ? this.state.height : 0);
 
     if (hasChanged) this.props.onStickyStateChange(isSticky);
@@ -84,7 +90,10 @@ export default class Sticky extends React.Component {
   onResize = () => {
     const height = this.getHeight();
     const origin = this.getOrigin(window.pageYOffset);
-    this.setState({ height, origin });
+
+	  const s = this.state;
+	  if(s.height !== height || s.origin !== origin)
+	    this.setState({ height, origin });
   }
 
   on(events, callback) {
