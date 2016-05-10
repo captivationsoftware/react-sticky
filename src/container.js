@@ -37,7 +37,6 @@ export default class Container extends React.Component {
   }
 
   updateOffset(offset) {
-	  if(this.state.offset === offset) return;
     this.setState({ offset });
   }
 
