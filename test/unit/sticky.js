@@ -160,6 +160,7 @@ describe('Sticky component', function() {
       let contextOffset = 0;
       this.sticky.context.container = { updateOffset: (offset) => { contextOffset = offset; } }
       this.sticky.setState({ origin: 100, height: 100 });
+      this.sticky.getHeight = () => 100;
 
       // Sticky
       window.pageYOffset = 100;
@@ -187,6 +188,7 @@ describe('Sticky component', function() {
     it ('should stop scrolling if at the bottom of the context container', () => {
       this.sticky = mount(<Sticky className="handle" style={{top: 1}}>Test</Sticky>, this.container);
       this.sticky.setState({ origin: 0, height: 100 });
+      this.sticky.getHeight = () => 100;
 
       this.sticky.context.rect = { bottom: 100 };
       this.sticky.onScroll();

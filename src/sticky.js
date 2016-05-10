@@ -51,8 +51,12 @@ export default class Sticky extends React.Component {
     return this.refs.placeholder.getBoundingClientRect().top + pageY;
   }
 
+  getHeight() {
+    return ReactDOM.findDOMNode(this).getBoundingClientRect().height;
+  }
+
   update() {
-    const height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
+    const height = this.getHeight();
     const pageY = window.pageYOffset;
     const origin = this.getOrigin(pageY);
     const isSticky = this.isSticky(pageY, origin);
@@ -65,7 +69,7 @@ export default class Sticky extends React.Component {
   }
 
   onScroll = () => {
-    const height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
+    const height = this.getHeight();
     const pageY = window.pageYOffset;
     const origin = this.getOrigin(pageY);
     const isSticky = this.isSticky(pageY, this.state.origin);
@@ -78,7 +82,7 @@ export default class Sticky extends React.Component {
   }
 
   onResize = () => {
-    const height = ReactDOM.findDOMNode(this).getBoundingClientRect().height;
+    const height = this.getHeight();
     const origin = this.getOrigin(window.pageYOffset);
     this.setState({ height, origin });
   }
