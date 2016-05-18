@@ -1,7 +1,10 @@
 react-sticky [![Build Status](https://travis-ci.org/captivationsoftware/react-sticky.svg?branch=master)](https://travis-ci.org/captivationsoftware/react-sticky)
 ============
-
 The most powerful Sticky library available for React!
+
+#### Captivation Software is hiring ES6/React developers!
+- Must be located in the Baltimore, MD/Washington, DC area
+- If interested, send your resume and/or a link to your github profile to jobs@captivationsoftware.com
 
 #### Demos
   - [Basic](http://rawgit.com/captivationsoftware/react-sticky/master/examples/basic/index.html)

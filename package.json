@@ -41,7 +41,7 @@
     "chai": "^3.2.0",
     "jsdom": "8.0.4",
     "mocha": "^2.2.5",
-    "react-addons-test-utils": "^0.14.0",
+    "react-addons-test-utils": "^0.14.0 || ^15.0.0",
     "react": "^0.14.0 || ^15.0.0",
     "react-dom": "^0.14.0 || ^15.0.0",
     "rimraf": "^2.5.2",

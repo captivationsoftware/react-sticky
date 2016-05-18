@@ -216,19 +216,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Sticky).call(this, props));
 
 	    _this.onScroll = function () {
+	      var height = _this.getHeight();
+	      console.log(_reactDom2.default.findDOMNode(_this).getBoundingClientRect());
 	      var pageY = window.pageYOffset;
 	      var origin = _this.getOrigin(pageY);
 	      var isSticky = _this.isSticky(pageY, _this.state.origin);
 	      var hasChanged = _this.state.isSticky !== isSticky;
 
-	      _this.setState({ isSticky: isSticky, origin: origin });
+	      _this.setState({ isSticky: isSticky, origin: origin, height: height });
 	      _this.context.container.updateOffset(isSticky ? _this.state.height : 0);
 
 	      if (hasChanged) _this.props.onStickyStateChange(isSticky);
 	    };
 
 	    _this.onResize = function () {
-	      var height = _reactDom2.default.findDOMNode(_this).getBoundingClientRect().height;
+	      var height = _this.getHeight();
 	      var origin = _this.getOrigin(window.pageYOffset);
 	      _this.setState({ height: height, origin: origin });
 	    };
@@ -263,9 +265,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.refs.placeholder.getBoundingClientRect().top + pageY;
 	    }
 	  }, {
+	    key: 'getHeight',
+	    value: function getHeight() {
+	      return _reactDom2.default.findDOMNode(this).getBoundingClientRect().height;
+	    }
+	  }, {
 	    key: 'update',
 	    value: function update() {
-	      var height = _reactDom2.default.findDOMNode(this).getBoundingClientRect().height;
+	      var height = this.getHeight();
 	      var pageY = window.pageYOffset;
 	      var origin = this.getOrigin(pageY);
 	      var isSticky = this.isSticky(pageY, origin);
