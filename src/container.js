@@ -18,8 +18,7 @@ export default class Container extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      offset: 0,
-      rect: {}
+      offset: 0
     };
   }
 
@@ -36,8 +35,13 @@ export default class Container extends React.Component {
     this.setState({ node });
   }
 
-  updateOffset(offset) {
-    this.setState({ offset });
+  updateOffset(height) {
+    const childContext = this.getChildContext();
+    const occupiedSpace = childContext.rect.bottom - childContext.offset;
+    const offset = Math.min(occupiedSpace, height);
+    if (this.state.offset !== offset) {
+      this.setState({ offset });
+    }
   }
 
   render() {

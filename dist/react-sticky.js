@@ -124,8 +124,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Container).call(this, props));
 
 	    _this.state = {
-	      offset: 0,
-	      rect: {}
+	      offset: 0
 	    };
 	    return _this;
 	  }
@@ -147,8 +146,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'updateOffset',
-	    value: function updateOffset(offset) {
-	      this.setState({ offset: offset });
+	    value: function updateOffset(height) {
+	      var childContext = this.getChildContext();
+	      var occupiedSpace = childContext.rect.bottom - childContext.offset;
+	      var offset = Math.min(occupiedSpace, height);
+	      if (this.state.offset !== offset) {
+	        this.setState({ offset: offset });
+	      }
 	    }
 	  }, {
 	    key: 'render',
@@ -223,7 +227,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var hasChanged = _this.state.isSticky !== isSticky;
 
 	      var s = _this.state;
-	      if (s.height !== height || s.origin !== origin || s.isSticky !== isSticky) _this.setState({ isSticky: isSticky, origin: origin, height: height });
+	      if (s.height !== height || s.origin !== origin || s.isSticky !== isSticky) {
+	        _this.setState({ isSticky: isSticky, origin: origin, height: height });
+	      }
 
 	      _this.context.container.updateOffset(isSticky ? _this.state.height : 0);
 
