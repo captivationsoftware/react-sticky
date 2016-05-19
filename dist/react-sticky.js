@@ -217,13 +217,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _this.onScroll = function () {
 	      var height = _this.getHeight();
-	      console.log(_reactDom2.default.findDOMNode(_this).getBoundingClientRect());
 	      var pageY = window.pageYOffset;
 	      var origin = _this.getOrigin(pageY);
 	      var isSticky = _this.isSticky(pageY, _this.state.origin);
 	      var hasChanged = _this.state.isSticky !== isSticky;
 
-	      _this.setState({ isSticky: isSticky, origin: origin, height: height });
+	      var s = _this.state;
+	      if (s.height !== height || s.origin !== origin || s.isSticky !== isSticky) _this.setState({ isSticky: isSticky, origin: origin, height: height });
+
 	      _this.context.container.updateOffset(isSticky ? _this.state.height : 0);
 
 	      if (hasChanged) _this.props.onStickyStateChange(isSticky);
@@ -232,6 +233,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _this.onResize = function () {
 	      var height = _this.getHeight();
 	      var origin = _this.getOrigin(window.pageYOffset);
+
 	      _this.setState({ height: height, origin: origin });
 	    };
 
@@ -276,7 +278,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var pageY = window.pageYOffset;
 	      var origin = this.getOrigin(pageY);
 	      var isSticky = this.isSticky(pageY, origin);
-	      this.setState({ height: height, origin: origin, isSticky: isSticky });
+
+	      var s = this.state;
+	      if (s.height !== height || s.origin !== origin || s.isSticky !== isSticky) this.setState({ height: height, origin: origin, isSticky: isSticky });
 	    }
 	  }, {
 	    key: 'isSticky',

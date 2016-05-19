@@ -91,9 +91,7 @@ export default class Sticky extends React.Component {
     const height = this.getHeight();
     const origin = this.getOrigin(window.pageYOffset);
 
-	  const s = this.state;
-	  if(s.height !== height || s.origin !== origin)
-	    this.setState({ height, origin });
+    this.setState({ height, origin });
   }
 
   on(events, callback) {
