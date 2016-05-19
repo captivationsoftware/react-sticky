@@ -78,8 +78,8 @@ export default class Sticky extends React.Component {
     const isSticky = this.isSticky(pageY, this.state.origin);
     const hasChanged = this.state.isSticky !== isSticky;
 
-	  const s = this.state;
-	  if(s.height !== height || s.origin !== origin || s.isSticky !== isSticky) {
+	  const state = this.state;
+	  if(state.height !== height || state.origin !== origin || state.isSticky !== isSticky) {
 	    this.setState({ isSticky, origin, height });
     }
 

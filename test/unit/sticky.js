@@ -185,7 +185,7 @@ describe('Sticky component', function() {
       expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('100px');
     });
 
-    it ('should stop scrolling if at the bottom of the context container', () => {
+    it ('should stop scrolling if at the bottom of the context container (before bottom)', () => {
       this.sticky = mount(<Sticky className="handle" style={{top: 1}}>Test</Sticky>, this.container);
       this.sticky.setState({ origin: 0, height: 100 });
       this.sticky.getHeight = () => 100;
@@ -193,10 +193,22 @@ describe('Sticky component', function() {
       this.sticky.context.rect = { bottom: 100 };
       this.sticky.onScroll();
       expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('0px');
+    });
+
+    it ('should stop scrolling if at the bottom of the context container (just below bottom)', () => {
+      this.sticky = mount(<Sticky className="handle" style={{top: 1}}>Test</Sticky>, this.container);
+      this.sticky.setState({ origin: 0, height: 100 });
+      this.sticky.getHeight = () => 100;
 
       this.sticky.context.rect = { bottom: 90 };
       this.sticky.onScroll();
       expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('-10px');
+    });
+
+    it ('should stop scrolling if at the bottom of the context container (far beyond bottom)', () => {
+      this.sticky = mount(<Sticky className="handle" style={{top: 1}}>Test</Sticky>, this.container);
+      this.sticky.setState({ origin: 0, height: 100 });
+      this.sticky.getHeight = () => 100;
 
       this.sticky.context.rect = { bottom: 0 };
       this.sticky.onScroll();

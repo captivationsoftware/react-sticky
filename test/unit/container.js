@@ -20,8 +20,14 @@ describe('StickyContainer component', function() {
     unmount(this.stickyContainer);
   });
 
-  it ('should allow external modifcation of its offset', () => {
+  it ('should allow external modification of its offset', () => {
     expect(this.stickyContainer.state.offset).to.equal(0);
+    this.stickyContainer.getChildContext = () => {
+      return {
+        rect: { bottom: 1000 },
+        offset: 0
+      }
+    }
     this.stickyContainer.updateOffset(100);
     expect(this.stickyContainer.state.offset).to.equal(100);
   });

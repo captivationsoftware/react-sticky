@@ -226,8 +226,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var isSticky = _this.isSticky(pageY, _this.state.origin);
 	      var hasChanged = _this.state.isSticky !== isSticky;
 
-	      var s = _this.state;
-	      if (s.height !== height || s.origin !== origin || s.isSticky !== isSticky) {
+	      var state = _this.state;
+	      if (state.height !== height || state.origin !== origin || state.isSticky !== isSticky) {
 	        _this.setState({ isSticky: isSticky, origin: origin, height: height });
 	      }
 
