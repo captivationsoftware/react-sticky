@@ -128,7 +128,7 @@ export default class Sticky extends React.Component {
       const stickyStyle = {
         position: 'fixed',
         top: this.context.offset,
-        left: placeholderRect.left,
+        left: this.state.xOffset,
         width: placeholderRect.width
       };
 
