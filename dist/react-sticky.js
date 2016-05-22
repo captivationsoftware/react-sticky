@@ -220,20 +220,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Sticky).call(this, props));
 
 	    _this.onScroll = function () {
-	      return _this.handleUserEvent(false);
+	      var height = _this.getHeight();
+	      var pageY = window.pageYOffset;
+	      var origin = _this.getOrigin(pageY);
+	      var isSticky = _this.isSticky(pageY, _this.state.origin);
+	      var hasChanged = _this.state.isSticky !== isSticky;
+
+	      var state = _this.state;
+	      if (state.height !== height || state.origin !== origin || state.isSticky !== isSticky) {
+	        _this.setState({ isSticky: isSticky, origin: origin, height: height });
+	      }
+
+	      _this.context.container.updateOffset(isSticky ? _this.state.height : 0);
+
+	      if (hasChanged) _this.props.onStickyStateChange(isSticky);
 	    };
 
 	    _this.onResize = function () {
-	      _this.handleUserEvent(true);
+	      var height = _this.getHeight();
+	      var origin = _this.getOrigin(window.pageYOffset);
 
-	      // HACK:
-	      // In order to improve the visuals during resizes, perform
-	      // a second, deferred update after resize events. This
-	      // makes resizing one of the most expensive operations,
-	      // however it is, in most cases, a rare occurrence.
-	      setTimeout(function () {
-	        return _this.handleUserEvent(true);
-	      }, 0);
+	      _this.setState({ height: height, origin: origin });
 	    };
 
 	    _this.state = {
@@ -285,24 +292,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'isSticky',
 	    value: function isSticky(pageY, origin) {
 	      return this.props.isActive && pageY + this.context.offset - this.props.topOffset >= origin && this.context.offset <= (this.context.rect.bottom || 0) - this.props.bottomOffset;
-	    }
-	  }, {
-	    key: 'handleUserEvent',
-	    value: function handleUserEvent(forceUpdate) {
-	      var pageY = window.pageYOffset;
-	      var height = this.getHeight();
-	      var origin = this.getOrigin(pageY);
-	      var isSticky = this.isSticky(pageY, this.state.origin);
-	      var hasChanged = this.state.isSticky !== isSticky;
-
-	      var s = this.state;
-	      if (forceUpdate || s.height !== height || s.origin !== origin || s.isSticky !== isSticky) {
-	        this.setState({ isSticky: isSticky, origin: origin, height: height });
-	      }
-
-	      this.context.container.updateOffset(isSticky ? this.state.height : 0);
-
-	      if (hasChanged) this.props.onStickyStateChange(isSticky);
 	    }
 	  }, {
 	    key: 'on',
