@@ -71,28 +71,34 @@ export default class Sticky extends React.Component {
       && this.context.offset <= (this.context.rect.bottom || 0) - this.props.bottomOffset;
   }
 
-  onScroll = () => {
-    const height = this.getHeight();
+  onScroll = () => this.handleUserEvent(false);
+
+  onResize = () => {
+    this.handleUserEvent(true);
+
+    // HACK:
+    // In order to improve the visuals during resizes, perform
+    // a second, deferred update after resize events. This
+    // makes resizing one of the most expensive operations,
+    // however it is, in most cases, a rare occurrence.
+    setTimeout(() => this.handleUserEvent(true), 0);
+  }
+
+  handleUserEvent(forceUpdate) {
     const pageY = window.pageYOffset;
+    const height = this.getHeight();
     const origin = this.getOrigin(pageY);
     const isSticky = this.isSticky(pageY, this.state.origin);
     const hasChanged = this.state.isSticky !== isSticky;
 
-	  const state = this.state;
-	  if(state.height !== height || state.origin !== origin || state.isSticky !== isSticky) {
+	  const s = this.state;
+	  if(forceUpdate || s.height !== height || s.origin !== origin || s.isSticky !== isSticky) {
 	    this.setState({ isSticky, origin, height });
     }
 
     this.context.container.updateOffset(isSticky ? this.state.height : 0);
 
     if (hasChanged) this.props.onStickyStateChange(isSticky);
-  }
-
-  onResize = () => {
-    const height = this.getHeight();
-    const origin = this.getOrigin(window.pageYOffset);
-
-    this.setState({ height, origin });
   }
 
   on(events, callback) {
