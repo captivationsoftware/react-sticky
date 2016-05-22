@@ -51,10 +51,6 @@ export default class Sticky extends React.Component {
     return this.refs.placeholder.getBoundingClientRect().top + pageY;
   }
 
-  getXOffset() {
-    return this.refs.placeholder.getBoundingClientRect().left; 
-  }
-
   getHeight() {
     return ReactDOM.findDOMNode(this).getBoundingClientRect().height;
   }
@@ -80,13 +76,11 @@ export default class Sticky extends React.Component {
     const pageY = window.pageYOffset;
     const origin = this.getOrigin(pageY);
     const isSticky = this.isSticky(pageY, this.state.origin);
-    const xOffset = this.getXOffset();
     const hasChanged = this.state.isSticky !== isSticky;
 
 	  const state = this.state;
-	  if ((isSticky && xOffset !== state.xOffset) || state.height !== height || state.origin !== origin
-      || state.isSticky !== isSticky) {
-	    this.setState({ isSticky, origin, height, xOffset });
+	  if(state.height !== height || state.origin !== origin || state.isSticky !== isSticky) {
+	    this.setState({ isSticky, origin, height });
     }
 
     this.context.container.updateOffset(isSticky ? this.state.height : 0);
@@ -128,7 +122,7 @@ export default class Sticky extends React.Component {
       const stickyStyle = {
         position: 'fixed',
         top: this.context.offset,
-        left: this.state.xOffset,
+        left: placeholderRect.left,
         width: placeholderRect.width
       };
 
