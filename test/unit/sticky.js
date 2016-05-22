@@ -214,6 +214,26 @@ describe('Sticky component', function() {
       this.sticky.onScroll();
       expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('-100px');
     });
+
+    it ('should update position when placeholder changes position', () => {
+      this.sticky = mount(<Sticky className="handle">Test</Sticky>, this.container);
+      this.sticky.getXOffset = () => 100;
+
+      this.sticky.onScroll();
+
+      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.left).to.equal('100px');
+    });
+
+    it ('should not change state on horizontal scroll when it is not sticky', () => {
+      this.sticky = mount(<Sticky className="handle style={{ top: 1 }}">Test</Sticky>, this.container);
+      this.sticky.isSticky = () => false;
+      this.sticky.getXOffset = () => 0;
+      this.sticky.onScroll();
+      this.sticky.getXOffset = () => 100;
+      this.sticky.onScroll();
+
+      expect(this.sticky.state.xOffset).to.equal(0);
+    });
   });
 
   describe('isActive', () => {
