@@ -32,36 +32,34 @@ describe('Sticky component', function() {
   describe('state', () => {
     describe('topOffset and bottomOffset', () => {
       it ('should be sticky when scroll position is greater than original position plus topOffset', () => {
-        let scrollPosition = 100;
         let topOffset = 50;
-        let origin = 10;
+        let distanceToTop = -90;
 
         this.sticky = mount(<Sticky topOffset={topOffset}>Test</Sticky>, this.container);
 
-        // is 100 + 0 - 50 >= 10? Yes, so should be sticky
-        expect(this.sticky.isSticky(scrollPosition, origin)).to.be.true;
+        // is 0 - 50 >= -90? Yes, so should be sticky
+        expect(this.sticky.isSticky(distanceToTop)).to.be.true;
       });
 
       it ('should be sticky when scroll position is equal to original position plus topOffset', () => {
-        let scrollPosition = 100;
-        let origin = 100;
+        let distanceToTop = 0;
 
-        // is 100 > (100 - 0)? Yes, so should be sticky
-        expect(this.sticky.isSticky(scrollPosition, origin)).to.be.true;
+        // is 0 - 0 >= 0? Yes, so should be sticky
+        expect(this.sticky.isSticky(distanceToTop)).to.be.true;
       });
 
       it ('should not be sticky when scroll position is less that original position plus topOffset', () => {
         let scrollPosition = 0;
-        let origin = 100;
+        let distanceToTop = 100;
 
-        // is 0 + 0 - 0 > 100? No, so should not sticky
-        expect(this.sticky.isSticky(scrollPosition, origin)).to.be.false;
+        // is 0 - 0 >= 100? No, so should not sticky
+        expect(this.sticky.isSticky(distanceToTop)).to.be.false;
       });
 
       it ('should not be sticky when container height minus bottom offset is less than offset', () => {
         let scrollPosition = 101;
         let bottomOffset = 999;
-        let origin = 100;
+        let distanceToTop = 100;
         let containerHeight = 1000;
 
         this.sticky = mount(<Sticky bottomOffset={bottomOffset}>Test</Sticky>, this.container);
@@ -69,7 +67,7 @@ describe('Sticky component', function() {
         this.sticky.context.rect = { bottom: containerHeight };
 
         // 101 + 10 - 0 >= 100 AND 10 <= 1000 - 999
-        expect(this.sticky.isSticky(scrollPosition, origin)).to.be.false;
+        expect(this.sticky.isSticky(distanceToTop)).to.be.false;
       });
     });
 
@@ -159,16 +157,15 @@ describe('Sticky component', function() {
     it ('should report its height to its container', () => {
       let contextOffset = 0;
       this.sticky.context.container = { updateOffset: (offset) => { contextOffset = offset; } }
-      this.sticky.setState({ origin: 100, height: 100 });
       this.sticky.getHeight = () => 100;
 
       // Sticky
-      window.pageYOffset = 100;
+      this.sticky.isSticky = () => true;
       this.sticky.onScroll();
       expect(contextOffset).to.equal(100);
 
       // Not Sticky
-      window.pageYOffset = 10;
+      this.sticky.isSticky = () => false;
       this.sticky.onScroll();
       expect(contextOffset).to.equal(0);
     });

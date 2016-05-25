@@ -47,8 +47,8 @@ export default class Sticky extends React.Component {
     this.off(['resize', 'pageshow', 'load'], this.onResize);
   }
 
-  getOrigin(pageY) {
-    return this.refs.placeholder.getBoundingClientRect().top + pageY;
+  getOrigin() {
+    return this.refs.placeholder.getBoundingClientRect().top;
   }
 
   getXOffset() {
@@ -65,25 +65,23 @@ export default class Sticky extends React.Component {
 
   update() {
     const height = this.getHeight();
-    const pageY = window.pageYOffset;
-    const origin = this.getOrigin(pageY);
-    const isSticky = this.isSticky(pageY, origin);
+    const origin = this.getOrigin();
+    const isSticky = this.isSticky(origin);
 
     const s = this.state;
     if(s.height !== height || s.origin !== origin || s.isSticky !== isSticky)
       this.setState({ height, origin, isSticky });
   }
 
-  isSticky(pageY, origin) {
-    return this.props.isActive && pageY + this.context.offset - this.props.topOffset >= origin
+  isSticky(origin) {
+    return this.props.isActive && this.context.offset - this.props.topOffset >= origin
       && this.context.offset <= (this.context.rect.bottom || 0) - this.props.bottomOffset;
   }
 
   onScroll = () => {
     const height = this.getHeight();
-    const pageY = window.pageYOffset;
-    const origin = this.getOrigin(pageY);
-    const isSticky = this.isSticky(pageY, this.state.origin);
+    const origin = this.getOrigin();
+    const isSticky = this.isSticky(this.state.origin);
     const xOffset = this.getXOffset();
     const width = this.getWidth();
     const hasChanged = this.state.isSticky !== isSticky;
