@@ -32,42 +32,35 @@ describe('Sticky component', function() {
   describe('state', () => {
     describe('topOffset and bottomOffset', () => {
       it ('should be sticky when scroll position is greater than original position plus topOffset', () => {
-        let topOffset = 50;
-        let distanceToTop = -90;
-
-        this.sticky = mount(<Sticky topOffset={topOffset}>Test</Sticky>, this.container);
+        this.sticky = mount(<Sticky topOffset={50}>Test</Sticky>, this.container);
+        this.sticky.getDistanceFromTop = () => -90;
 
         // is 0 - 50 >= -90? Yes, so should be sticky
-        expect(this.sticky.isSticky(distanceToTop)).to.be.true;
+        expect(this.sticky.isSticky()).to.be.true;
       });
 
       it ('should be sticky when scroll position is equal to original position plus topOffset', () => {
-        let distanceToTop = 0;
+        this.sticky.getDistanceFromTop = () => 0;
 
         // is 0 - 0 >= 0? Yes, so should be sticky
-        expect(this.sticky.isSticky(distanceToTop)).to.be.true;
+        expect(this.sticky.isSticky()).to.be.true;
       });
 
       it ('should not be sticky when scroll position is less that original position plus topOffset', () => {
-        let scrollPosition = 0;
-        let distanceToTop = 100;
+        this.sticky.getDistanceFromTop = () => 100;
 
         // is 0 - 0 >= 100? No, so should not sticky
-        expect(this.sticky.isSticky(distanceToTop)).to.be.false;
+        expect(this.sticky.isSticky()).to.be.false;
       });
 
       it ('should not be sticky when container height minus bottom offset is less than offset', () => {
-        let scrollPosition = 101;
-        let bottomOffset = 999;
-        let distanceToTop = 100;
-        let containerHeight = 1000;
-
-        this.sticky = mount(<Sticky bottomOffset={bottomOffset}>Test</Sticky>, this.container);
+        this.sticky = mount(<Sticky bottomOffset={999}>Test</Sticky>, this.container);
         this.sticky.context.offset = 10;
-        this.sticky.context.rect = { bottom: containerHeight };
+        this.sticky.context.rect = { bottom: 1000 };
+        this.sticky.getDistanceFromTop = () => 100;
 
         // 101 + 10 - 0 >= 100 AND 10 <= 1000 - 999
-        expect(this.sticky.isSticky(distanceToTop)).to.be.false;
+        expect(this.sticky.isSticky()).to.be.false;
       });
     });
 

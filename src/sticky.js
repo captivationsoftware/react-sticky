@@ -47,10 +47,6 @@ export default class Sticky extends React.Component {
     this.off(['resize', 'pageshow', 'load'], this.onResize);
   }
 
-  getOrigin() {
-    return this.refs.placeholder.getBoundingClientRect().top;
-  }
-
   getXOffset() {
     return this.refs.placeholder.getBoundingClientRect().left;
   }
@@ -63,34 +59,47 @@ export default class Sticky extends React.Component {
     return ReactDOM.findDOMNode(this).getBoundingClientRect().height;
   }
 
-  update() {
-    const height = this.getHeight();
-    const origin = this.getOrigin();
-    const isSticky = this.isSticky(origin);
-
-    const s = this.state;
-    if(s.height !== height || s.origin !== origin || s.isSticky !== isSticky)
-      this.setState({ height, origin, isSticky });
+  getDistanceFromTop() {
+    return this.refs.placeholder.getBoundingClientRect().top;
   }
 
-  isSticky(origin) {
-    return this.props.isActive && this.context.offset - this.props.topOffset >= origin
-      && this.context.offset <= (this.context.rect.bottom || 0) - this.props.bottomOffset;
+  getDistanceFromBottom() {
+    return (this.context.rect && this.context.rect.bottom) || 0;
+  }
+
+  update() {
+    const height = this.getHeight();
+    const isSticky = this.isSticky();
+
+    const s = this.state;
+    if(s.height !== height || s.isSticky !== isSticky)
+      this.setState({ height, isSticky });
+  }
+
+  isSticky() {
+    if (!this.props.isActive) return false;
+
+    const fromTop = this.getDistanceFromTop();
+    const fromBottom = this.getDistanceFromBottom();
+
+    const topBreakpoint = this.context.offset - this.props.topOffset;
+    const bottomBreakpoint = this.context.offset + this.props.bottomOffset;
+
+    return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
   }
 
   onScroll = () => {
     const height = this.getHeight();
-    const origin = this.getOrigin();
-    const isSticky = this.isSticky(this.state.origin);
+    const isSticky = this.isSticky();
     const xOffset = this.getXOffset();
     const width = this.getWidth();
     const hasChanged = this.state.isSticky !== isSticky;
 
     const state = this.state;
     if ((isSticky && (xOffset !== state.xOffset || width !== state.width))
-      || state.height !== height || state.origin !== origin
+      || state.height !== height
       || state.isSticky !== isSticky) {
-      this.setState({ isSticky, origin, height, xOffset, width });
+      this.setState({ isSticky, height, xOffset, width });
     }
 
     this.context.container.updateOffset(isSticky ? this.state.height : 0);
