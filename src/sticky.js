@@ -91,12 +91,7 @@ export default class Sticky extends React.Component {
     const width = this.getWidth();
     const hasChanged = this.state.isSticky !== isSticky;
 
-    const state = this.state;
-    if ((isSticky && (xOffset !== state.xOffset || width !== state.width))
-      || state.height !== height
-      || state.isSticky !== isSticky) {
-      this.setState({ isSticky, height, xOffset, width });
-    }
+    this.setState({ isSticky, height, width, xOffset })
 
     if (this.context.container)
       this.context.container.updateOffset(isSticky ? this.state.height : 0);
@@ -114,6 +109,31 @@ export default class Sticky extends React.Component {
     events.forEach((evt) => {
       window.removeEventListener(evt, callback);
     });
+  }
+
+  shouldComponentUpdate(newProps, newState) {
+    // Have we changed the number of props?
+    const propNames = Object.keys(this.props);
+    if (Object.keys(newProps).length != propNames.length) return true;
+
+    // Have we changed any prop values?
+    const valuesMatch = propNames.every((key) => {
+      return newProps.hasOwnProperty(key) && newProps[key] === this.props[key];
+    });
+    if (!valuesMatch) return true;
+
+    // Have we changed any state that will always impact rendering?
+    const state = this.state;
+    if (newState.isSticky !== state.isSticky) return true;
+
+    // If we are sticky, have we changed any state that will impact rendering?
+    if (state.isSticky) {
+      if (newState.height !== state.height) return true;
+      if (newState.width !== state.width) return true;
+      if (newState.xOffset !== state.xOffset) return true;
+    }
+
+    return false;
   }
 
   /*

@@ -385,16 +385,6 @@ describe('Sticky component', function() {
 
           expect(this.sticky.state.xOffset).to.equal(20);
         });
-
-        it('does not update when called while not sticky', () => {
-          this.sticky.setState({ isSticky: false, xOffset: 10 })
-          this.sticky.isSticky = () => false;
-          this.sticky.getXOffset = () => 20;
-
-          this.sticky.recomputeState();
-
-          expect(this.sticky.state.xOffset).to.equal(10);
-        });
       });
 
       it('is not passed to the non-placeholder child if not sticky', () => {
@@ -428,11 +418,12 @@ describe('Sticky component', function() {
       beforeEach(() => {
         this.sticky = mount(<Sticky className="handle">Test</Sticky>, this.container);
         this.sticky.getDistanceFromBottom = () => 200;
+        this.sticky.setState({ isSticky: true });
       });
 
       it('uses a provided offset as the top position of a sticky element', () => {
         this.sticky.context.offset = 100;
-        this.sticky.setState({ isSticky: true });
+        this.sticky.forceUpdate();
 
         expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('100px');
       });
