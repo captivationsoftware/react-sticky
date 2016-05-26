@@ -40,18 +40,16 @@ export default class Sticky extends React.Component {
   }
 
   componentDidMount() {
-    this.update();
-    this.on(['scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.onScroll);
-    this.on(['resize', 'pageshow', 'load'], this.onResize);
+    this.recomputeState();
+    this.on(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.recomputeState);
   }
 
   componentWillReceiveProps() {
-    this.update();
+    this.recomputeState();
   }
 
   componentWillUnmount() {
-    this.off(['scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.onScroll);
-    this.off(['resize', 'pageshow', 'load'], this.onResize);
+    this.off(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.recomputeState);
   }
 
   getXOffset() {
@@ -74,15 +72,6 @@ export default class Sticky extends React.Component {
     return (this.context.rect && this.context.rect.bottom) || 0;
   }
 
-  update() {
-    const height = this.getHeight();
-    const isSticky = this.isSticky();
-
-    const s = this.state;
-    if(s.height !== height || s.isSticky !== isSticky)
-      this.setState({ height, isSticky });
-  }
-
   isSticky() {
     if (!this.props.isActive) return false;
 
@@ -95,7 +84,7 @@ export default class Sticky extends React.Component {
     return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
   }
 
-  onScroll = () => {
+  recomputeState = () => {
     const height = this.getHeight();
     const isSticky = this.isSticky();
     const xOffset = this.getXOffset();
@@ -109,12 +98,11 @@ export default class Sticky extends React.Component {
       this.setState({ isSticky, height, xOffset, width });
     }
 
-    this.context.container.updateOffset(isSticky ? this.state.height : 0);
+    if (this.context.container)
+      this.context.container.updateOffset(isSticky ? this.state.height : 0);
 
     if (hasChanged) this.props.onStickyStateChange(isSticky);
   }
-
-  onResize = this.onScroll;
 
   on(events, callback) {
     events.forEach((evt) => {

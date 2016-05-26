@@ -237,7 +237,7 @@ describe('Sticky component', function() {
 
       it('calls the onStickyStateChange callback when becoming sticky', (done) => {
         this.sticky.getDistanceFromTop = () => 10;
-        this.sticky.onScroll();  // Not Sticky
+        this.sticky.recomputeState();  // Not Sticky
 
         this.callback = (isSticky) => {
           expect(isSticky).to.equal(true);
@@ -245,12 +245,12 @@ describe('Sticky component', function() {
         }
 
         this.sticky.getDistanceFromTop = () => 0;
-        this.sticky.onScroll();  // Sticky
+        this.sticky.recomputeState();  // Sticky
       });
 
       it('calls the onStickyStateChange callback when losing stickiness', (done) => {
         this.sticky.getDistanceFromTop = () => 0;
-        this.sticky.onScroll();  // Sticky
+        this.sticky.recomputeState();  // Sticky
 
         this.callback = (isSticky) => {
           expect(isSticky).to.equal(false);
@@ -258,32 +258,32 @@ describe('Sticky component', function() {
         }
 
         this.sticky.getDistanceFromTop = () => 10;
-        this.sticky.onScroll();  // Not Sticky
+        this.sticky.recomputeState();  // Not Sticky
       });
 
       it('does not call the onStickyStateChange callback when staying sticky', (done) => {
         this.sticky.getDistanceFromTop = () => 0;
-        this.sticky.onScroll();  // Sticky
+        this.sticky.recomputeState();  // Sticky
 
         this.callback = (isSticky) => {
           expect(false).to.equal(true);
         }
 
         this.sticky.getDistanceFromTop = () => -10;
-        this.sticky.onScroll();  // Still Sticky
+        this.sticky.recomputeState();  // Still Sticky
         setTimeout(done, 10);
       });
 
       it('does not call the onStickyStateChange callback when staying unstuck', (done) => {
         this.sticky.getDistanceFromTop = () => 10;
-        this.sticky.onScroll();  // Not Sticky
+        this.sticky.recomputeState();  // Not Sticky
 
         this.callback = (isSticky) => {
           expect(false).to.equal(true);
         }
 
         this.sticky.getDistanceFromTop = () => 20;
-        this.sticky.onScroll();  // Still Not Sticky
+        this.sticky.recomputeState();  // Still Not Sticky
         setTimeout(done, 10);
       });
     });
@@ -375,13 +375,13 @@ describe('Sticky component', function() {
         this.sticky = mount(<Sticky className="handle">Test</Sticky>, this.container);
       });
 
-      describe('updates through `onScroll`', () => {
+      describe('updates through `recomputeState`', () => {
         it('becomes updated when called while sticky', () => {
           this.sticky.setState({ isSticky: true, xOffset: 10 })
           this.sticky.isSticky = () => true;
           this.sticky.getXOffset = () => 20;
 
-          this.sticky.onScroll();
+          this.sticky.recomputeState();
 
           expect(this.sticky.state.xOffset).to.equal(20);
         });
@@ -391,7 +391,7 @@ describe('Sticky component', function() {
           this.sticky.isSticky = () => false;
           this.sticky.getXOffset = () => 20;
 
-          this.sticky.onScroll();
+          this.sticky.recomputeState();
 
           expect(this.sticky.state.xOffset).to.equal(10);
         });
@@ -428,12 +428,11 @@ describe('Sticky component', function() {
       beforeEach(() => {
         this.sticky = mount(<Sticky className="handle">Test</Sticky>, this.container);
         this.sticky.getDistanceFromBottom = () => 200;
-        this.sticky.setState({ isSticky: true });
       });
 
       it('uses a provided offset as the top position of a sticky element', () => {
         this.sticky.context.offset = 100;
-        this.sticky.onScroll();
+        this.sticky.setState({ isSticky: true });
 
         expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('100px');
       });
@@ -450,28 +449,32 @@ describe('Sticky component', function() {
 
       it('is stuck to the top of the screen while there is still space before the bottom of the context container', () => {
         this.sticky.getDistanceFromBottom = () => 100;
-        this.sticky.onScroll();
+        this.sticky.recomputeState();
+        this.sticky.forceUpdate();
 
         expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('0px');
       });
 
       it('is "pushed" by the bottom of the context container when there component will not fit on screen', () => {
         this.sticky.getDistanceFromBottom = () => 90;
-        this.sticky.onScroll();
+        this.sticky.recomputeState();
+        this.sticky.forceUpdate();
 
         expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('-10px');
       });
 
       it('is "pushed" off-screen when the bottom of the context container scrolls to the top', () => {
         this.sticky.getDistanceFromBottom = () => 0;
-        this.sticky.onScroll();
+        this.sticky.recomputeState();
+        this.sticky.forceUpdate();
 
         expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('-100px');
       });
 
       it('returns to its inline position when the bottom of the context container scrolls off the top', () => {
-        this.sticky.context.rect = { bottom: -10 };
-        this.sticky.onScroll();
+        this.sticky.getDistanceFromBottom = () => -10;
+        this.sticky.recomputeState();
+        this.sticky.forceUpdate();
 
         expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('1px');
       });
@@ -489,14 +492,14 @@ describe('Sticky component', function() {
 
       it('reports an offset of zero to its container when not sticky', () => {
         this.sticky.isSticky = () => false;
-        this.sticky.onScroll();
+        this.sticky.recomputeState();
 
         expect(this.contextOffset).to.equal(0);
       });
 
       it('reports an offset of the component height to its container when sticky', () => {
         this.sticky.isSticky = () => true;
-        this.sticky.onScroll();
+        this.sticky.recomputeState();
 
         expect(this.contextOffset).to.equal(this.sticky.getHeight());
       });
