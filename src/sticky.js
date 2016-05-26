@@ -139,7 +139,6 @@ export default class Sticky extends React.Component {
 
     let style = this.props.style;
     if (isSticky) {
-      const placeholderRect = this.refs.placeholder.getBoundingClientRect();
       const stickyStyle = {
         position: 'fixed',
         top: this.context.offset,
