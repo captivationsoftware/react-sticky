@@ -21,7 +21,7 @@ describe('Sticky component', function() {
     // Mock out some commonly called functions (override them again later as needed)
     this.sticky.context.offset = 0;
     this.sticky.context.rect = {};
-    this.sticky.context.container = { updateOffset: () => {} }
+    this.sticky.context.container = this.stickyContainer
   });
 
   afterEach(() => {
@@ -158,7 +158,7 @@ describe('Sticky component', function() {
 
     it ('should report its height to its container', () => {
       let contextOffset = 0;
-      this.sticky.context.container = { updateOffset: (offset) => { contextOffset = offset; } }
+      this.sticky.context.container = Object.assign({}, this.stickyContainer, { updateOffset: (offset) => { contextOffset = offset; } })
       this.sticky.setState({ origin: 100, height: 100 });
       this.sticky.getHeight = () => 100;
 
