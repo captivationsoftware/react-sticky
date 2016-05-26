@@ -140,13 +140,11 @@ export default class Sticky extends React.Component {
    * The special sauce.
    */
   render() {
-    const isSticky = this.state.isSticky;
-
+    const placeholderStyle = { paddingBottom: 0 };
     let className = this.props.className;
-    if (isSticky) className += ` ${this.props.stickyClassName}`;
-
     let style = this.props.style;
-    if (isSticky) {
+
+    if (this.state.isSticky) {
       const stickyStyle = {
         position: 'fixed',
         top: this.context.offset,
@@ -159,12 +157,15 @@ export default class Sticky extends React.Component {
         stickyStyle.top = bottomLimit;
       }
 
-      style = Object.assign({}, this.props.style, stickyStyle, this.props.stickyStyle);
+      placeholderStyle.paddingBottom = this.state.height;
+
+      className += ` ${this.props.stickyClassName}`;
+      style = Object.assign({}, style, stickyStyle, this.props.stickyStyle);
     }
 
     return (
       <div>
-        <div ref="placeholder" style={{ paddingBottom: isSticky ? this.state.height : 0 }}></div>
+        <div ref="placeholder" style={placeholderStyle}></div>
         <div {...this.props} className={className} style={style}>
           {this.props.children}
         </div>
