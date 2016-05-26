@@ -140,7 +140,7 @@ export default class Sticky extends React.Component {
         width: this.state.width,
       };
 
-      const bottomLimit = (this.context.rect.bottom || 0) - this.state.height - this.props.bottomOffset;
+      const bottomLimit = this.getDistanceFromBottom() - this.state.height - this.props.bottomOffset;
       if (this.context.offset > bottomLimit) {
         stickyStyle.top = bottomLimit;
       }

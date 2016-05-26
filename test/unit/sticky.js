@@ -29,212 +29,477 @@ describe('Sticky component', function() {
     unmount(this.stickyContainer);
   });
 
-  describe('state', () => {
-    describe('topOffset and bottomOffset', () => {
-      it ('should be sticky when scroll position is greater than original position plus topOffset', () => {
-        this.sticky = mount(<Sticky topOffset={50}>Test</Sticky>, this.container);
-        this.sticky.getDistanceFromTop = () => -90;
+  describe('props', () => {
+    describe('topOffset', () => {
+      describe('(positive)', () => {
+        beforeEach(() => {
+          this.sticky = mount(<Sticky topOffset={10}>Test</Sticky>, this.container);
+        });
 
-        // is 0 - 50 >= -90? Yes, so should be sticky
-        expect(this.sticky.isSticky()).to.be.true;
+        it('is not sticky when it is mid-screen', () => {
+          this.sticky.getDistanceFromTop = () => 100;
+          expect(this.sticky.isSticky()).to.be.false;
+        });
+
+        it('is not sticky when it is at the top of the screen', () => {
+          this.sticky.getDistanceFromTop = () => 0;
+          expect(this.sticky.isSticky()).to.be.false;
+        });
+
+        it('is not sticky when it is less than `topOffset` pixels above the top of the screen', () => {
+          this.sticky.getDistanceFromTop = () => -9;
+          expect(this.sticky.isSticky()).to.be.false;
+        });
+
+        it('is sticky when it is exactly `topOffset` pixels above the top of the screen', () => {
+          this.sticky.getDistanceFromTop = () => -10;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+
+        it('is sticky when it is more than `topOffset` pixels above the top of the screen', () => {
+          this.sticky.getDistanceFromTop = () => -11;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
       });
 
-      it ('should be sticky when scroll position is equal to original position plus topOffset', () => {
+      describe('(negative)', () => {
+        beforeEach(() => {
+          this.sticky = mount(<Sticky topOffset={-10}>Test</Sticky>, this.container);
+        });
+
+        it('is not sticky when it is more than `topOffset` pixels below the top of the screen', () => {
+          this.sticky.getDistanceFromTop = () => 11;
+          expect(this.sticky.isSticky()).to.be.false;
+        });
+
+        it('is sticky when it is exactly `topOffset` pixels below the top of the screen', () => {
+          this.sticky.getDistanceFromTop = () => 10;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+
+        it('is sticky when it is less than `topOffset` pixels below the top of the screen', () => {
+          this.sticky.getDistanceFromTop = () => 9;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+
+        it('is sticky when it is at the top of the screen', () => {
+          this.sticky.getDistanceFromTop = () => 0;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+
+        it('is sticky when the component is above the top of the screen', () => {
+          this.sticky.getDistanceFromTop = () => -100;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+      });
+
+      describe('with context.offset', () => {
+        beforeEach(() => {
+          this.sticky = mount(<Sticky topOffset={10}>Test</Sticky>, this.container);
+          this.sticky.getDistanceFromBottom = () => 1000;
+          this.sticky.context.offset = 15;
+        });
+
+        it('is not sticky when the component is at the `offset`', () => {
+          this.sticky.getDistanceFromTop = () => 15;
+          expect(this.sticky.isSticky()).to.be.false;
+        });
+
+        it('is not sticky when the component is at the `topOffset`', () => {
+          this.sticky.getDistanceFromTop = () => 10;
+          expect(this.sticky.isSticky()).to.be.false;
+        });
+
+        it('is sticky when the component is `topOffset` pixels above the `offset`', () => {
+          this.sticky.getDistanceFromTop = () => 5;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+      });
+    });
+
+    describe('bottomOffset', () => {
+      describe('(positive)', () => {
+        beforeEach(() => {
+          this.sticky = mount(<Sticky bottomOffset={10}>Test</Sticky>, this.container);
+        });
+
+        it('is sticky when the container bottom is more than `bottomOffset` pixels below the top of the screen', () => {
+          this.sticky.getDistanceFromBottom = () => 11;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+
+        // TODO: Evaluate negating this case.
+        it('is sticky when the container bottom is exactly `bottomOffset` pixels below the top of the screen', () => {
+          this.sticky.getDistanceFromBottom = () => 10;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+
+        it('is not sticky when the container bottom is less than `bottomOffset` pixels below the top of the screen', () => {
+          this.sticky.getDistanceFromBottom = () => 9;
+          expect(this.sticky.isSticky()).to.be.false;
+        });
+
+        it('is not sticky when the container bottom is at the top of the screen', () => {
+          this.sticky.getDistanceFromBottom = () => 0;
+          expect(this.sticky.isSticky()).to.be.false;
+        });
+
+        it('is not sticky when the container bottom is above the top of the screen', () => {
+          this.sticky.getDistanceFromBottom = () => -10;
+          expect(this.sticky.isSticky()).to.be.false;
+        });
+      });
+
+      describe('(negative)', () => {
+        beforeEach(() => {
+          this.sticky = mount(<Sticky bottomOffset={-10}>Test</Sticky>, this.container);
+        });
+
+        it('is sticky when the container bottom is below the top of the screen', () => {
+          this.sticky.getDistanceFromBottom = () => 20;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+
+        it('is sticky when the container bottom is at the top of the screen', () => {
+          this.sticky.getDistanceFromBottom = () => 0;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+
+        it('is sticky when the container bottom is less than `bottomOffset` pixels above the top of the screen', () => {
+          this.sticky.getDistanceFromBottom = () => -9;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+
+        // TODO: Evaluate negating this case.
+        it('is sticky when the container bottom is exactly `bottomOffset` pixels above the top of the screen', () => {
+          this.sticky.getDistanceFromBottom = () => -10;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+
+        it('is not sticky when the container bottom is more than `bottomOffset` pixels above the top of the screen', () => {
+          this.sticky.getDistanceFromBottom = () => -11;
+          expect(this.sticky.isSticky()).to.be.false;
+        });
+      });
+
+      describe('with context.offset', () => {
+        beforeEach(() => {
+          this.sticky = mount(<Sticky bottomOffset={10}>Test</Sticky>, this.container);
+          this.sticky.getDistanceFromTop = () => -1000;
+          this.sticky.context.offset = 15;
+        });
+
+        it('is sticky when the container bottom is below the `offset`', () => {
+          this.sticky.getDistanceFromBottom = () => 30;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+
+        // TODO: Evaluate negating this case.
+        it('is sticky when the container bottom is `bottomOffset` pixels below the `offset`', () => {
+          this.sticky.getDistanceFromBottom = () => 25;
+          expect(this.sticky.isSticky()).to.be.true;
+        });
+
+        it('is not sticky when the container bottom is just above `bottomOffset` pixels below the `offset`', () => {
+          this.sticky.getDistanceFromBottom = () => 24;
+          expect(this.sticky.isSticky()).to.be.false;
+        });
+
+        it('is not sticky when the container bottom is well above `bottomOffset` pixels below the `offset`', () => {
+          this.sticky.getDistanceFromBottom = () => 5;
+          expect(this.sticky.isSticky()).to.be.false;
+        });
+      });
+    });
+
+    describe('isActive', () => {
+      it('`true` allows the component to be sticky', () => {
+        this.sticky = mount(<Sticky isActive={true}>Test</Sticky>, this.container);
         this.sticky.getDistanceFromTop = () => 0;
 
-        // is 0 - 0 >= 0? Yes, so should be sticky
         expect(this.sticky.isSticky()).to.be.true;
       });
 
-      it ('should not be sticky when scroll position is less that original position plus topOffset', () => {
-        this.sticky.getDistanceFromTop = () => 100;
+      it('`false` prevents the component from being sticky', () => {
+        this.sticky = mount(<Sticky isActive={false}>Test</Sticky>, this.container);
+        this.sticky.getDistanceFromTop = () => 0;
 
-        // is 0 - 0 >= 100? No, so should not sticky
-        expect(this.sticky.isSticky()).to.be.false;
-      });
-
-      it ('should not be sticky when container height minus bottom offset is less than offset', () => {
-        this.sticky = mount(<Sticky bottomOffset={999}>Test</Sticky>, this.container);
-        this.sticky.context.offset = 10;
-        this.sticky.context.rect = { bottom: 1000 };
-        this.sticky.getDistanceFromTop = () => 100;
-
-        // 101 + 10 - 0 >= 100 AND 10 <= 1000 - 999
         expect(this.sticky.isSticky()).to.be.false;
       });
     });
 
-    describe('change events', () => {
-      it ('should fire the onStickyStateChange event when sticky state changes', (done) => {
-        let shouldBeSticky = true;
-        let scrollPosition = 100;
-        let topOffset = 0;
-        let origin = 100;
+    describe('onStickyStateChange', () => {
+      beforeEach(() => {
+        const spy = (...args) => this.callback(...args);
+        this.callback = () => {}
+        this.sticky = mount(<Sticky onStickyStateChange={spy}>Test</Sticky>, this.container);
+      });
 
-        function onStickyStateChange(isSticky) {
-          expect(isSticky).to.equal(shouldBeSticky);
+      it('calls the onStickyStateChange callback when becoming sticky', (done) => {
+        this.sticky.getDistanceFromTop = () => 10;
+        this.sticky.onScroll();  // Not Sticky
+
+        this.callback = (isSticky) => {
+          expect(isSticky).to.equal(true);
           done();
         }
 
-        this.sticky = mount(
-          <Sticky onStickyStateChange={onStickyStateChange}>Test</Sticky>, this.container);
-
-        this.sticky.state.isSticky = !shouldBeSticky;
-        this.sticky.onScroll();
+        this.sticky.getDistanceFromTop = () => 0;
+        this.sticky.onScroll();  // Sticky
       });
 
-      it ('should not fire the onStickyStateChange event when sticky state remains the same', (done) => {
-        let shouldBeSticky = true;
-        let scrollPosition = 100;
-        let topOffset = 0;
-        let origin = 100;
+      it('calls the onStickyStateChange callback when losing stickiness', (done) => {
+        this.sticky.getDistanceFromTop = () => 0;
+        this.sticky.onScroll();  // Sticky
 
-        function onStickyStateChange(isSticky) {
-          expect(false).to.be.true;
+        this.callback = (isSticky) => {
+          expect(isSticky).to.equal(false);
+          done();
         }
 
-        this.sticky = mount(<Sticky onStickyStateChange={onStickyStateChange}>Test</Sticky>, this.container);
-
-        this.sticky.state.isSticky = shouldBeSticky;
-        this.sticky.onScroll();
-        setTimeout(done, 20);
+        this.sticky.getDistanceFromTop = () => 10;
+        this.sticky.onScroll();  // Not Sticky
       });
 
+      it('does not call the onStickyStateChange callback when staying sticky', (done) => {
+        this.sticky.getDistanceFromTop = () => 0;
+        this.sticky.onScroll();  // Sticky
+
+        this.callback = (isSticky) => {
+          expect(false).to.equal(true);
+        }
+
+        this.sticky.getDistanceFromTop = () => -10;
+        this.sticky.onScroll();  // Still Sticky
+        setTimeout(done, 10);
+      });
+
+      it('does not call the onStickyStateChange callback when staying unstuck', (done) => {
+        this.sticky.getDistanceFromTop = () => 10;
+        this.sticky.onScroll();  // Not Sticky
+
+        this.callback = (isSticky) => {
+          expect(false).to.equal(true);
+        }
+
+        this.sticky.getDistanceFromTop = () => 20;
+        this.sticky.onScroll();  // Still Not Sticky
+        setTimeout(done, 10);
+      });
+    });
+
+    describe('className', () => {
+      it('renders the DOM node with the given className', () => {
+        this.sticky = mount(<Sticky className="xyz">Test</Sticky>, this.container);
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.xyz')).to.not.be.null;
+      });
+
+      it('adds the "sticky" class to the DOM node when sticky', () => {
+        this.sticky = mount(<Sticky className="xyz">Test</Sticky>, this.container);
+        this.sticky.setState({ isSticky: true });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.xyz')).to.not.be.null;
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.xyz.sticky')).to.not.be.null;
+      });
+
+      it('omits the "sticky" class when not sticky', () => {
+        this.sticky = mount(<Sticky className="xyz">Test</Sticky>, this.container);
+        this.sticky.setState({ isSticky: false });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.xyz')).to.not.be.null;
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.xyz.sticky')).to.be.null;
+      });
+    });
+
+    describe('stickyClassName', () => {
+      it('adds the `stickyClassName` to the DOM node when sticky', () => {
+        this.sticky = mount(<Sticky stickyClassName="xyz">Test</Sticky>, this.container);
+        this.sticky.setState({ isSticky: true });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.xyz')).to.not.be.null;
+      });
+
+      it('omits the `stickyClassName` when not sticky', () => {
+        this.sticky = mount(<Sticky stickyClassName="xyz">Test</Sticky>, this.container);
+        this.sticky.setState({ isSticky: false });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.xyz')).to.be.null;
+      });
+
+      it('uses the `stickyClassName` instead of the default "sticky" class', () => {
+        this.sticky = mount(<Sticky stickyClassName="xyz">Test</Sticky>, this.container);
+        this.sticky.setState({ isSticky: true });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.xyz')).to.not.be.null;
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.sticky')).to.be.null;
+      });
+    });
+
+    describe('style', () => {
+      it('applies the given styles', () => {
+        this.sticky = mount(<Sticky className="handle" style={{height: 100, opacity: 0.5}}>Test</Sticky>, this.container);
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.height).to.equal('100px');
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.opacity).to.equal('0.5');
+      });
+    });
+
+    describe('stickyStyle', () => {
+      it('applies if the component is sticky', () => {
+        this.sticky = mount(<Sticky className="handle" stickyStyle={{height: 200}}>Test</Sticky>, this.container);
+        this.sticky.setState({ isSticky: true });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.height).to.equal('200px');
+      });
+
+      it('does not apply if the component is not sticky', () => {
+        this.sticky = mount(<Sticky className="handle" stickyStyle={{height: 200}}>Test</Sticky>, this.container);
+        this.sticky.setState({ isSticky: false });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.height).to.equal('');
+      });
+
+      it('merges `stickyStyle` with the provided `style` prop', () => {
+        this.sticky = mount(<Sticky className="handle" style={{height: 100, opacity: 0.5}} stickyStyle={{height: 200}}>Test</Sticky>, this.container);
+        this.sticky.setState({ isSticky: true });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.height).to.equal('200px');
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.opacity).to.equal('0.5');
+      });
     });
   });
 
-  describe('className', () => {
-    it ('should render the correct className depending on sticky state', () => {
-      this.sticky = mount(<Sticky className="handle">Test</Sticky>, this.container);
+  describe('state', () => {
+    describe('xOffset', () => {
+      beforeEach(() => {
+        this.sticky = mount(<Sticky className="handle">Test</Sticky>, this.container);
+      });
 
-      this.sticky.setState({ isSticky: false });
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.sticky.handle')).to.be.null;
+      describe('updates through `onScroll`', () => {
+        it('becomes updated when called while sticky', () => {
+          this.sticky.setState({ isSticky: true, xOffset: 10 })
+          this.sticky.isSticky = () => true;
+          this.sticky.getXOffset = () => 20;
 
-      this.sticky.setState({ isSticky:  true });
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.sticky.handle')).to.not.be.null;
+          this.sticky.onScroll();
+
+          expect(this.sticky.state.xOffset).to.equal(20);
+        });
+
+        it('does not update when called while not sticky', () => {
+          this.sticky.setState({ isSticky: false, xOffset: 10 })
+          this.sticky.isSticky = () => false;
+          this.sticky.getXOffset = () => 20;
+
+          this.sticky.onScroll();
+
+          expect(this.sticky.state.xOffset).to.equal(10);
+        });
+      });
+
+      it('is not passed to the non-placeholder child if not sticky', () => {
+        this.sticky.setState({ isSticky: false, xOffset: 1000 });
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.left).to.equal('');
+      });
+
+      it('is passed to the non-placeholder child if sticky', () => {
+        this.sticky.setState({ isSticky: true, xOffset: 1000 });
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.left).to.equal('1000px');
+      });
     });
 
-    it ('should allow overriding sticky class name', () => {
-      this.sticky = mount(<Sticky className="handle" stickyClassName="stuck">Test</Sticky>, this.container);
+    describe('height', () => {
+      it('is not passed to the placeholder child as padding if not sticky', () => {
+        this.sticky.setState({ isSticky: false, height: 1000 });
+        expect(this.sticky.refs.placeholder.style.paddingBottom).to.equal('0px');
+      });
 
-      this.sticky.setState({ isSticky:  true });
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.stuck.handle')).to.not.be.null;
-    });
-  });
-
-  describe('style', () => {
-    it ('should render the correct style depending on sticky state', () => {
-      this.sticky = mount(<Sticky className="handle" style={{height: 100, opacity: 0.5}} stickyStyle={{height: 200}}>Test</Sticky>, this.container);
-
-      this.sticky.setState({ isSticky: false });
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.height).to.equal('100px');
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.opacity).to.equal('0.5');
-
-      this.sticky.setState({ isSticky:  true });
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.height).to.equal('200px');
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.opacity).to.equal('0.5');
-    });
-  });
-
-
-  describe('compensation and offsets', () => {
-    it ('should correctly pad the placeholder element depending on sticky state', () => {
-      this.sticky = mount(<Sticky className="handle">Test</Sticky>, this.container);
-
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('div:first-child').style.paddingBottom).to.equal('0px');
-
-      this.sticky.setState({ isSticky: true, height: 100 });
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('div:first-child').style.paddingBottom).to.equal('100px');
-    });
-
-    it ('should report its height to its container', () => {
-      let contextOffset = 0;
-      this.sticky.context.container = { updateOffset: (offset) => { contextOffset = offset; } }
-      this.sticky.getHeight = () => 100;
-
-      // Sticky
-      this.sticky.isSticky = () => true;
-      this.sticky.onScroll();
-      expect(contextOffset).to.equal(100);
-
-      // Not Sticky
-      this.sticky.isSticky = () => false;
-      this.sticky.onScroll();
-      expect(contextOffset).to.equal(0);
-    });
-
-    it ('should attempt to use the top from the context container', () => {
-      this.sticky = mount(<Sticky className="handle" style={{top: 1}}>Test</Sticky>, this.container);
-      this.sticky.context.offset = 100;
-      this.sticky.context.rect = { bottom: 1000 };
-
-      this.sticky.setState({ isSticky:  false });
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('1px');
-
-      this.sticky.setState({ isSticky:  true });
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('100px');
-    });
-
-    it ('should stop scrolling if at the bottom of the context container (before bottom)', () => {
-      this.sticky = mount(<Sticky className="handle" style={{top: 1}}>Test</Sticky>, this.container);
-      this.sticky.setState({ origin: 0, height: 100 });
-      this.sticky.getHeight = () => 100;
-
-      this.sticky.context.rect = { bottom: 100 };
-      this.sticky.onScroll();
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('0px');
-    });
-
-    it ('should stop scrolling if at the bottom of the context container (just below bottom)', () => {
-      this.sticky = mount(<Sticky className="handle" style={{top: 1}}>Test</Sticky>, this.container);
-      this.sticky.setState({ origin: 0, height: 100 });
-      this.sticky.getHeight = () => 100;
-
-      this.sticky.context.rect = { bottom: 90 };
-      this.sticky.onScroll();
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('-10px');
-    });
-
-    it ('should stop scrolling if at the bottom of the context container (far beyond bottom)', () => {
-      this.sticky = mount(<Sticky className="handle" style={{top: 1}}>Test</Sticky>, this.container);
-      this.sticky.setState({ origin: 0, height: 100 });
-      this.sticky.getHeight = () => 100;
-
-      this.sticky.context.rect = { bottom: 0 };
-      this.sticky.onScroll();
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('-100px');
-    });
-
-    it ('should update position when placeholder changes position', () => {
-      this.sticky = mount(<Sticky className="handle">Test</Sticky>, this.container);
-      this.sticky.getXOffset = () => 100;
-
-      this.sticky.onScroll();
-
-      expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.left).to.equal('100px');
-    });
-
-    it ('should not change state on horizontal scroll when it is not sticky', () => {
-      this.sticky = mount(<Sticky className="handle style={{ top: 1 }}">Test</Sticky>, this.container);
-      this.sticky.isSticky = () => false;
-      this.sticky.getXOffset = () => 0;
-      this.sticky.onScroll();
-      this.sticky.getXOffset = () => 100;
-      this.sticky.onScroll();
-
-      expect(this.sticky.state.xOffset).to.equal(0);
+      it('is passed to the placeholder child as padding if sticky', () => {
+        this.sticky.setState({ isSticky: true, height: 1000 });
+        expect(this.sticky.refs.placeholder.style.paddingBottom).to.equal('1000px');
+      });
     });
   });
 
-  describe('isActive', () => {
-    it ('should not be sticky when isActive prop is set to false', () => {
-      let scrollPosition = 100;
-      let topOffset = 50;
-      let origin = 10;
+  describe('context', () => {
+    describe('offset', () => {
+      // `offset` represents the space occupied by sticky elements in containers outside our own.
 
-      this.sticky = mount(<Sticky isActive={false} topOffset={topOffset}>Test</Sticky>, this.container);
+      beforeEach(() => {
+        this.sticky = mount(<Sticky className="handle">Test</Sticky>, this.container);
+        this.sticky.getDistanceFromBottom = () => 200;
+        this.sticky.setState({ isSticky: true });
+      });
 
-      expect(this.sticky.isSticky(scrollPosition, origin)).to.be.false;
+      it('uses a provided offset as the top position of a sticky element', () => {
+        this.sticky.context.offset = 100;
+        this.sticky.onScroll();
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('100px');
+      });
+    });
+  });
+
+  describe('behaviors', () => {
+    describe('sticking to the bottom of the container', () => {
+      beforeEach(() => {
+        this.sticky = mount(<Sticky className="handle" style={{top: 1}}>Test</Sticky>, this.container);
+        this.sticky.setState({ height: 100 });
+        this.sticky.getHeight = () => 100;
+      });
+
+      it('is stuck to the top of the screen while there is still space before the bottom of the context container', () => {
+        this.sticky.getDistanceFromBottom = () => 100;
+        this.sticky.onScroll();
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('0px');
+      });
+
+      it('is "pushed" by the bottom of the context container when there component will not fit on screen', () => {
+        this.sticky.getDistanceFromBottom = () => 90;
+        this.sticky.onScroll();
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('-10px');
+      });
+
+      it('is "pushed" off-screen when the bottom of the context container scrolls to the top', () => {
+        this.sticky.getDistanceFromBottom = () => 0;
+        this.sticky.onScroll();
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('-100px');
+      });
+
+      it('returns to its inline position when the bottom of the context container scrolls off the top', () => {
+        this.sticky.context.rect = { bottom: -10 };
+        this.sticky.onScroll();
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.top).to.equal('1px');
+      });
+    });
+
+    describe('offset reporting', () => {
+      beforeEach(() => {
+        this.contextOffset = 0;
+
+        this.sticky.getHeight = () => 100;
+        this.sticky.context.container = {
+          updateOffset: (offset) => { this.contextOffset = offset; },
+        }
+      });
+
+      it('reports an offset of zero to its container when not sticky', () => {
+        this.sticky.isSticky = () => false;
+        this.sticky.onScroll();
+
+        expect(this.contextOffset).to.equal(0);
+      });
+
+      it('reports an offset of the component height to its container when sticky', () => {
+        this.sticky.isSticky = () => true;
+        this.sticky.onScroll();
+
+        expect(this.contextOffset).to.equal(this.sticky.getHeight());
+      });
     });
   });
 });
