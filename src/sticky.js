@@ -52,7 +52,7 @@ export default class Sticky extends React.Component {
   }
 
   getXOffset() {
-    return this.refs.placeholder.getBoundingClientRect().left; 
+    return this.refs.placeholder.getBoundingClientRect().left;
   }
 
   getWidth() {
@@ -103,14 +103,20 @@ export default class Sticky extends React.Component {
   onResize = this.onScroll;
 
   on(events, callback) {
+    const node = this.context.container && ReactDOM.findDOMNode(this.context.container)
+
     events.forEach((evt) => {
       window.addEventListener(evt, callback);
+      node && node.addEventListener(evt, callback);
     });
   }
 
   off(events, callback) {
+    const node = this.context.container && ReactDOM.findDOMNode(this.context.container)
+
     events.forEach((evt) => {
       window.removeEventListener(evt, callback);
+      node && node.removeEventListener(evt, callback);
     });
   }
 
