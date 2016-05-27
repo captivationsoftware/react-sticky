@@ -3,12 +3,6 @@ import ReactDOM from 'react-dom';
 
 export default class Sticky extends React.Component {
 
-  static contextTypes = {
-    container: React.PropTypes.any,
-    offset: React.PropTypes.number,
-    rect: React.PropTypes.object
-  }
-
   static propTypes = {
     isActive: React.PropTypes.bool,
     className: React.PropTypes.string,
@@ -28,20 +22,26 @@ export default class Sticky extends React.Component {
     stickyStyle: {},
     topOffset: 0,
     bottomOffset: 0,
-    onStickyStateChange: function () {}
+    onStickyStateChange: () => {}
+  }
+
+  static contextTypes = {
+    'sticky-channel': React.PropTypes.any
   }
 
   constructor(props) {
     super(props);
+    this.state = {};
+  }
 
-    this.state = {
-      isSticky: false
-    };
+  componentWillMount() {
+    this.channel = this.context['sticky-channel'];
+    this.channel.subscribe(this.updateContext);
   }
 
   componentDidMount() {
-    this.recomputeState();
     this.on(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.recomputeState);
+    this.recomputeState();
   }
 
   componentWillReceiveProps() {
@@ -50,6 +50,7 @@ export default class Sticky extends React.Component {
 
   componentWillUnmount() {
     this.off(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.recomputeState);
+    this.channel.unsubscribe(this.updateContext);
   }
 
   getXOffset() {
@@ -69,7 +70,8 @@ export default class Sticky extends React.Component {
   }
 
   getDistanceFromBottom() {
-    return (this.context.rect && this.context.rect.bottom) || 0;
+    if (!this.containerNode) return 0;
+    return this.containerNode.getBoundingClientRect().bottom;
   }
 
   isSticky() {
@@ -78,25 +80,39 @@ export default class Sticky extends React.Component {
     const fromTop = this.getDistanceFromTop();
     const fromBottom = this.getDistanceFromBottom();
 
-    const topBreakpoint = this.context.offset - this.props.topOffset;
-    const bottomBreakpoint = this.context.offset + this.props.bottomOffset;
+    const topBreakpoint = this.state.containerOffset - this.props.topOffset;
+    const bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
 
     return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
   }
 
+  updateContext = ({ inherited, node }) => {
+    this.containerNode = node;
+    this.setState({
+      containerOffset: inherited,
+      distanceFromBottom: this.getDistanceFromBottom()
+    });
+  }
+
   recomputeState = () => {
-    const height = this.getHeight();
     const isSticky = this.isSticky();
-    const xOffset = this.getXOffset();
+    const height = this.getHeight();
     const width = this.getWidth();
+    const xOffset = this.getXOffset();
+    const distanceFromBottom = this.getDistanceFromBottom();
     const hasChanged = this.state.isSticky !== isSticky;
 
-    this.setState({ isSticky, height, width, xOffset })
+    this.setState({ isSticky, height, width, xOffset, distanceFromBottom });
 
-    if (this.context.container)
-      this.context.container.updateOffset(isSticky ? this.state.height : 0);
+    if (hasChanged) {
+      if (this.channel) {
+        this.channel.update((data) => {
+          data.offset = (isSticky ? this.state.height : 0);
+        });
+      }
 
-    if (hasChanged) this.props.onStickyStateChange(isSticky);
+      this.props.onStickyStateChange(isSticky);
+    }
   }
 
   on(events, callback) {
@@ -131,6 +147,8 @@ export default class Sticky extends React.Component {
       if (newState.height !== state.height) return true;
       if (newState.width !== state.width) return true;
       if (newState.xOffset !== state.xOffset) return true;
+      if (newState.containerOffset !== state.containerOffset) return true;
+      if (newState.distanceFromBottom !== state.distanceFromBottom) return true;
     }
 
     return false;
@@ -147,13 +165,13 @@ export default class Sticky extends React.Component {
     if (this.state.isSticky) {
       const stickyStyle = {
         position: 'fixed',
-        top: this.context.offset,
+        top: this.state.containerOffset,
         left: this.state.xOffset,
-        width: this.state.width,
+        width: this.state.width
       };
 
-      const bottomLimit = this.getDistanceFromBottom() - this.state.height - this.props.bottomOffset;
-      if (this.context.offset > bottomLimit) {
+      const bottomLimit = this.state.distanceFromBottom - this.state.height - this.props.bottomOffset;
+      if (this.state.containerOffset > bottomLimit) {
         stickyStyle.top = bottomLimit;
       }
 
