@@ -1,47 +1,46 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import Channel from './channel';
+
 export default class Container extends React.Component {
 
   static contextTypes = {
-    container: React.PropTypes.any,
-    totalOffset: React.PropTypes.number
+    'sticky-channel': React.PropTypes.any,
   }
 
   static childContextTypes = {
-    container: React.PropTypes.any,
-    totalOffset: React.PropTypes.number,
-    offset: React.PropTypes.number,
-    rect: React.PropTypes.any
+    'sticky-channel': React.PropTypes.any,
   }
 
   constructor(props) {
     super(props);
-    this.state = {
-      offset: 0
-    };
+    this.channel = new Channel({ inherited: 0, offset: 0, node: null });
   }
 
   getChildContext() {
-    const container = this;
-    const totalOffset = (this.context.totalOffset || 0) + this.state.offset;
-    const offset = totalOffset - this.state.offset;
-    const rect = this.state.node ? this.state.node.getBoundingClientRect() : {};
-    return { container, totalOffset, offset, rect };
+    return { 'sticky-channel': this.channel };
+  }
+
+  componentWillMount() {
+    const parentChannel = this.context['sticky-channel'];
+    if (parentChannel) parentChannel.subscribe(this.updateOffset);
   }
 
   componentDidMount() {
     const node = ReactDOM.findDOMNode(this);
-    this.setState({ node });
+    this.channel.update((data) => { data.node = node });
   }
 
-  updateOffset(height) {
-    const childContext = this.getChildContext();
-    const occupiedSpace = childContext.rect.bottom - childContext.offset;
-    const offset = Math.min(occupiedSpace, height);
-    if (this.state.offset !== offset) {
-      this.setState({ offset });
-    }
+  componentWillUnmount() {
+    this.channel.update((data) => { data.node = null });
+
+    const parentChannel = this.context['sticky-channel'];
+    if (parentChannel) parentChannel.unsubscribe(this.updateOffset);
+  }
+
+  updateOffset = ({ inherited, offset }) => {
+    this.channel.update((data) => { data.inherited = inherited + offset });
   }
 
   render() {
