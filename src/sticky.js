@@ -62,7 +62,7 @@ export default class Sticky extends React.Component {
   }
 
   getHeight() {
-    return ReactDOM.findDOMNode(this).getBoundingClientRect().height;
+    return ReactDOM.findDOMNode(this.refs.children).getBoundingClientRect().height;
   }
 
   getDistanceFromTop() {
@@ -184,7 +184,7 @@ export default class Sticky extends React.Component {
     return (
       <div>
         <div ref="placeholder" style={placeholderStyle}></div>
-        <div {...this.props} className={className} style={style}>
+        <div {...this.props} ref="children" className={className} style={style}>
           {this.props.children}
         </div>
       </div>

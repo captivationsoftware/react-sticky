@@ -345,7 +345,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getHeight',
 	    value: function getHeight() {
-	      return _reactDom2.default.findDOMNode(this).getBoundingClientRect().height;
+	      return _reactDom2.default.findDOMNode(this.refs.children).getBoundingClientRect().height;
 	    }
 	  }, {
 	    key: 'getDistanceFromTop',
@@ -452,7 +452,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _react2.default.createElement('div', { ref: 'placeholder', style: placeholderStyle }),
 	        _react2.default.createElement(
 	          'div',
-	          _extends({}, this.props, { className: className, style: style }),
+	          _extends({}, this.props, { ref: 'children', className: className, style: style }),
 	          this.props.children
 	        )
 	      );
