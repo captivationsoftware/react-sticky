@@ -44,8 +44,7 @@ export default class Container extends React.Component {
   }
 
   render() {
-    return <div {...this.props}>
-      {this.props.children}
-    </div>
+    const element = this.props.element || 'div';
+    return React.createElement(element, {...this.props}, this.props.children);
   }
 }
