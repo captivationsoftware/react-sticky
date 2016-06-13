@@ -65,5 +65,13 @@ describe('StickyContainer component', function() {
 
       parentChannel.update((data) => { data.offset = 999 });
     });
+    
+    it('should allow specification of element type', (done) => {
+      const mountedStickyContainer = mount(<StickyContainer tagName="a"></StickyContainer>);
+      const tagName = mountedStickyContainer._reactInternalInstance._renderedComponent._currentElement.type;
+      expect(tagName).to.equal("a");
+      unmount(mountedStickyContainer);
+      done();
+    })
   });
 });

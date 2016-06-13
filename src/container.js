@@ -44,7 +44,7 @@ export default class Container extends React.Component {
   }
 
   render() {
-    const element = this.props.element || 'div';
-    return React.createElement(element, {...this.props}, this.props.children);
+    const tagName = this.props.tagName || 'div';
+    return React.createElement(tagName, {...this.props}, this.props.children);
   }
 }
