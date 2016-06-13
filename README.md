@@ -69,8 +69,8 @@ Note that the calculation of the Sticky element's height does not currently take
 
 `<StickyContainer />` passes along all props you provide to it without interference. That's right - no restrictions - go nuts!  
 
-#### element _(default: 'div')_
-Specify the desired DOM element to be the container.
+#### tagName _(default: 'div')_
+Specify the desired DOM element type to be the container.
 
 
 ### `<Sticky />` Props
