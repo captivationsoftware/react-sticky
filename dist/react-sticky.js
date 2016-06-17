@@ -301,7 +301,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          });
 	        }
 
-	        _this.props.onStickyStateChange(isSticky);
+	        _this.props.onStickyStateChange(_this, isSticky);
 	      }
 	    };
 
@@ -465,6 +465,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Sticky.propTypes = {
 	  isActive: _react2.default.PropTypes.bool,
 	  className: _react2.default.PropTypes.string,
+	  name: _react2.default.PropTypes.string,
 	  style: _react2.default.PropTypes.object,
 	  stickyClassName: _react2.default.PropTypes.string,
 	  stickyStyle: _react2.default.PropTypes.object,
@@ -475,6 +476,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Sticky.defaultProps = {
 	  isActive: true,
 	  className: '',
+	  name: '',
 	  style: {},
 	  stickyClassName: 'sticky',
 	  stickyStyle: {},

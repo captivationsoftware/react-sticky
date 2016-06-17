@@ -6,6 +6,7 @@ export default class Sticky extends React.Component {
   static propTypes = {
     isActive: React.PropTypes.bool,
     className: React.PropTypes.string,
+    name: React.PropTypes.string,
     style: React.PropTypes.object,
     stickyClassName: React.PropTypes.string,
     stickyStyle: React.PropTypes.object,
@@ -17,6 +18,7 @@ export default class Sticky extends React.Component {
   static defaultProps = {
     isActive: true,
     className: '',
+    name: '',
     style: {},
     stickyClassName: 'sticky',
     stickyStyle: {},
@@ -111,7 +113,7 @@ export default class Sticky extends React.Component {
         });
       }
 
-      this.props.onStickyStateChange(isSticky);
+      this.props.onStickyStateChange(this, isSticky);
     }
   }
 
