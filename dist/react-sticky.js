@@ -284,27 +284,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	    };
 
-	    _this.recomputeStatex = function () {
-	      var isSticky = _this.isSticky();
-	      var height = _this.getHeight();
-	      var width = _this.getWidth();
-	      var xOffset = _this.getXOffset();
-	      var distanceFromBottom = _this.getDistanceFromBottom();
-	      var hasChanged = _this.state.isSticky !== isSticky;
-
-	      _this.setState({ isSticky: isSticky, height: height, width: width, xOffset: xOffset, distanceFromBottom: distanceFromBottom });
-
-	      if (hasChanged) {
-	        if (_this.channel) {
-	          _this.channel.update(function (data) {
-	            data.offset = isSticky ? _this.state.height : 0;
-	          });
-	        }
-
-	        _this.props.onStickyStateChange(isSticky);
-	      }
-	    };
-
 	    _this.recomputeState = function () {
 	      var isSticky = _this.isSticky();
 	      var isInView = _this.isInView();

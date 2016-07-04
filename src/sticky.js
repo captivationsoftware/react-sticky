@@ -106,29 +106,6 @@ export default class Sticky extends React.Component {
 		return nodeBottom >= portTop && nodeTop <= portBottom
 			|| !!node.querySelector('.' + this.props.stickyClassName)
 	}
-		
-	
-	
-  recomputeStatex = () => {
-    const isSticky = this.isSticky();
-    const height = this.getHeight();
-    const width = this.getWidth();
-    const xOffset = this.getXOffset();
-    const distanceFromBottom = this.getDistanceFromBottom();
-    const hasChanged = this.state.isSticky !== isSticky;
-
-    this.setState({ isSticky, height, width, xOffset, distanceFromBottom});
-
-    if (hasChanged) {
-      if (this.channel) {
-        this.channel.update((data) => {
-          data.offset = (isSticky ? this.state.height : 0);
-        });
-      }
-
-      this.props.onStickyStateChange(isSticky);
-    }
-  }
 
 	recomputeState = () => {
 		const isSticky = this.isSticky();
