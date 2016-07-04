@@ -284,7 +284,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	    };
 
-	    _this.recomputeState = function () {
+	    _this.recomputeStatex = function () {
 	      var isSticky = _this.isSticky();
 	      var height = _this.getHeight();
 	      var width = _this.getWidth();
@@ -293,6 +293,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var hasChanged = _this.state.isSticky !== isSticky;
 
 	      _this.setState({ isSticky: isSticky, height: height, width: width, xOffset: xOffset, distanceFromBottom: distanceFromBottom });
+
+	      if (hasChanged) {
+	        if (_this.channel) {
+	          _this.channel.update(function (data) {
+	            data.offset = isSticky ? _this.state.height : 0;
+	          });
+	        }
+
+	        _this.props.onStickyStateChange(isSticky);
+	      }
+	    };
+
+	    _this.recomputeState = function () {
+	      var isSticky = _this.isSticky();
+	      var isInView = _this.isInView();
+
+	      var height = _this.getHeight();
+	      var width = _this.getWidth();
+	      var xOffset = _this.getXOffset();
+	      var distanceFromBottom = _this.getDistanceFromBottom();
+
+	      var hasChanged = _this.state.isSticky !== isSticky;
+
+	      if (isInView || hasChanged) _this.setState({ isSticky: isSticky, height: height, width: width, xOffset: xOffset, distanceFromBottom: distanceFromBottom, isInView: isInView });
 
 	      if (hasChanged) {
 	        if (_this.channel) {
@@ -372,6 +396,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
 	    }
 	  }, {
+	    key: 'isInView',
+	    value: function isInView() {
+	      var doc = document.documentElement;
+	      var portTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+	      var portBottom = portTop + window.innerHeight;
+
+	      var node = _reactDom2.default.findDOMNode(this);
+	      var nodeTop = node.offsetTop;
+	      var nodeBottom = nodeTop + node.getBoundingClientRect().height;
+
+	      return nodeBottom >= portTop && nodeTop <= portBottom || !!node.querySelector('.' + this.props.stickyClassName);
+	    }
+	  }, {
 	    key: 'on',
 	    value: function on(events, callback) {
 	      events.forEach(function (evt) {
@@ -403,9 +440,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Have we changed any state that will always impact rendering?
 	      var state = this.state;
 	      if (newState.isSticky !== state.isSticky) return true;
+	      if (newState.isInView !== state.isInView) return true;
 
-	      // If we are sticky, have we changed any state that will impact rendering?
-	      if (state.isSticky) {
+	      // If we are in view, have we changed any state that will impact rendering?
+	      if (state.isInView) {
 	        if (newState.height !== state.height) return true;
 	        if (newState.width !== state.width) return true;
 	        if (newState.xOffset !== state.xOffset) return true;
@@ -452,7 +490,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _react2.default.createElement('div', { ref: 'placeholder', style: placeholderStyle }),
 	        _react2.default.createElement(
 	          'div',
-	          _extends({}, this.props, { className: className, style: style }),
+	          _extends({}, this.props, { className: className + ' find-sticky', style: style }),
 	          this.props.children
 	        )
 	      );

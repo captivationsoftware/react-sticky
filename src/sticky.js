@@ -94,7 +94,22 @@ export default class Sticky extends React.Component {
     });
   }
 
-  recomputeState = () => {
+	isInView() {
+		const doc = document.documentElement
+		const portTop = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)
+		const portBottom = portTop + window.innerHeight
+
+		const node = ReactDOM.findDOMNode(this)
+		const nodeTop = node.offsetTop
+		const nodeBottom = nodeTop + node.getBoundingClientRect().height
+
+		return nodeBottom >= portTop && nodeTop <= portBottom
+			|| !!node.querySelector('.' + this.props.stickyClassName)
+	}
+		
+	
+	
+  recomputeStatex = () => {
     const isSticky = this.isSticky();
     const height = this.getHeight();
     const width = this.getWidth();
@@ -102,7 +117,7 @@ export default class Sticky extends React.Component {
     const distanceFromBottom = this.getDistanceFromBottom();
     const hasChanged = this.state.isSticky !== isSticky;
 
-    this.setState({ isSticky, height, width, xOffset, distanceFromBottom });
+    this.setState({ isSticky, height, width, xOffset, distanceFromBottom});
 
     if (hasChanged) {
       if (this.channel) {
@@ -114,6 +129,31 @@ export default class Sticky extends React.Component {
       this.props.onStickyStateChange(isSticky);
     }
   }
+
+	recomputeState = () => {
+		const isSticky = this.isSticky();
+		const isInView = this.isInView()
+
+		const height = this.getHeight();
+		const width = this.getWidth();
+		const xOffset = this.getXOffset();
+		const distanceFromBottom = this.getDistanceFromBottom();
+
+		const hasChanged = this.state.isSticky !== isSticky;
+
+		if(isInView || hasChanged)
+			this.setState({ isSticky, height, width, xOffset, distanceFromBottom, isInView });
+
+		if (hasChanged) {
+			if (this.channel) {
+				this.channel.update((data) => {
+					data.offset = (isSticky ? this.state.height : 0);
+				});
+			}
+
+			this.props.onStickyStateChange(isSticky);
+		}
+	}
 
   on(events, callback) {
     events.forEach((evt) => {
@@ -141,9 +181,10 @@ export default class Sticky extends React.Component {
     // Have we changed any state that will always impact rendering?
     const state = this.state;
     if (newState.isSticky !== state.isSticky) return true;
+	  if(newState.isInView !== state.isInView) return true
 
-    // If we are sticky, have we changed any state that will impact rendering?
-    if (state.isSticky) {
+    // If we are in view, have we changed any state that will impact rendering?
+	  if(state.isInView) {
       if (newState.height !== state.height) return true;
       if (newState.width !== state.width) return true;
       if (newState.xOffset !== state.xOffset) return true;
@@ -184,7 +225,7 @@ export default class Sticky extends React.Component {
     return (
       <div>
         <div ref="placeholder" style={placeholderStyle}></div>
-        <div {...this.props} className={className} style={style}>
+        <div {...this.props} className={className + ' find-sticky'} style={style}>
           {this.props.children}
         </div>
       </div>
