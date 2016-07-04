@@ -286,7 +286,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _this.recomputeState = function () {
 	      var isSticky = _this.isSticky();
-	      var isInView = _this.isInView();
+	      var isInView = isSticky || _this.isInView();
 
 	      var height = _this.getHeight();
 	      var width = _this.getWidth();
@@ -385,7 +385,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var nodeTop = node.offsetTop;
 	      var nodeBottom = nodeTop + node.getBoundingClientRect().height;
 
-	      return nodeBottom >= portTop && nodeTop <= portBottom || !!node.querySelector('.' + this.props.stickyClassName);
+	      return nodeBottom >= portTop && nodeTop <= portBottom;
+	      //|| !!node.querySelector('.' + this.props.stickyClassName)
 	    }
 	  }, {
 	    key: 'on',

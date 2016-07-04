@@ -104,12 +104,11 @@ export default class Sticky extends React.Component {
 		const nodeBottom = nodeTop + node.getBoundingClientRect().height
 
 		return nodeBottom >= portTop && nodeTop <= portBottom
-			|| !!node.querySelector('.' + this.props.stickyClassName)
 	}
 
 	recomputeState = () => {
 		const isSticky = this.isSticky();
-		const isInView = this.isInView()
+		const isInView = isSticky || this.isInView()
 
 		const height = this.getHeight();
 		const width = this.getWidth();
