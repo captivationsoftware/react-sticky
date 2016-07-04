@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf lib dist",
     "transpile": "babel src --loose --out-dir lib",
-    "dist": "webpack lib/index.js dist/react-sticky.js --display-modules --progress && NODE_ENV=production webpack lib/index.js dist/react-sticky.min.js --display-modules --progress",
+    "dist": "webpack lib/index.js dist/react-sticky.js --display-modules --progress && set NODE_ENV=production && webpack lib/index.js dist/react-sticky.min.js --display-modules --progress",
     "build": "npm run transpile && npm run dist",
     "prepublish": "npm run clean && npm run build",
     "test": "mocha --compilers js:babel-core/register test/unit"
