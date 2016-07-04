@@ -401,6 +401,12 @@ describe('Sticky component', function() {
         this.sticky.setState({ isSticky: true, height: 1000 });
         expect(this.sticky.refs.placeholder.style.paddingBottom).to.equal('1000px');
       });
+
+      it('gets height from the children', () => {
+        const childrenNode = ReactDOM.findDOMNode(this.sticky.refs.children);
+        childrenNode.getBoundingClientRect = () => ({ height: 123 })
+        expect(this.sticky.getHeight()).to.equal(123)
+      });
     });
   });
 
