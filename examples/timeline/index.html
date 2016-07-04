@@ -25,14 +25,14 @@
     render() {
       let timeline = _.range(2000, 3000, 10).map((decade) => {
         return (
-          <StickyContainer style={{zIndex: 4}} data-container="x">
-            <Sticky style={{zIndex: 3}} data-sticky="x">
+          <StickyContainer style={{zIndex: 4}}>
+            <Sticky style={{zIndex: 3}}>
               <h2>{decade}s</h2>
             </Sticky>
             { _.range(0,10).map((i) => {
               return (
-                <StickyContainer style={{zIndex: 2}} data-container="x">
-                  <Sticky data-sticky="x">
+                <StickyContainer style={{zIndex: 2}}>
+                  <Sticky>
                     <h3>{decade + i}</h3>
                   </Sticky>
                   <p>
