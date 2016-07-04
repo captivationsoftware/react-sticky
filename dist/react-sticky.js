@@ -490,7 +490,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _react2.default.createElement('div', { ref: 'placeholder', style: placeholderStyle }),
 	        _react2.default.createElement(
 	          'div',
-	          _extends({}, this.props, { className: className + ' find-sticky', style: style }),
+	          _extends({}, this.props, { className: className, style: style }),
 	          this.props.children
 	        )
 	      );
