@@ -184,7 +184,7 @@ export default class Sticky extends React.Component {
     return (
       <div>
         <div ref="placeholder" style={placeholderStyle}></div>
-        <div {...this.props} ref="children" className={className} style={style}>
+        <div ref="children" className={className} style={style}>
           {this.props.children}
         </div>
       </div>
