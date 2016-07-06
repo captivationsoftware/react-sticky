@@ -181,10 +181,20 @@ export default class Sticky extends React.Component {
       style = Object.assign({}, style, stickyStyle, this.props.stickyStyle);
     }
 
+    const {
+      topOffset,
+      isActive,
+      stickyClassName,
+      stickyStyle,
+      bottomOffset,
+      onStickyStateChange,
+      ...props
+    } = this.props;
+
     return (
       <div>
         <div ref="placeholder" style={placeholderStyle}></div>
-        <div ref="children" className={className} style={style}>
+        <div {...props} ref="children" className={className} style={style}>
           {this.props.children}
         </div>
       </div>
