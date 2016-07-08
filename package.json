@@ -1,6 +1,6 @@
 {
   "name": "react-sticky",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "Sticky component for React",
   "main": "lib/index.js",
   "scripts": {
