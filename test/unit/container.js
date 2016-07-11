@@ -1,7 +1,6 @@
 import '../setup'
 
 import { expect } from 'chai';
-import { jsdom } from 'jsdom';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-addons-test-utils';
