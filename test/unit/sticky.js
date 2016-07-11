@@ -430,19 +430,20 @@ describe('Sticky component', function() {
       it('is used by `recomputeState` to notify the parent container when we toggle stickiness', () => {
         let called = 0;
         this.channel.subscribe(() => called += 1);
+        expect(called).to.equal(1);
 
         this.sticky.setState({ isSticky: false });
         this.sticky.isSticky = () => false;
         this.sticky.recomputeState();
-        expect(called).to.equal(0);
+        expect(called).to.equal(1);
 
         this.sticky.isSticky = () => true;
         this.sticky.recomputeState();
-        expect(called).to.equal(1);
+        expect(called).to.equal(2);
 
         this.sticky.isSticky = () => false;
         this.sticky.recomputeState();
-        expect(called).to.equal(2);
+        expect(called).to.equal(3);
       });
     });
   });
@@ -591,6 +592,53 @@ describe('Sticky component', function() {
 
           expect(this.stickyLow.state.containerOffset).to.equal(200);
         });
+      });
+    });
+
+    describe('dynamically generated descendant Sticky', () => {
+      before(() => {
+        this.CreateStickyDynamically = React.createClass({
+          getInitialState: function() {
+            return {
+              create: false
+            }
+          },
+          render: function() {
+            if(!this.state.create) return null;
+
+            return (
+              <StickyContainer>
+                <Sticky>Async</Sticky>
+              </StickyContainer>
+            )
+          },
+          setCreate: function() {
+            this.setState({create: true});
+          }
+        });
+      });
+
+      it.only('correctly sticks', () => {
+        const {CreateStickyDynamically} = this;
+        mountSticky(
+          <div>
+            <Sticky>Top</Sticky>
+            <CreateStickyDynamically/>
+          </div>
+        );
+
+        const createComponent =
+          ReactTestUtils.findRenderedComponentWithType(this.stickyContainer, CreateStickyDynamically);
+        createComponent.setCreate();
+
+        const asyncSticky =
+          ReactTestUtils.findRenderedComponentWithType(createComponent, Sticky)
+
+        asyncSticky.getDistanceFromTop = () => 1;
+
+        expect(asyncSticky.isSticky()).to.be.true;
+
+        //done();
       });
     });
   });
