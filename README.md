@@ -99,6 +99,20 @@ app.jsx
 </StickyContainer>
 ```
 
+#### stickyOverContentClassName _(default: 'sticky-over-content')_
+You can also specify a class name to be applied when the sibling content of a sticky scrolls underneath it:
+
+app.jsx
+```js
+<StickyContainer>
+  ...
+  <Sticky stickyOverContentClassName={customClassName}>
+    <header />
+  </Sticky>
+  ...
+</StickyContainer>
+```
+
 #### topOffset _(default: 0)_
 Sticky state will be triggered when the top of the element is `topOffset` pixels from the top of the closest `<StickyContainer />`. Positive numbers give the impression of a lazy sticky state, whereas negative numbers are more eager in their attachment.
 
@@ -169,6 +183,21 @@ app.jsx
 <StickyContainer>
   ...
   <Sticky onStickyStateChange={this.handleStickyStateChange}>
+    <header />
+  </Sticky
+  ...
+</StickyContainer>
+```
+
+#### onStickyOverContentChange _(default: function() {})_
+
+Use the onStickyOverContentChange prop to fire a callback function when the state changes of sibling sticky content being underneath it:
+
+app.jsx
+```js
+<StickyContainer>
+  ...
+  <Sticky onStickyOverContentChange={this.handleStickyOverContentChange}>
     <header />
   </Sticky
   ...
