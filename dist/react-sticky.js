@@ -97,9 +97,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var listeners = [];
 	  data = data || {};
+	  var wasUpdated = false;
 
 	  this.subscribe = function (fn) {
 	    listeners.push(fn);
+	    if (wasUpdated) fn(data);
 	  };
 
 	  this.unsubscribe = function (fn) {
@@ -108,6 +110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  this.update = function (fn) {
+	    wasUpdated = true;
 	    if (fn) fn(data);
 	    listeners.forEach(function (l) {
 	      return l(data);
@@ -258,6 +261,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -428,7 +433,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var style = this.props.style;
 
 	      if (this.state.isSticky) {
-	        var stickyStyle = {
+	        var _stickyStyle = {
 	          position: 'fixed',
 	          top: this.state.containerOffset,
 	          left: this.state.xOffset,
@@ -437,14 +442,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var bottomLimit = this.state.distanceFromBottom - this.state.height - this.props.bottomOffset;
 	        if (this.state.containerOffset > bottomLimit) {
-	          stickyStyle.top = bottomLimit;
+	          _stickyStyle.top = bottomLimit;
 	        }
 
 	        placeholderStyle.paddingBottom = this.state.height;
 
 	        className += ' ' + this.props.stickyClassName;
-	        style = _extends({}, style, stickyStyle, this.props.stickyStyle);
+	        style = _extends({}, style, _stickyStyle, this.props.stickyStyle);
 	      }
+
+	      var _props = this.props;
+	      var topOffset = _props.topOffset;
+	      var isActive = _props.isActive;
+	      var stickyClassName = _props.stickyClassName;
+	      var stickyStyle = _props.stickyStyle;
+	      var bottomOffset = _props.bottomOffset;
+	      var onStickyStateChange = _props.onStickyStateChange;
+
+	      var props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange']);
 
 	      return _react2.default.createElement(
 	        'div',
@@ -452,7 +467,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _react2.default.createElement('div', { ref: 'placeholder', style: placeholderStyle }),
 	        _react2.default.createElement(
 	          'div',
-	          _extends({}, this.props, { ref: 'children', className: className, style: style }),
+	          _extends({}, props, { ref: 'children', className: className, style: style }),
 	          this.props.children
 	        )
 	      );

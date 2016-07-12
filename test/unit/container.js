@@ -56,7 +56,7 @@ describe('StickyContainer component', function() {
       this.stickyContainer.componentWillMount();
 
       const childChannel = this.childContext['sticky-channel'];
-      let updatedInherited= 0;
+      let updatedInherited = 0;
 
       childChannel.subscribe(({ inherited }) => {
         updatedInherited = inherited;

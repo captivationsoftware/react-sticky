@@ -16,6 +16,7 @@ describe('Sticky component', function() {
 
   beforeEach(() => {
     mountSticky(<Sticky />);
+    // TODO: this line isn't really doing anything, nor used anywhere; should probably be removed.
     this.sticky.distanceFromBottom = () => 1000;
   });
 
@@ -592,50 +593,53 @@ describe('Sticky component', function() {
       });
     });
 
-    describe('dynamically generated descendant Sticky', () => {
+    describe('computing asynchronously generated descendant Sticky', () => {
       before(() => {
-        this.CreateStickyDynamically = React.createClass({
+        this.RenderStickyDynamically = React.createClass({
           getInitialState: function() {
             return {
-              create: false
-            }
+              renderSticky: false
+            };
           },
           render: function() {
-            if(!this.state.create) return null;
+            if(!this.state.renderSticky) return null;
 
             return (
               <StickyContainer>
                 <Sticky>Async</Sticky>
               </StickyContainer>
-            )
+            );
           },
-          setCreate: function() {
-            this.setState({create: true});
+          setRenderSticky: function() {
+            this.setState({renderSticky: true});
           }
         });
       });
 
-      it.only('correctly sticks', () => {
-        const {CreateStickyDynamically} = this;
+      beforeEach((done) => {
+        let renderStickyDynamically = null;
+        let topSticky = null
+        
+        const {RenderStickyDynamically} = this;
         mountSticky(
           <div>
-            <Sticky>Top</Sticky>
-            <CreateStickyDynamically/>
+            <Sticky ref={comp => topSticky = comp}>Top</Sticky>
+            <RenderStickyDynamically ref={comp => renderStickyDynamically = comp}/>
           </div>
         );
 
-        const createComponent =
-          ReactTestUtils.findRenderedComponentWithType(this.stickyContainer, CreateStickyDynamically);
-        createComponent.setCreate();
+        topSticky.getHeight = () => 10;
+        topSticky.recomputeState();
+        
+        setTimeout(() => {
+          renderStickyDynamically.setRenderSticky();
+          this.dynamicSticky = ReactTestUtils.findRenderedComponentWithType(renderStickyDynamically, Sticky);
+          done();
+        }, 1);
+      });
 
-        const asyncSticky =
-          ReactTestUtils.findRenderedComponentWithType(createComponent, Sticky)
-
-        asyncSticky.getDistanceFromTop = () => 1;
-
-        expect(asyncSticky.isSticky()).to.be.true;
-
-        //done();
+      it('obtains correct initial container offset', () => {
+        expect(this.dynamicSticky.state.containerOffset).to.equal(10);
       });
     });
   });
