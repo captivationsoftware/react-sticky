@@ -446,6 +446,38 @@ describe('Sticky component', function() {
         expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.opacity).to.equal('0.5');
       });
     });
+
+    describe('stickyOverContentStyle', () => {
+      it('applies if the sticky sibling content is underneath it', () => {
+        mountSticky(<Sticky className="handle" stickyOverContentStyle={{height: 200}}>Test</Sticky>);
+        this.sticky.setState({ isOverContent: true });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.height).to.equal('200px');
+      });
+
+      it('does not apply if the sticky sibling content is not underneath it', () => {
+        mountSticky(<Sticky className="handle" stickyOverContentStyle={{height: 200}}>Test</Sticky>);
+        this.sticky.setState({ isOverContent: false });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.height).to.equal('');
+      });
+
+      it('merges `stickyOverContentStyle` with the provided `style` prop', () => {
+        mountSticky(
+          <Sticky
+            className="handle"
+            style={{height: 100, opacity: 0.5}}
+            stickyOverContentStyle={{height: 200}}
+          >
+            Test
+          </Sticky>
+        );
+        this.sticky.setState({ isOverContent: true });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.height).to.equal('200px');
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.opacity).to.equal('0.5');
+      });
+    });
   });
 
   describe('state', () => {

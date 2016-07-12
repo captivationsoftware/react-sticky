@@ -10,9 +10,11 @@ export default class Sticky extends React.Component {
     stickyClassName: React.PropTypes.string,
     stickyOverContentClassName: React.PropTypes.string,
     stickyStyle: React.PropTypes.object,
+    stickyOverContentStyle: React.PropTypes.object,
     topOffset: React.PropTypes.number,
     bottomOffset: React.PropTypes.number,
-    onStickyStateChange: React.PropTypes.func
+    onStickyStateChange: React.PropTypes.func,
+    onStickyOverContentChange: React.PropTypes.func
   }
 
   static defaultProps = {
@@ -22,6 +24,7 @@ export default class Sticky extends React.Component {
     stickyClassName: 'sticky',
     stickyOverContentClassName: 'sticky-over-content',
     stickyStyle: {},
+    stickyOverContentStyle: {},
     topOffset: 0,
     bottomOffset: 0,
     onStickyStateChange: () => {},
@@ -173,7 +176,7 @@ export default class Sticky extends React.Component {
   render() {
     const placeholderStyle = { paddingBottom: 0 };
     let className = this.props.className;
-    let style = this.props.style;
+    let style = Object.assign({}, this.props.style);
 
     if (this.state.isSticky) {
       const stickyStyle = {
@@ -191,12 +194,13 @@ export default class Sticky extends React.Component {
       placeholderStyle.paddingBottom = this.state.height;
 
       className += ` ${this.props.stickyClassName}`;
-      style = Object.assign({}, style, stickyStyle, this.props.stickyStyle);
-
+      style = Object.assign(style, stickyStyle, this.props.stickyStyle);
     }
 
-    if (this.state.isOverContent)
+    if (this.state.isOverContent) {
       className += ` ${this.props.stickyOverContentClassName}`;
+      style = Object.assign(style, this.props.stickyOverContentStyle);
+    }
 
     const {
       topOffset,
@@ -204,6 +208,7 @@ export default class Sticky extends React.Component {
       stickyClassName,
       stickyOverContentClassName,
       stickyStyle,
+      stickyOverContentStyle,
       bottomOffset,
       onStickyStateChange,
       onStickyOverContentChange,
