@@ -437,7 +437,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function render() {
 	      var placeholderStyle = { paddingBottom: 0 };
 	      var className = this.props.className;
-	      var style = this.props.style;
+	      var style = _extends({}, this.props.style);
 
 	      if (this.state.isSticky) {
 	        var _stickyStyle = {
@@ -455,10 +455,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        placeholderStyle.paddingBottom = this.state.height;
 
 	        className += ' ' + this.props.stickyClassName;
-	        style = _extends({}, style, _stickyStyle, this.props.stickyStyle);
+	        style = _extends(style, _stickyStyle, this.props.stickyStyle);
 	      }
 
-	      if (this.state.isOverContent) className += ' ' + this.props.stickyOverContentClassName;
+	      if (this.state.isOverContent) {
+	        className += ' ' + this.props.stickyOverContentClassName;
+	        style = _extends(style, this.props.stickyOverContentStyle);
+	      }
 
 	      var _props = this.props;
 	      var topOffset = _props.topOffset;
@@ -466,11 +469,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var stickyClassName = _props.stickyClassName;
 	      var stickyOverContentClassName = _props.stickyOverContentClassName;
 	      var stickyStyle = _props.stickyStyle;
+	      var stickyOverContentStyle = _props.stickyOverContentStyle;
 	      var bottomOffset = _props.bottomOffset;
 	      var onStickyStateChange = _props.onStickyStateChange;
 	      var onStickyOverContentChange = _props.onStickyOverContentChange;
 
-	      var props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyOverContentClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange', 'onStickyOverContentChange']);
+	      var props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyOverContentClassName', 'stickyStyle', 'stickyOverContentStyle', 'bottomOffset', 'onStickyStateChange', 'onStickyOverContentChange']);
 
 	      return _react2.default.createElement(
 	        'div',
@@ -495,9 +499,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  stickyClassName: _react2.default.PropTypes.string,
 	  stickyOverContentClassName: _react2.default.PropTypes.string,
 	  stickyStyle: _react2.default.PropTypes.object,
+	  stickyOverContentStyle: _react2.default.PropTypes.object,
 	  topOffset: _react2.default.PropTypes.number,
 	  bottomOffset: _react2.default.PropTypes.number,
-	  onStickyStateChange: _react2.default.PropTypes.func
+	  onStickyStateChange: _react2.default.PropTypes.func,
+	  onStickyOverContentChange: _react2.default.PropTypes.func
 	};
 	Sticky.defaultProps = {
 	  isActive: true,
@@ -506,6 +512,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  stickyClassName: 'sticky',
 	  stickyOverContentClassName: 'sticky-over-content',
 	  stickyStyle: {},
+	  stickyOverContentStyle: {},
 	  topOffset: 0,
 	  bottomOffset: 0,
 	  onStickyStateChange: function onStickyStateChange() {},
