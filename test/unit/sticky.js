@@ -282,6 +282,67 @@ describe('Sticky component', function() {
       });
     });
 
+    describe('onStickyOverContentChange', () => {
+      beforeEach(() => {
+        const spy = (...args) => this.callback(...args);
+        this.callback = () => {}
+        mountSticky(<Sticky onStickyOverContentChange={spy}>Test</Sticky>);
+        this.sticky.setState({containerOffset: 0});
+      });
+
+      it('calls the onStickyOverContentChange callback when content goes "under" Sticky', () => {
+        this.sticky.getDistanceFromTop = () => 10;
+        this.sticky.recomputeState();
+
+        let wasOverContent = false;
+        this.callback = isOverContent => wasOverContent = isOverContent;
+
+        this.sticky.getDistanceFromTop = () => -10;
+        this.sticky.recomputeState();
+
+        expect(wasOverContent).to.be.true;
+      });
+
+      it('calls the onStickyOverContentChange callback when content no longer "under" Sticky', () => {
+        this.sticky.getDistanceFromTop = () => -10;
+        this.sticky.recomputeState();
+
+        let wasOverContent = true;
+        this.callback = isOverContent => wasOverContent = isOverContent;
+
+        this.sticky.getDistanceFromTop = () => 10;
+        this.sticky.recomputeState();
+
+        expect(wasOverContent).to.be.false;
+      });
+
+      it('does not call the onStickyOverContentChange callback when content remains "under" sticky', () => {
+        this.sticky.getDistanceFromTop = () => -10;
+        this.sticky.recomputeState();
+
+        let wasCalled = false;
+        this.callback = () => wasCalled = true;
+
+        this.sticky.getDistanceFromTop = () => -20;
+        this.sticky.recomputeState();
+
+        expect(wasCalled).to.be.false;
+      });
+
+      it('does not call the onStickyOverContentChange callback when content remains not "under" Sticky', () => {
+        this.sticky.getDistanceFromTop = () => 10;
+        this.sticky.recomputeState();
+
+        let wasCalled = false;
+        this.callback = () => wasCalled = true;
+
+        this.sticky.getDistanceFromTop = () => 20;
+        this.sticky.recomputeState();
+
+        expect(wasCalled).to.be.false;
+      });
+    });
+
     describe('className', () => {
       it('renders the DOM node with the given className', () => {
         mountSticky(<Sticky className="xyz">Test</Sticky>);
@@ -326,6 +387,30 @@ describe('Sticky component', function() {
 
         expect(ReactDOM.findDOMNode(this.sticky).querySelector('.xyz')).to.not.be.null;
         expect(ReactDOM.findDOMNode(this.sticky).querySelector('.sticky')).to.be.null;
+      });
+    });
+
+    describe('stickyOverContentClassName', () => {
+      it('adds the `stickyOverContentClassName` to the DOM node when Sticky is over content', () => {
+        mountSticky(<Sticky stickyOverContentClassName="xyz">Test</Sticky>);
+        this.sticky.setState({ isOverContent: true });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.xyz')).to.not.be.null;
+      });
+
+      it('omits the `stickyOverContentClassName` when Sticky is not over content', () => {
+        mountSticky(<Sticky stickyOverContentClassName="xyz">Test</Sticky>);
+        this.sticky.setState({ isOverContent: false });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.xyz')).to.be.null;
+      });
+
+      it('uses the `stickyOverContentClassName` instead of the default "sticky-over-content" class', () => {
+        mountSticky(<Sticky stickyOverContentClassName="xyz">Test</Sticky>);
+        this.sticky.setState({ isOverContent: true });
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.xyz')).to.not.be.null;
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.sticky-over-content')).to.be.null;
       });
     });
 
