@@ -3,14 +3,21 @@ import ReactDOM from 'react-dom';
 
 import Channel from './channel';
 
+const DEFAULT_INITIAL_ZINDEX = 1000;
+
 export default class Container extends React.Component {
+  static propTypes = {
+    zIndex: React.PropTypes.number
+  }
 
   static contextTypes = {
     'sticky-channel': React.PropTypes.any,
+    stickyZIndex: React.PropTypes.number
   }
 
   static childContextTypes = {
     'sticky-channel': React.PropTypes.any,
+    stickyZIndex: React.PropTypes.number
   }
 
   constructor(props) {
@@ -18,8 +25,18 @@ export default class Container extends React.Component {
     this.channel = new Channel({ inherited: 0, offset: 0, node: null });
   }
 
+  getZIndex() {
+    if(this.context.stickyZIndex === 0) return 0;
+    if(this.context.stickyZIndex) return this.context.stickyZIndex;
+    if(this.props.zIndex === 0) return 0
+    return this.props.zIndex || DEFAULT_INITIAL_ZINDEX;
+  }
+
   getChildContext() {
-    return { 'sticky-channel': this.channel };
+    return {
+      'sticky-channel': this.channel,
+      stickyZIndex: this.getZIndex()
+    };
   }
 
   componentWillMount() {
@@ -44,7 +61,12 @@ export default class Container extends React.Component {
   }
 
   render() {
-    return <div {...this.props}>
+    const zIndex = this.getZIndex()
+    let style;
+    if(zIndex !== 0)
+      style = {zIndex}
+
+    return <div style={style} {...this.props}>
       {this.props.children}
     </div>
   }
