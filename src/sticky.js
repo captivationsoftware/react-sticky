@@ -8,10 +8,13 @@ export default class Sticky extends React.Component {
     className: React.PropTypes.string,
     style: React.PropTypes.object,
     stickyClassName: React.PropTypes.string,
+    stickyOverContentClassName: React.PropTypes.string,
     stickyStyle: React.PropTypes.object,
+    stickyOverContentStyle: React.PropTypes.object,
     topOffset: React.PropTypes.number,
     bottomOffset: React.PropTypes.number,
-    onStickyStateChange: React.PropTypes.func
+    onStickyStateChange: React.PropTypes.func,
+    onStickyOverContentChange: React.PropTypes.func
   }
 
   static defaultProps = {
@@ -19,10 +22,13 @@ export default class Sticky extends React.Component {
     className: '',
     style: {},
     stickyClassName: 'sticky',
+    stickyOverContentClassName: 'sticky-over-content',
     stickyStyle: {},
+    stickyOverContentStyle: {},
     topOffset: 0,
     bottomOffset: 0,
-    onStickyStateChange: () => {}
+    onStickyStateChange: () => {},
+    onStickyOverContentChange: () => {}
   }
 
   static contextTypes = {
@@ -86,6 +92,10 @@ export default class Sticky extends React.Component {
     return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
   }
 
+  isOverContent() {
+    return this.getDistanceFromTop() < this.state.containerOffset;
+  }
+
   updateContext = ({ inherited, node }) => {
     this.containerNode = node;
     this.setState({
@@ -96,15 +106,17 @@ export default class Sticky extends React.Component {
 
   recomputeState = () => {
     const isSticky = this.isSticky();
+    const isOverContent = this.isOverContent();
     const height = this.getHeight();
     const width = this.getWidth();
     const xOffset = this.getXOffset();
     const distanceFromBottom = this.getDistanceFromBottom();
-    const hasChanged = this.state.isSticky !== isSticky;
+    const hasIsStickyChanged = this.state.isSticky !== isSticky;
+    const hasIsOverContentChanged = this.state.isOverContent !== isOverContent;
 
-    this.setState({ isSticky, height, width, xOffset, distanceFromBottom });
+    this.setState({ isSticky, isOverContent, height, width, xOffset, distanceFromBottom });
 
-    if (hasChanged) {
+    if (hasIsStickyChanged) {
       if (this.channel) {
         this.channel.update((data) => {
           data.offset = (isSticky ? this.state.height : 0);
@@ -113,6 +125,9 @@ export default class Sticky extends React.Component {
 
       this.props.onStickyStateChange(isSticky);
     }
+
+    if(hasIsOverContentChanged)
+      this.props.onStickyOverContentChange(isOverContent);
   }
 
   on(events, callback) {
@@ -141,6 +156,7 @@ export default class Sticky extends React.Component {
     // Have we changed any state that will always impact rendering?
     const state = this.state;
     if (newState.isSticky !== state.isSticky) return true;
+    if (newState.isOverContent !== state.isOverContent) return true;
 
     // If we are sticky, have we changed any state that will impact rendering?
     if (state.isSticky) {
@@ -160,7 +176,7 @@ export default class Sticky extends React.Component {
   render() {
     const placeholderStyle = { paddingBottom: 0 };
     let className = this.props.className;
-    let style = this.props.style;
+    let style = Object.assign({}, this.props.style);
 
     if (this.state.isSticky) {
       const stickyStyle = {
@@ -178,16 +194,24 @@ export default class Sticky extends React.Component {
       placeholderStyle.paddingBottom = this.state.height;
 
       className += ` ${this.props.stickyClassName}`;
-      style = Object.assign({}, style, stickyStyle, this.props.stickyStyle);
+      style = Object.assign(style, stickyStyle, this.props.stickyStyle);
+    }
+
+    if (this.state.isOverContent) {
+      className += ` ${this.props.stickyOverContentClassName}`;
+      style = Object.assign(style, this.props.stickyOverContentStyle);
     }
 
     const {
       topOffset,
       isActive,
       stickyClassName,
+      stickyOverContentClassName,
       stickyStyle,
+      stickyOverContentStyle,
       bottomOffset,
       onStickyStateChange,
+      onStickyOverContentChange,
       ...props
     } = this.props;
 

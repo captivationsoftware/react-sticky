@@ -1,13 +1,10 @@
+import '../setup'
+
 import { expect } from 'chai';
-import { jsdom } from 'jsdom';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-addons-test-utils';
 import { mount, unmount } from '../utils';
-
-// Initialize jsdom
-global.document = jsdom('<body></body>');
-global.window = document.defaultView;
 
 const { Sticky, StickyContainer, Channel } = require('../../src');
 

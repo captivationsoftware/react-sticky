@@ -85,6 +85,20 @@ app.jsx
 
 Note: You likely want to avoid messing with the following attributes in your stickyStyle: `left`, `top`, and `width`.
 
+#### stickyOverContentStyle _(default: {})_
+In the event that you wish to override the style rules applied when a Sticky's sibling content is underneath it, simply pass in the style object as a prop:
+
+app.jsx
+```js
+<StickyContainer>
+  <Sticky stickyOverContentStyle={customOverContentStyleObject}>
+    <header />
+  </Sticky>
+</StickyContainer>
+```
+
+Note: You likely want to avoid messing with the following attributes in your stickyStyle: `left`, `top`, and `width`.
+
 #### stickyClassName _(default: 'sticky')_
 You can also specify a class name to be applied when the element becomes sticky:
 
@@ -93,6 +107,20 @@ app.jsx
 <StickyContainer>
   ...
   <Sticky stickyClassName={customClassName}>
+    <header />
+  </Sticky>
+  ...
+</StickyContainer>
+```
+
+#### stickyOverContentClassName _(default: 'sticky-over-content')_
+You can also specify a class name to be applied when the sibling content of a sticky scrolls underneath it:
+
+app.jsx
+```js
+<StickyContainer>
+  ...
+  <Sticky stickyOverContentClassName={customClassName}>
     <header />
   </Sticky>
   ...
@@ -169,6 +197,21 @@ app.jsx
 <StickyContainer>
   ...
   <Sticky onStickyStateChange={this.handleStickyStateChange}>
+    <header />
+  </Sticky
+  ...
+</StickyContainer>
+```
+
+#### onStickyOverContentChange _(default: function() {})_
+
+Use the onStickyOverContentChange prop to fire a callback function when the state of sibling sticky content being underneath it changes:
+
+app.jsx
+```js
+<StickyContainer>
+  ...
+  <Sticky onStickyOverContentChange={this.handleStickyOverContentChange}>
     <header />
   </Sticky
   ...
