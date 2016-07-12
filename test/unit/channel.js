@@ -1,5 +1,6 @@
+import '../setup'
+
 import { expect } from 'chai';
-import { jsdom } from 'jsdom';
 
 const { Channel } = require('../../src');
 
@@ -74,4 +75,28 @@ describe('Channel', function() {
 
     subject.update((data) => { data.x = 2; data.y = 3 });
   });
+
+  it('does not call subscriber on subscription if channel was not previously updated', () => {
+    const subject = new Channel();
+
+    let wasCalled = false;
+    subject.subscribe(() => {
+      wasCalled = true;
+    });
+
+    expect(wasCalled).to.be.false;
+  })
+
+  it('calls subscriber on subscription if channel previously updated', () => {
+    const subject = new Channel();
+
+    subject.update(() => {});
+
+    let wasCalled = false;
+    subject.subscribe(() => {
+      wasCalled = true;
+    });
+
+    expect(wasCalled).to.be.true;
+  })
 });

@@ -2,9 +2,11 @@ export default class Channel {
   constructor(data) {
     const listeners = [];
     data = data || {};
+    let wasUpdated = false;
 
     this.subscribe = (fn) => {
       listeners.push(fn)
+      if (wasUpdated) fn(data)
     };
 
     this.unsubscribe = (fn) => {
@@ -13,6 +15,7 @@ export default class Channel {
     };
 
     this.update = (fn) => {
+      wasUpdated = true
       if (fn) fn(data);
       listeners.forEach((l) => l(data));
     }

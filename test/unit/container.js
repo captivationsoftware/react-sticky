@@ -1,13 +1,10 @@
+import '../setup'
+
 import { expect } from 'chai';
-import { jsdom } from 'jsdom';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-addons-test-utils';
 import { mount, unmount } from '../utils';
-
-// Initialize jsdom
-global.document = jsdom('<body></body>');
-global.window = document.defaultView;
 
 const { Sticky, StickyContainer, Channel } = require('../../src');
 
@@ -46,10 +43,11 @@ describe('StickyContainer component', function() {
       const childChannel = this.childContext['sticky-channel'];
       childChannel.subscribe(({ node }) => {
         expect(node).to.be.an.instanceof(window.HTMLDivElement);
-        done();
       });
 
       this.stickyContainer.componentDidMount();
+
+      done();
     });
 
     it('should publish any inherited offsets via its Channel', (done) => {
@@ -58,12 +56,19 @@ describe('StickyContainer component', function() {
       this.stickyContainer.componentWillMount();
 
       const childChannel = this.childContext['sticky-channel'];
+      let updatedInherited = 0;
+
       childChannel.subscribe(({ inherited }) => {
-        expect(inherited).to.equal(999);
-        done();
+        updatedInherited = inherited;
       });
 
+      expect(updatedInherited).to.equal(0);
+
       parentChannel.update((data) => { data.offset = 999 });
+
+      expect(updatedInherited).to.equal(999);
+
+      done();
     });
   });
 });

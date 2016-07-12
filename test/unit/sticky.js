@@ -1,13 +1,10 @@
+import '../setup'
+
 import { expect } from 'chai';
-import { jsdom } from 'jsdom';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-addons-test-utils';
 import { mount, unmount, emitEvent } from '../utils';
-
-// Initialize jsdom
-global.document = jsdom('<body></body>');
-global.window = document.defaultView;
 
 const { Sticky, StickyContainer } = require('../../src');
 
@@ -19,6 +16,7 @@ describe('Sticky component', function() {
 
   beforeEach(() => {
     mountSticky(<Sticky />);
+    // TODO: this line isn't really doing anything, nor used anywhere; should probably be removed.
     this.sticky.distanceFromBottom = () => 1000;
   });
 
@@ -430,19 +428,20 @@ describe('Sticky component', function() {
       it('is used by `recomputeState` to notify the parent container when we toggle stickiness', () => {
         let called = 0;
         this.channel.subscribe(() => called += 1);
+        expect(called).to.equal(1);
 
         this.sticky.setState({ isSticky: false });
         this.sticky.isSticky = () => false;
         this.sticky.recomputeState();
-        expect(called).to.equal(0);
+        expect(called).to.equal(1);
 
         this.sticky.isSticky = () => true;
         this.sticky.recomputeState();
-        expect(called).to.equal(1);
+        expect(called).to.equal(2);
 
         this.sticky.isSticky = () => false;
         this.sticky.recomputeState();
-        expect(called).to.equal(2);
+        expect(called).to.equal(3);
       });
     });
   });
@@ -591,6 +590,56 @@ describe('Sticky component', function() {
 
           expect(this.stickyLow.state.containerOffset).to.equal(200);
         });
+      });
+    });
+
+    describe('computing asynchronously generated descendant Sticky', () => {
+      before(() => {
+        this.RenderStickyDynamically = React.createClass({
+          getInitialState: function() {
+            return {
+              renderSticky: false
+            };
+          },
+          render: function() {
+            if(!this.state.renderSticky) return null;
+
+            return (
+              <StickyContainer>
+                <Sticky>Async</Sticky>
+              </StickyContainer>
+            );
+          },
+          setRenderSticky: function() {
+            this.setState({renderSticky: true});
+          }
+        });
+      });
+
+      beforeEach((done) => {
+        let renderStickyDynamically = null;
+        let topSticky = null
+        
+        const {RenderStickyDynamically} = this;
+        mountSticky(
+          <div>
+            <Sticky ref={comp => topSticky = comp}>Top</Sticky>
+            <RenderStickyDynamically ref={comp => renderStickyDynamically = comp}/>
+          </div>
+        );
+
+        topSticky.getHeight = () => 10;
+        topSticky.recomputeState();
+        
+        setTimeout(() => {
+          renderStickyDynamically.setRenderSticky();
+          this.dynamicSticky = ReactTestUtils.findRenderedComponentWithType(renderStickyDynamically, Sticky);
+          done();
+        }, 1);
+      });
+
+      it('obtains correct initial container offset', () => {
+        expect(this.dynamicSticky.state.containerOffset).to.equal(10);
       });
     });
   });
