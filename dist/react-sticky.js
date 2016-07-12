@@ -288,15 +288,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _this.recomputeState = function () {
 	      var isSticky = _this.isSticky();
+	      var isOverContent = _this.isOverContent();
 	      var height = _this.getHeight();
 	      var width = _this.getWidth();
 	      var xOffset = _this.getXOffset();
 	      var distanceFromBottom = _this.getDistanceFromBottom();
-	      var hasChanged = _this.state.isSticky !== isSticky;
+	      var hasIsStickyChanged = _this.state.isSticky !== isSticky;
+	      var hasIsOverContentChanged = _this.state.isOverContent !== isOverContent;
 
-	      _this.setState({ isSticky: isSticky, height: height, width: width, xOffset: xOffset, distanceFromBottom: distanceFromBottom });
+	      _this.setState({ isSticky: isSticky, isOverContent: isOverContent, height: height, width: width, xOffset: xOffset, distanceFromBottom: distanceFromBottom });
 
-	      if (hasChanged) {
+	      if (hasIsStickyChanged) {
 	        if (_this.channel) {
 	          _this.channel.update(function (data) {
 	            data.offset = isSticky ? _this.state.height : 0;
@@ -305,6 +307,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        _this.props.onStickyStateChange(isSticky);
 	      }
+
+	      if (hasIsOverContentChanged) _this.props.onStickyOverContentChange(isOverContent);
 	    };
 
 	    _this.state = {};
@@ -374,6 +378,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
 	    }
 	  }, {
+	    key: 'isOverContent',
+	    value: function isOverContent() {
+	      return this.getDistanceFromTop() < this.state.containerOffset;
+	    }
+	  }, {
 	    key: 'on',
 	    value: function on(events, callback) {
 	      events.forEach(function (evt) {
@@ -405,6 +414,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Have we changed any state that will always impact rendering?
 	      var state = this.state;
 	      if (newState.isSticky !== state.isSticky) return true;
+	      if (newState.isOverContent !== state.isOverContent) return true;
 
 	      // If we are sticky, have we changed any state that will impact rendering?
 	      if (state.isSticky) {
@@ -427,7 +437,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function render() {
 	      var placeholderStyle = { paddingBottom: 0 };
 	      var className = this.props.className;
-	      var style = this.props.style;
+	      var style = _extends({}, this.props.style);
 
 	      if (this.state.isSticky) {
 	        var _stickyStyle = {
@@ -445,18 +455,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	        placeholderStyle.paddingBottom = this.state.height;
 
 	        className += ' ' + this.props.stickyClassName;
-	        style = _extends({}, style, _stickyStyle, this.props.stickyStyle);
+	        style = _extends(style, _stickyStyle, this.props.stickyStyle);
+	      }
+
+	      if (this.state.isOverContent) {
+	        className += ' ' + this.props.stickyOverContentClassName;
+	        style = _extends(style, this.props.stickyOverContentStyle);
 	      }
 
 	      var _props = this.props;
 	      var topOffset = _props.topOffset;
 	      var isActive = _props.isActive;
 	      var stickyClassName = _props.stickyClassName;
+	      var stickyOverContentClassName = _props.stickyOverContentClassName;
 	      var stickyStyle = _props.stickyStyle;
+	      var stickyOverContentStyle = _props.stickyOverContentStyle;
 	      var bottomOffset = _props.bottomOffset;
 	      var onStickyStateChange = _props.onStickyStateChange;
+	      var onStickyOverContentChange = _props.onStickyOverContentChange;
 
-	      var props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange']);
+	      var props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyOverContentClassName', 'stickyStyle', 'stickyOverContentStyle', 'bottomOffset', 'onStickyStateChange', 'onStickyOverContentChange']);
 
 	      return _react2.default.createElement(
 	        'div',
@@ -479,20 +497,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	  className: _react2.default.PropTypes.string,
 	  style: _react2.default.PropTypes.object,
 	  stickyClassName: _react2.default.PropTypes.string,
+	  stickyOverContentClassName: _react2.default.PropTypes.string,
 	  stickyStyle: _react2.default.PropTypes.object,
+	  stickyOverContentStyle: _react2.default.PropTypes.object,
 	  topOffset: _react2.default.PropTypes.number,
 	  bottomOffset: _react2.default.PropTypes.number,
-	  onStickyStateChange: _react2.default.PropTypes.func
+	  onStickyStateChange: _react2.default.PropTypes.func,
+	  onStickyOverContentChange: _react2.default.PropTypes.func
 	};
 	Sticky.defaultProps = {
 	  isActive: true,
 	  className: '',
 	  style: {},
 	  stickyClassName: 'sticky',
+	  stickyOverContentClassName: 'sticky-over-content',
 	  stickyStyle: {},
+	  stickyOverContentStyle: {},
 	  topOffset: 0,
 	  bottomOffset: 0,
-	  onStickyStateChange: function onStickyStateChange() {}
+	  onStickyStateChange: function onStickyStateChange() {},
+	  onStickyOverContentChange: function onStickyOverContentChange() {}
 	};
 	Sticky.contextTypes = {
 	  'sticky-channel': _react2.default.PropTypes.any
