@@ -181,7 +181,10 @@ export default class Sticky extends React.Component {
       className += ` ${this.props.stickyClassName}`;
       style = Object.assign({}, style, stickyStyle, this.props.stickyStyle);
     }
-    
+
+    const zIndex = this.context.stickyZIndex - 1;
+    const zIndexStyle = zIndex !== -1 ? {zIndex} : {};
+
     const {
       topOffset,
       isActive,
@@ -193,7 +196,7 @@ export default class Sticky extends React.Component {
     } = this.props;
 
     return (
-      <div>
+      <div style={zIndexStyle}>
         <div ref="placeholder" style={placeholderStyle}></div>
         <div {...props} ref="children" className={className} style={style}>
           {this.props.children}

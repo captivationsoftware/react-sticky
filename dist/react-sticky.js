@@ -139,6 +139,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.DEFAULT_INITIAL_ZINDEX = undefined;
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -156,11 +159,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DEFAULT_INITIAL_ZINDEX = exports.DEFAULT_INITIAL_ZINDEX = 1000;
 
 	var Container = function (_React$Component) {
 	  _inherits(Container, _React$Component);
@@ -184,9 +191,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  _createClass(Container, [{
+	    key: 'getZIndex',
+	    value: function getZIndex() {
+	      if (this.props.zIndex === 0) return 0;
+	      if (this.props.zIndex) return this.props.zIndex;
+	      if (this.context.stickyZIndex === 0) return 0;
+	      if (this.context.stickyZIndex) return this.context.stickyZIndex - 2;
+	      return DEFAULT_INITIAL_ZINDEX;
+	    }
+	  }, {
 	    key: 'getChildContext',
 	    value: function getChildContext() {
-	      return { 'sticky-channel': this.channel };
+	      return {
+	        'sticky-channel': this.channel,
+	        stickyZIndex: this.getZIndex()
+	      };
 	    }
 	  }, {
 	    key: 'componentWillMount',
@@ -215,9 +234,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var useZIndex = this.getZIndex();
+	      var _props = this.props;
+	      var style = _props.style;
+	      var zIndex = _props.zIndex;
+
+	      var props = _objectWithoutProperties(_props, ['style', 'zIndex']);
+
+	      if (useZIndex !== 0) style = _extends({ zIndex: useZIndex }, style);
+
 	      return _react2.default.createElement(
 	        'div',
-	        this.props,
+	        _extends({}, props, { style: style }),
 	        this.props.children
 	      );
 	    }
@@ -226,14 +254,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return Container;
 	}(_react2.default.Component);
 
+	Container.propTypes = {
+	  zIndex: _react2.default.PropTypes.number
+	};
 	Container.contextTypes = {
-	  'sticky-channel': _react2.default.PropTypes.any
+	  'sticky-channel': _react2.default.PropTypes.any,
+	  stickyZIndex: _react2.default.PropTypes.number
 	};
 	Container.childContextTypes = {
-	  'sticky-channel': _react2.default.PropTypes.any
+	  'sticky-channel': _react2.default.PropTypes.any,
+	  stickyZIndex: _react2.default.PropTypes.number
 	};
 	exports.default = Container;
-	module.exports = exports['default'];
 
 /***/ },
 /* 5 */
@@ -258,6 +290,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -428,7 +462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var style = this.props.style;
 
 	      if (this.state.isSticky) {
-	        var stickyStyle = {
+	        var _stickyStyle = {
 	          position: 'fixed',
 	          top: this.state.containerOffset,
 	          left: this.state.xOffset,
@@ -437,22 +471,35 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var bottomLimit = this.state.distanceFromBottom - this.state.height - this.props.bottomOffset;
 	        if (this.state.containerOffset > bottomLimit) {
-	          stickyStyle.top = bottomLimit;
+	          _stickyStyle.top = bottomLimit;
 	        }
 
 	        placeholderStyle.paddingBottom = this.state.height;
 
 	        className += ' ' + this.props.stickyClassName;
-	        style = _extends({}, style, stickyStyle, this.props.stickyStyle);
+	        style = _extends({}, style, _stickyStyle, this.props.stickyStyle);
 	      }
+
+	      var zIndex = this.context.stickyZIndex - 1;
+	      var zIndexStyle = zIndex !== -1 ? { zIndex: zIndex } : {};
+
+	      var _props = this.props;
+	      var topOffset = _props.topOffset;
+	      var isActive = _props.isActive;
+	      var stickyClassName = _props.stickyClassName;
+	      var stickyStyle = _props.stickyStyle;
+	      var bottomOffset = _props.bottomOffset;
+	      var onStickyStateChange = _props.onStickyStateChange;
+
+	      var props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange']);
 
 	      return _react2.default.createElement(
 	        'div',
-	        null,
+	        { style: zIndexStyle },
 	        _react2.default.createElement('div', { ref: 'placeholder', style: placeholderStyle }),
 	        _react2.default.createElement(
 	          'div',
-	          _extends({}, this.props, { ref: 'children', className: className, style: style }),
+	          _extends({}, props, { ref: 'children', className: className, style: style }),
 	          this.props.children
 	        )
 	      );
@@ -483,7 +530,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onStickyStateChange: function onStickyStateChange() {}
 	};
 	Sticky.contextTypes = {
-	  'sticky-channel': _react2.default.PropTypes.any
+	  'sticky-channel': _react2.default.PropTypes.any,
+	  stickyZIndex: _react2.default.PropTypes.number
 	};
 	exports.default = Sticky;
 	module.exports = exports['default'];

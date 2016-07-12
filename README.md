@@ -69,6 +69,17 @@ Note that the calculation of the Sticky element's height does not currently take
 
 `<StickyContainer />` passes along all props you provide to it without interference. That's right - no restrictions - go nuts!  
 
+#### zIndex _(default: 1000 for top-most `<StickyContainer />`)_
+Setting zIndex property to anything other than 0 enables automatically setting the z-index on all descendant `<StickyContainer />`'s and `<Sticky />`'s, such that children always have a lower z-index than their parent `<StickyContainer />`. This ensures children go 'underneath' the parents when scrolling.
+
+Setting zIndex to 0 disables any autmatic setting of z-index for all descendants.
+
+A descendant `<StickyContainer />` may set its zIndex, effectively negating any zIndex that may have been set by an ancestor `<StickyContainer />`.
+
+A z-index explicitely set by any of the style properties overrides any automatic setting of z-index.
+
+Automatic z-index setting has a higher precedence than a z-index set from a class\[Name].
+
 ### `<Sticky />` Props
 
 #### stickyStyle _(default: {})_

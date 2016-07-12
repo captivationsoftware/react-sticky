@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import Channel from './channel';
 
-const DEFAULT_INITIAL_ZINDEX = 1000;
+export const DEFAULT_INITIAL_ZINDEX = 1000;
 
 export default class Container extends React.Component {
   static propTypes = {
@@ -26,10 +26,11 @@ export default class Container extends React.Component {
   }
 
   getZIndex() {
-    if(this.context.stickyZIndex === 0) return 0;
-    if(this.context.stickyZIndex) return this.context.stickyZIndex;
     if(this.props.zIndex === 0) return 0
-    return this.props.zIndex || DEFAULT_INITIAL_ZINDEX;
+    if(this.props.zIndex) return this.props.zIndex;
+    if(this.context.stickyZIndex === 0) return 0;
+    if(this.context.stickyZIndex) return this.context.stickyZIndex - 2;
+    return DEFAULT_INITIAL_ZINDEX;
   }
 
   getChildContext() {
@@ -61,12 +62,12 @@ export default class Container extends React.Component {
   }
 
   render() {
-    const zIndex = this.getZIndex()
-    let style;
-    if(zIndex !== 0)
-      style = {zIndex}
+    const useZIndex = this.getZIndex();
+    let {style, zIndex, ...props} = this.props;
 
-    return <div style={style} {...this.props}>
+    if(useZIndex !== 0) style = Object.assign({zIndex: useZIndex}, style);
+
+    return <div {...props} style={style}>
       {this.props.children}
     </div>
   }
