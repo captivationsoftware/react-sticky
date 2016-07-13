@@ -16,7 +16,7 @@ describe('Sticky component', function() {
   };
 
   beforeEach(() => {
-    mountSticky(<Sticky />);
+    mountSticky(<Sticky className='sticky-ref'/>);
     this.sticky.distanceFromBottom = () => 1000;
   });
 
@@ -458,13 +458,13 @@ describe('Sticky component', function() {
       it('should disable auto z-indexing when 0', (done) => {
         this.sticky.context.stickyZIndex = 0;
         this.sticky.forceUpdate(() => {
-          expect(ReactDOM.findDOMNode(this.sticky).style['z-index']).to.equal(``);
+          expect(ReactDOM.findDOMNode(this.sticky).querySelector('.sticky-ref').style['z-index']).to.equal(``);
           done();
         })
       });
 
       it('should specify style.z-index as 1 less than style.z-index of container', () => {
-        expect(ReactDOM.findDOMNode(this.sticky).style['z-index']).to.equal(`${DEFAULT_INITIAL_ZINDEX - 1}`);
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.sticky-ref').style['z-index']).to.equal(`${DEFAULT_INITIAL_ZINDEX - 1}`);
       });
     });
   });

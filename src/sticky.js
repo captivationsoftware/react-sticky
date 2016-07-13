@@ -161,7 +161,11 @@ export default class Sticky extends React.Component {
   render() {
     const placeholderStyle = { paddingBottom: 0 };
     let className = this.props.className;
-    let style = this.props.style;
+
+    const zIndex = this.context.stickyZIndex - 1;
+    const zIndexStyle = zIndex !== -1 ? {zIndex} : {};
+
+    let style = Object.assign(zIndexStyle, this.props.style);
 
     if (this.state.isSticky) {
       const stickyStyle = {
@@ -182,8 +186,6 @@ export default class Sticky extends React.Component {
       style = Object.assign({}, style, stickyStyle, this.props.stickyStyle);
     }
 
-    const zIndex = this.context.stickyZIndex - 1;
-    const zIndexStyle = zIndex !== -1 ? {zIndex} : {};
 
     const {
       topOffset,
@@ -196,7 +198,7 @@ export default class Sticky extends React.Component {
     } = this.props;
 
     return (
-      <div style={zIndexStyle}>
+      <div>
         <div ref="placeholder" style={placeholderStyle}></div>
         <div {...props} ref="children" className={className} style={style}>
           {this.props.children}
