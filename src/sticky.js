@@ -26,7 +26,8 @@ export default class Sticky extends React.Component {
   }
 
   static contextTypes = {
-    'sticky-channel': React.PropTypes.any
+    'sticky-channel': React.PropTypes.any,
+    stickyZIndex: React.PropTypes.number
   }
 
   constructor(props) {
@@ -160,7 +161,11 @@ export default class Sticky extends React.Component {
   render() {
     const placeholderStyle = { paddingBottom: 0 };
     let className = this.props.className;
-    let style = this.props.style;
+
+    const zIndex = this.context.stickyZIndex - 1;
+    const zIndexStyle = zIndex !== -1 ? {zIndex} : {};
+
+    let style = Object.assign(zIndexStyle, this.props.style);
 
     if (this.state.isSticky) {
       const stickyStyle = {
@@ -180,6 +185,7 @@ export default class Sticky extends React.Component {
       className += ` ${this.props.stickyClassName}`;
       style = Object.assign({}, style, stickyStyle, this.props.stickyStyle);
     }
+
 
     const {
       topOffset,

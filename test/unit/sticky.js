@@ -1,24 +1,22 @@
+import '../setup'
+
 import { expect } from 'chai';
-import { jsdom } from 'jsdom';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-addons-test-utils';
 import { mount, unmount, emitEvent } from '../utils';
 
-// Initialize jsdom
-global.document = jsdom('<body></body>');
-global.window = document.defaultView;
-
 const { Sticky, StickyContainer } = require('../../src');
+const { DEFAULT_INITIAL_ZINDEX } = require('../../src/container');
 
 describe('Sticky component', function() {
   const mountSticky = (component) => {
-    this.stickyContainer = mount(<StickyContainer children={component} />);
+    this.stickyContainer = mount(<StickyContainer>{component}</StickyContainer>);
     this.sticky = ReactTestUtils.scryRenderedComponentsWithType(this.stickyContainer, Sticky)[0];
   };
 
   beforeEach(() => {
-    mountSticky(<Sticky />);
+    mountSticky(<Sticky className='sticky-ref'/>);
     this.sticky.distanceFromBottom = () => 1000;
   });
 
@@ -443,6 +441,30 @@ describe('Sticky component', function() {
         this.sticky.isSticky = () => false;
         this.sticky.recomputeState();
         expect(called).to.equal(2);
+      });
+    });
+    
+    describe('stickyZIndex', () => {
+      it('should be 0 if container\'s zIndex prop is 0', () => {
+        let sticky;
+        this.stickyContainer = mount(
+          <StickyContainer zIndex={0}>
+            <Sticky ref={comp => sticky = comp}/>
+          </StickyContainer>
+        );
+        expect(sticky.context.stickyZIndex).to.equal(0);
+      });
+
+      it('should disable auto z-indexing when 0', (done) => {
+        this.sticky.context.stickyZIndex = 0;
+        this.sticky.forceUpdate(() => {
+          expect(ReactDOM.findDOMNode(this.sticky).querySelector('.sticky-ref').style['z-index']).to.equal(``);
+          done();
+        })
+      });
+
+      it('should specify style.z-index as 1 less than style.z-index of container', () => {
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.sticky-ref').style['z-index']).to.equal(`${DEFAULT_INITIAL_ZINDEX - 1}`);
       });
     });
   });
