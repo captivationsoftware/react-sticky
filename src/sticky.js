@@ -159,7 +159,7 @@ export default class Sticky extends React.Component {
    */
   render() {
     const placeholderStyle = { paddingBottom: 0 };
-    let className = this.props.className;
+    let className = this.props.className + ' ';
     let style = this.props.style;
 
     if (this.state.isSticky) {
@@ -177,7 +177,7 @@ export default class Sticky extends React.Component {
 
       placeholderStyle.paddingBottom = this.state.height;
 
-      className += ` ${this.props.stickyClassName}`;
+      className += `${this.props.stickyClassName}`;
       style = Object.assign({}, style, stickyStyle, this.props.stickyStyle);
     }
 
