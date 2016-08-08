@@ -11,7 +11,8 @@ export default class Sticky extends React.Component {
     stickyStyle: React.PropTypes.object,
     topOffset: React.PropTypes.number,
     bottomOffset: React.PropTypes.number,
-    onStickyStateChange: React.PropTypes.func
+    onStickyStateChange: React.PropTypes.func,
+    inheritParentStyles: React.PropTypes.bool
   }
 
   static defaultProps = {
@@ -22,7 +23,8 @@ export default class Sticky extends React.Component {
     stickyStyle: {},
     topOffset: 0,
     bottomOffset: 0,
-    onStickyStateChange: () => {}
+    onStickyStateChange: () => {},
+    inheritParentStyles: true
   }
 
   static contextTypes = {
@@ -54,11 +56,11 @@ export default class Sticky extends React.Component {
   }
 
   getXOffset() {
-    return this.refs.placeholder.getBoundingClientRect().left;
+    return this.props.inheritParentStyles ? this.refs.placeholder.getBoundingClientRect().left : null;
   }
 
   getWidth() {
-    return this.refs.placeholder.getBoundingClientRect().width;
+    return this.props.inheritParentStyles ? this.refs.placeholder.getBoundingClientRect().width : null;
   }
 
   getHeight() {

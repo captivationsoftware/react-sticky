@@ -364,6 +364,24 @@ describe('Sticky component', function() {
         expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.opacity).to.equal('0.5');
       });
     });
+
+    describe('inheritParentStyles', () => {
+      it('applies parent styles by default', () => {
+        mountSticky(<Sticky className="handle" stickyStyle={{width:100, left:0}}>Test</Sticky>);
+        this.sticky.setState({ isSticky: true });
+        let sticky = ReactDOM.findDOMNode(this.sticky);
+        expect(sticky.querySelector('.handle').style.left).to.equal('0px');
+        expect(sticky.querySelector('.handle').style.width).to.equal('100px');
+      });
+
+      it('ignores parent styles if false', () => {
+        mountSticky(<Sticky className="handle" inheritParentStyles={false} stickyStyle={{width:100, left:10}}>Test</Sticky>);
+        this.sticky.setState({ isSticky: true });
+        let sticky = ReactDOM.findDOMNode(this.sticky);
+        expect(sticky.querySelector('.handle').style.left).to.not.equal(sticky.style.left);
+        expect(sticky.querySelector('.handle').style.width).to.not.equal(sticky.style.width);
+      });
+    });
   });
 
   describe('state', () => {
