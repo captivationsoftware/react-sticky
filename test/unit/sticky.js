@@ -333,6 +333,12 @@ describe('Sticky component', function() {
     });
 
     describe('style', () => {
+      it('`transform: translateZ(0)` is present', () => {
+        mountSticky(<Sticky className="handle">Test</Sticky>);
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.transform).to.equal('translateZ(0)');
+      });
+
       it('applies the given styles', () => {
         mountSticky(<Sticky className="handle" style={{height: 100, opacity: 0.5}}>Test</Sticky>);
 
@@ -356,10 +362,11 @@ describe('Sticky component', function() {
         expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.height).to.equal('');
       });
 
-      it('merges `stickyStyle` with the provided `style` prop', () => {
+      it('merges `stickyStyle` with the provided `style` prop and `transform: translateZ(0)`', () => {
         mountSticky(<Sticky className="handle" style={{height: 100, opacity: 0.5}} stickyStyle={{height: 200}}>Test</Sticky>);
         this.sticky.setState({ isSticky: true });
 
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.transform).to.equal('translateZ(0)');
         expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.height).to.equal('200px');
         expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.opacity).to.equal('0.5');
       });
