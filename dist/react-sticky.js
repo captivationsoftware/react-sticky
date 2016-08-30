@@ -168,7 +168,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Container(props) {
 	    _classCallCheck(this, Container);
 
-	    var _this = _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Container).call(this, props));
 
 	    _this.updateOffset = function (_ref) {
 	      var inherited = _ref.inherited;
@@ -273,7 +273,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Sticky(props) {
 	    _classCallCheck(this, Sticky);
 
-	    var _this = _possibleConstructorReturn(this, (Sticky.__proto__ || Object.getPrototypeOf(Sticky)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Sticky).call(this, props));
 
 	    _this.updateContext = function (_ref) {
 	      var inherited = _ref.inherited;
@@ -427,6 +427,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function render() {
 	      var placeholderStyle = { paddingBottom: 0 };
 	      var className = this.props.className;
+
+	      // To ensure that this component becomes sticky immediately on mobile devices instead
+	      // of disappearing until the scroll event completes, we add `transform: translateZ(0)`
+	      // to 'kick' rendering of this element to the GPU
+	      // @see http://stackoverflow.com/questions/32875046
 	      var style = _extends({}, { transform: 'translateZ(0)' }, this.props.style);
 
 	      if (this.state.isSticky) {
