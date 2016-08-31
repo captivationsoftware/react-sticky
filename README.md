@@ -170,7 +170,7 @@ app.jsx
   ...
   <Sticky onStickyStateChange={this.handleStickyStateChange}>
     <header />
-  </Sticky
+  </Sticky>
   ...
 </StickyContainer>
 ```
@@ -185,7 +185,22 @@ app.jsx
   ...
   <Sticky isActive={false}>
     <header />
-  </Sticky
+  </Sticky>
+  ...
+</StickyContainer>
+```
+
+#### withMobileFix _(default: false)_
+
+Use the prop to apply a fix for `<Sticky />` elements disappearing on mobile browsers when `position: fixed` is applied. Applies `transform: translateZ(0)` to the element's style.
+
+app.jsx
+```js
+<StickyContainer>
+  ...
+  <Sticky withMobileFix>
+    <header />
+  </Sticky>
   ...
 </StickyContainer>
 ```

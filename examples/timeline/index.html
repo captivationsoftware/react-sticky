@@ -26,13 +26,13 @@
       let timeline = [2000, 2010].map((decade) => {
         return (
           <StickyContainer style={{zIndex: 4}}>
-            <Sticky style={{zIndex: 3}}>
+            <Sticky style={{zIndex: 3}} withMobileFix>
               <h2>{decade}s</h2>
             </Sticky>
             { _.range(0,10).map((i) => {
               return (
                 <StickyContainer style={{zIndex: 2}}>
-                  <Sticky>
+                  <Sticky withMobileFix>
                     <h3>{decade + i}</h3>
                   </Sticky>
                   <p>
@@ -52,7 +52,7 @@
 
       return (
         <StickyContainer>
-          <Sticky style={{zIndex: 5}}>
+          <Sticky style={{zIndex: 5}} withMobileFix>
             <header>
               <h1 className="pull-left">react-sticky | timeline demo</h1>
               <div className="pull-right">
@@ -67,7 +67,7 @@
             <div className="row-flex row-flex-wrap">
               <div className="flex-col column hidden-xs hidden-sm col-xs-12 col-md-2">
                 <StickyContainer style={{height: '100%'}}>
-                  <Sticky>
+                  <Sticky withMobileFix>
                     <h3>Timeline</h3>
                   </Sticky>
                 </StickyContainer>
