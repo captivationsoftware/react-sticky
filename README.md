@@ -190,15 +190,15 @@ app.jsx
 </StickyContainer>
 ```
 
-#### withMobileFix _(default: false)_
+#### disableTransform _(default: false)_
 
-Use the prop to apply a fix for `<Sticky />` elements disappearing on mobile browsers when `position: fixed` is applied. Applies `transform: translateZ(0)` to the element's style.
+Use the prop to disable fix for `<Sticky />` elements disappearing on mobile browsers when `position: fixed` is applied. Prevents `transform: translateZ(0)` being applied to the element's style.
 
 app.jsx
 ```js
 <StickyContainer>
   ...
-  <Sticky withMobileFix>
+  <Sticky disableTransform>
     <header />
   </Sticky>
   ...
