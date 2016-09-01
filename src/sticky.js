@@ -9,7 +9,7 @@ export default class Sticky extends React.Component {
     style: React.PropTypes.object,
     stickyClassName: React.PropTypes.string,
     stickyStyle: React.PropTypes.object,
-    withMobileFix: React.PropTypes.bool,
+    disableTransform: React.PropTypes.bool,
     topOffset: React.PropTypes.number,
     bottomOffset: React.PropTypes.number,
     onStickyStateChange: React.PropTypes.func
@@ -21,7 +21,7 @@ export default class Sticky extends React.Component {
     style: {},
     stickyClassName: 'sticky',
     stickyStyle: {},
-    withMobileFix: false,
+    disableTransform: false,
     topOffset: 0,
     bottomOffset: 0,
     onStickyStateChange: () => {}
@@ -167,8 +167,8 @@ export default class Sticky extends React.Component {
     // of disappearing until the scroll event completes, we add `transform: translateZ(0)`
     // to 'kick' rendering of this element to the GPU
     // @see http://stackoverflow.com/questions/32875046
-    // As this fix causes issues in certain conditions, we only enable it when `withMobileFix` is set
-    let style = Object.assign({}, this.props.withMobileFix && { transform: 'translateZ(0)' }, this.props.style);
+    // As this fix causes issues in certain conditions, we disable it when `disableTransform` is set
+    let style = Object.assign({}, !this.props.disableTransform && { transform: 'translateZ(0)' }, this.props.style);
 
     if (this.state.isSticky) {
       const stickyStyle = {

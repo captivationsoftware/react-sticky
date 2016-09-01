@@ -168,7 +168,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Container(props) {
 	    _classCallCheck(this, Container);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Container).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).call(this, props));
 
 	    _this.updateOffset = function (_ref) {
 	      var inherited = _ref.inherited;
@@ -273,7 +273,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Sticky(props) {
 	    _classCallCheck(this, Sticky);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Sticky).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Sticky.__proto__ || Object.getPrototypeOf(Sticky)).call(this, props));
 
 	    _this.updateContext = function (_ref) {
 	      var inherited = _ref.inherited;
@@ -432,7 +432,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // of disappearing until the scroll event completes, we add `transform: translateZ(0)`
 	      // to 'kick' rendering of this element to the GPU
 	      // @see http://stackoverflow.com/questions/32875046
-	      var style = _extends({}, { transform: 'translateZ(0)' }, this.props.style);
+	      // As this fix causes issues in certain conditions, we disable it when `disableTransform` is set
+	      var style = _extends({}, !this.props.disableTransform && { transform: 'translateZ(0)' }, this.props.style);
 
 	      if (this.state.isSticky) {
 	        var _stickyStyle = {
@@ -485,6 +486,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  style: _react2.default.PropTypes.object,
 	  stickyClassName: _react2.default.PropTypes.string,
 	  stickyStyle: _react2.default.PropTypes.object,
+	  disableTransform: _react2.default.PropTypes.bool,
 	  topOffset: _react2.default.PropTypes.number,
 	  bottomOffset: _react2.default.PropTypes.number,
 	  onStickyStateChange: _react2.default.PropTypes.func
@@ -495,6 +497,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  style: {},
 	  stickyClassName: 'sticky',
 	  stickyStyle: {},
+	  disableTransform: false,
 	  topOffset: 0,
 	  bottomOffset: 0,
 	  onStickyStateChange: function onStickyStateChange() {}
