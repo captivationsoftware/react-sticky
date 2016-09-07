@@ -168,7 +168,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Container(props) {
 	    _classCallCheck(this, Container);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Container).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).call(this, props));
 
 	    _this.updateOffset = function (_ref) {
 	      var inherited = _ref.inherited;
@@ -273,7 +273,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Sticky(props) {
 	    _classCallCheck(this, Sticky);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Sticky).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Sticky.__proto__ || Object.getPrototypeOf(Sticky)).call(this, props));
 
 	    _this.updateContext = function (_ref) {
 	      var inherited = _ref.inherited;
@@ -447,7 +447,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          _stickyStyle.top = bottomLimit;
 	        }
 
-	        placeholderStyle.paddingBottom = this.state.height;
+	        if (!this.props.disablePlaceholder) {
+	          placeholderStyle.paddingBottom = this.state.height;
+	        }
 
 	        className += ' ' + this.props.stickyClassName;
 	        style = _extends({}, style, _stickyStyle, this.props.stickyStyle);
@@ -487,7 +489,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  stickyStyle: _react2.default.PropTypes.object,
 	  topOffset: _react2.default.PropTypes.number,
 	  bottomOffset: _react2.default.PropTypes.number,
-	  onStickyStateChange: _react2.default.PropTypes.func
+	  onStickyStateChange: _react2.default.PropTypes.func,
+	  disablePlaceholder: _react2.default.PropTypes.bool
 	};
 	Sticky.defaultProps = {
 	  isActive: true,
@@ -497,7 +500,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  stickyStyle: {},
 	  topOffset: 0,
 	  bottomOffset: 0,
-	  onStickyStateChange: function onStickyStateChange() {}
+	  onStickyStateChange: function onStickyStateChange() {},
+	  disablePlaceholder: false
 	};
 	Sticky.contextTypes = {
 	  'sticky-channel': _react2.default.PropTypes.any
