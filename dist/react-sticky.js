@@ -462,8 +462,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var stickyStyle = _props.stickyStyle;
 	      var bottomOffset = _props.bottomOffset;
 	      var onStickyStateChange = _props.onStickyStateChange;
+	      var disablePlaceholder = _props.disablePlaceholder;
 
-	      var props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange']);
+	      var props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange', 'disablePlaceholder']);
 
 	      return _react2.default.createElement(
 	        'div',
