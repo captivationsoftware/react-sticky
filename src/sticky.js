@@ -160,7 +160,7 @@ export default class Sticky extends React.Component {
   render() {
     const placeholderStyle = { paddingBottom: 0 };
     let className = this.props.className;
-
+    let outterClassName = this.props.outterClassName
     // To ensure that this component becomes sticky immediately on mobile devices instead
     // of disappearing until the scroll event completes, we add `transform: translateZ(0)`
     // to 'kick' rendering of this element to the GPU
@@ -198,7 +198,7 @@ export default class Sticky extends React.Component {
 
     return (
       <div>
-        <div ref="placeholder" style={placeholderStyle}></div>
+        <div ref="placeholder" className={outterClassName} style={placeholderStyle}></div>
         <div {...props} ref="children" className={className} style={style}>
           {this.props.children}
         </div>
