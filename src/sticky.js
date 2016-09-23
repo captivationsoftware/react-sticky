@@ -6,6 +6,7 @@ export default class Sticky extends React.Component {
   static propTypes = {
     isActive: React.PropTypes.bool,
     className: React.PropTypes.string,
+    outterClassName: React.PropTypes.string,
     style: React.PropTypes.object,
     stickyClassName: React.PropTypes.string,
     stickyStyle: React.PropTypes.object,
@@ -17,6 +18,7 @@ export default class Sticky extends React.Component {
   static defaultProps = {
     isActive: true,
     className: '',
+    outterClassName: '',
     style: {},
     stickyClassName: 'sticky',
     stickyStyle: {},
@@ -160,7 +162,6 @@ export default class Sticky extends React.Component {
   render() {
     const placeholderStyle = { paddingBottom: 0 };
     let className = this.props.className;
-    let outterClassName = this.props.outterClassName
     // To ensure that this component becomes sticky immediately on mobile devices instead
     // of disappearing until the scroll event completes, we add `transform: translateZ(0)`
     // to 'kick' rendering of this element to the GPU
@@ -189,6 +190,7 @@ export default class Sticky extends React.Component {
     const {
       topOffset,
       isActive,
+      outterClassName,
       stickyClassName,
       stickyStyle,
       bottomOffset,
