@@ -6,6 +6,7 @@ export default class Sticky extends React.Component {
   static propTypes = {
     isActive: React.PropTypes.bool,
     className: React.PropTypes.string,
+    position: React.PropTypes.oneOf(['top', 'bottom']),
     style: React.PropTypes.object,
     stickyClassName: React.PropTypes.string,
     stickyStyle: React.PropTypes.object,
@@ -17,6 +18,7 @@ export default class Sticky extends React.Component {
   static defaultProps = {
     isActive: true,
     className: '',
+    position: 'top',
     style: {},
     stickyClassName: 'sticky',
     stickyStyle: {},
@@ -65,32 +67,55 @@ export default class Sticky extends React.Component {
     return ReactDOM.findDOMNode(this.refs.children).getBoundingClientRect().height;
   }
 
-  getDistanceFromTop() {
+  getStickyDistancesFromPlaceholder() {
     return this.refs.placeholder.getBoundingClientRect().top;
   }
 
-  getDistanceFromBottom() {
+  getDistanceFromContainer() {
     if (!this.containerNode) return 0;
-    return this.containerNode.getBoundingClientRect().bottom;
+    return this.containerNode.getBoundingClientRect();
   }
 
-  isSticky() {
+  isStickyBottom() {
+    const topBreakpoint = this.state.containerOffset - this.props.topOffset;
+    const bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
+
+    const wHeight = window.innerHeight
+    const realBottom = this.refs.placeholder.getBoundingClientRect().top + this.state.height
+    //const fromTop = this.getDistanceFromContainer().top + this.state.;
+    const res = realBottom >= wHeight + bottomBreakpoint// && realBottom <= fromBottom + bottomBreakpoint;
+    console.log('Real top = %i, distance = %i', realBottom, wHeight + topBreakpoint);
+    console.log('Is bottom sticky? ', res);
+    return res;
+  }
+
+  isStickyTop() {
     if (!this.props.isActive) return false;
 
-    const fromTop = this.getDistanceFromTop();
-    const fromBottom = this.getDistanceFromBottom();
+    const distancesFromPlaceholder = this.getStickyDistancesFromPlaceholder();
+    const fromBottom = this.getDistanceFromContainer().bottom;
 
     const topBreakpoint = this.state.containerOffset - this.props.topOffset;
     const bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
 
-    return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
+    console.log('From top = %i, bottom = %i ', distancesFromPlaceholder, fromBottom);
+    return distancesFromPlaceholder <= topBreakpoint && fromBottom >= bottomBreakpoint;
+  }
+
+  isSticky() {
+    if (!this.props.isActive) {
+      return false;
+    }
+
+    return this.props.position === 'top' ? this.isStickyTop() : this.isStickyBottom();
   }
 
   updateContext = ({ inherited, node }) => {
     this.containerNode = node;
     this.setState({
       containerOffset: inherited,
-      distanceFromBottom: this.getDistanceFromBottom()
+      distanceFromBottom: this.getDistanceFromContainer().bottom,
+      distanceFromTop: this.getDistanceFromContainer().top,
     });
   }
 
@@ -99,10 +124,11 @@ export default class Sticky extends React.Component {
     const height = this.getHeight();
     const width = this.getWidth();
     const xOffset = this.getXOffset();
-    const distanceFromBottom = this.getDistanceFromBottom();
+    const distanceFromBottom = this.getDistanceFromContainer().bottom;
+    const distanceFromTop = this.getDistanceFromContainer().top;
     const hasChanged = this.state.isSticky !== isSticky;
 
-    this.setState({ isSticky, height, width, xOffset, distanceFromBottom });
+    this.setState({ isSticky, height, width, xOffset, distanceFromBottom, distanceFromTop });
 
     if (hasChanged) {
       if (this.channel) {
@@ -158,48 +184,62 @@ export default class Sticky extends React.Component {
    * The special sauce.
    */
   render() {
-    const placeholderStyle = { paddingBottom: 0 };
-    let className = this.props.className;
+    const {
+      className: propsClassName,
+      topOffset,
+      isActive,
+      position,
+      stickyClassName,
+      stickyStyle,
+      style,
+      bottomOffset,
+      onStickyStateChange,
+      ...props
+    } = this.props;
+    const {
+      containerOffset,
+      isSticky,
+      height,
+      width,
+      xOffset,
+    } = this.state
+
+    const placeholderStyle = { paddingBottom: isSticky ? height : 0 };
+    const className = `${propsClassName} ${isSticky ? stickyClassName : ''}`;
 
     // To ensure that this component becomes sticky immediately on mobile devices instead
     // of disappearing until the scroll event completes, we add `transform: translateZ(0)`
     // to 'kick' rendering of this element to the GPU
     // @see http://stackoverflow.com/questions/32875046
-    let style = Object.assign({}, { transform: 'translateZ(0)' }, this.props.style);
+    const getPositionOffset = () => {
+      const { containerOffset, distanceFromTop, distanceFromBottom, height } = this.state;
+      const { bottomOffset, position } = this.props;
+      const bottomLimit = distanceFromBottom - height - bottomOffset
+      const topLimit =  window.innerHeight - distanceFromTop - topOffset
 
-    if (this.state.isSticky) {
-      const stickyStyle = {
-        position: 'fixed',
-        top: this.state.containerOffset,
-        left: this.state.xOffset,
-        width: this.state.width
-      };
-
-      const bottomLimit = this.state.distanceFromBottom - this.state.height - this.props.bottomOffset;
-      if (this.state.containerOffset > bottomLimit) {
-        stickyStyle.top = bottomLimit;
-      }
-
-      placeholderStyle.paddingBottom = this.state.height;
-
-      className += ` ${this.props.stickyClassName}`;
-      style = Object.assign({}, style, stickyStyle, this.props.stickyStyle);
+      //return containerOffset > bottomLimit ? bottomLimit : containerOffset
+      return position === 'top'
+        ? Math.min(containerOffset, bottomLimit)
+        : Math.min(containerOffset, topLimit)
+    }
+    const finalStickyStyle = isSticky && {
+      position: 'fixed',
+      [position]: getPositionOffset(),
+      left: xOffset,
+      width: width,
+      ...stickyStyle,
+    }
+    const finalStyle = {
+      transform: 'translateZ(0)',
+      ...style,
+      ...(finalStickyStyle || {})
     }
 
-    const {
-      topOffset,
-      isActive,
-      stickyClassName,
-      stickyStyle,
-      bottomOffset,
-      onStickyStateChange,
-      ...props
-    } = this.props;
 
     return (
       <div>
-        <div ref="placeholder" style={placeholderStyle}></div>
-        <div {...props} ref="children" className={className} style={style}>
+        <div ref="placeholder" style={placeholderStyle} />
+        <div {...props} ref="children" className={className} style={finalStyle}>
           {this.props.children}
         </div>
       </div>

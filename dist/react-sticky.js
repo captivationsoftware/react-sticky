@@ -168,7 +168,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Container(props) {
 	    _classCallCheck(this, Container);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Container).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).call(this, props));
 
 	    _this.updateOffset = function (_ref) {
 	      var inherited = _ref.inherited;
@@ -259,6 +259,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -273,7 +275,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Sticky(props) {
 	    _classCallCheck(this, Sticky);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Sticky).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Sticky.__proto__ || Object.getPrototypeOf(Sticky)).call(this, props));
 
 	    _this.updateContext = function (_ref) {
 	      var inherited = _ref.inherited;
@@ -282,7 +284,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _this.containerNode = node;
 	      _this.setState({
 	        containerOffset: inherited,
-	        distanceFromBottom: _this.getDistanceFromBottom()
+	        distanceFromBottom: _this.getDistanceFromContainer().bottom,
+	        distanceFromTop: _this.getDistanceFromContainer().top
 	      });
 	    };
 
@@ -291,10 +294,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var height = _this.getHeight();
 	      var width = _this.getWidth();
 	      var xOffset = _this.getXOffset();
-	      var distanceFromBottom = _this.getDistanceFromBottom();
+	      var distanceFromBottom = _this.getDistanceFromContainer().bottom;
+	      var distanceFromTop = _this.getDistanceFromContainer().top;
 	      var hasChanged = _this.state.isSticky !== isSticky;
 
-	      _this.setState({ isSticky: isSticky, height: height, width: width, xOffset: xOffset, distanceFromBottom: distanceFromBottom });
+	      _this.setState({ isSticky: isSticky, height: height, width: width, xOffset: xOffset, distanceFromBottom: distanceFromBottom, distanceFromTop: distanceFromTop });
 
 	      if (hasChanged) {
 	        if (_this.channel) {
@@ -350,28 +354,52 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return _reactDom2.default.findDOMNode(this.refs.children).getBoundingClientRect().height;
 	    }
 	  }, {
-	    key: 'getDistanceFromTop',
-	    value: function getDistanceFromTop() {
+	    key: 'getStickyDistancesFromPlaceholder',
+	    value: function getStickyDistancesFromPlaceholder() {
 	      return this.refs.placeholder.getBoundingClientRect().top;
 	    }
 	  }, {
-	    key: 'getDistanceFromBottom',
-	    value: function getDistanceFromBottom() {
+	    key: 'getDistanceFromContainer',
+	    value: function getDistanceFromContainer() {
 	      if (!this.containerNode) return 0;
-	      return this.containerNode.getBoundingClientRect().bottom;
+	      return this.containerNode.getBoundingClientRect();
 	    }
 	  }, {
-	    key: 'isSticky',
-	    value: function isSticky() {
+	    key: 'isStickyBottom',
+	    value: function isStickyBottom() {
+	      var topBreakpoint = this.state.containerOffset - this.props.topOffset;
+	      var bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
+
+	      var wHeight = window.innerHeight;
+	      var realBottom = this.refs.placeholder.getBoundingClientRect().top + this.state.height;
+	      //const fromTop = this.getDistanceFromContainer().top + this.state.;
+	      var res = realBottom >= wHeight + bottomBreakpoint; // && realBottom <= fromBottom + bottomBreakpoint;
+	      console.log('Real top = %i, distance = %i', realBottom, wHeight + topBreakpoint);
+	      console.log('Is bottom sticky? ', res);
+	      return res;
+	    }
+	  }, {
+	    key: 'isStickyTop',
+	    value: function isStickyTop() {
 	      if (!this.props.isActive) return false;
 
-	      var fromTop = this.getDistanceFromTop();
-	      var fromBottom = this.getDistanceFromBottom();
+	      var distancesFromPlaceholder = this.getStickyDistancesFromPlaceholder();
+	      var fromBottom = this.getDistanceFromContainer().bottom;
 
 	      var topBreakpoint = this.state.containerOffset - this.props.topOffset;
 	      var bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
 
-	      return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
+	      console.log('From top = %i, bottom = %i ', distancesFromPlaceholder, fromBottom);
+	      return distancesFromPlaceholder <= topBreakpoint && fromBottom >= bottomBreakpoint;
+	    }
+	  }, {
+	    key: 'isSticky',
+	    value: function isSticky() {
+	      if (!this.props.isActive) {
+	        return false;
+	      }
+
+	      return this.props.position === 'top' ? this.isStickyTop() : this.isStickyBottom();
 	    }
 	  }, {
 	    key: 'on',
@@ -425,43 +453,59 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var placeholderStyle = { paddingBottom: 0 };
-	      var className = this.props.className;
+	      var _this3 = this,
+	          _extends2;
+
+	      var _props = this.props;
+	      var propsClassName = _props.className;
+	      var topOffset = _props.topOffset;
+	      var isActive = _props.isActive;
+	      var position = _props.position;
+	      var stickyClassName = _props.stickyClassName;
+	      var stickyStyle = _props.stickyStyle;
+	      var style = _props.style;
+	      var bottomOffset = _props.bottomOffset;
+	      var onStickyStateChange = _props.onStickyStateChange;
+
+	      var props = _objectWithoutProperties(_props, ['className', 'topOffset', 'isActive', 'position', 'stickyClassName', 'stickyStyle', 'style', 'bottomOffset', 'onStickyStateChange']);
+
+	      var _state = this.state;
+	      var containerOffset = _state.containerOffset;
+	      var isSticky = _state.isSticky;
+	      var height = _state.height;
+	      var width = _state.width;
+	      var xOffset = _state.xOffset;
+
+
+	      var placeholderStyle = { paddingBottom: isSticky ? height : 0 };
+	      var className = propsClassName + ' ' + (isSticky ? stickyClassName : '');
 
 	      // To ensure that this component becomes sticky immediately on mobile devices instead
 	      // of disappearing until the scroll event completes, we add `transform: translateZ(0)`
 	      // to 'kick' rendering of this element to the GPU
 	      // @see http://stackoverflow.com/questions/32875046
-	      var style = _extends({}, { transform: 'translateZ(0)' }, this.props.style);
+	      var getPositionOffset = function getPositionOffset() {
+	        var _state2 = _this3.state;
+	        var containerOffset = _state2.containerOffset;
+	        var distanceFromTop = _state2.distanceFromTop;
+	        var distanceFromBottom = _state2.distanceFromBottom;
+	        var height = _state2.height;
+	        var _props2 = _this3.props;
+	        var bottomOffset = _props2.bottomOffset;
+	        var position = _props2.position;
 
-	      if (this.state.isSticky) {
-	        var _stickyStyle = {
-	          position: 'fixed',
-	          top: this.state.containerOffset,
-	          left: this.state.xOffset,
-	          width: this.state.width
-	        };
+	        var bottomLimit = distanceFromBottom - height - bottomOffset;
+	        var topLimit = window.innerHeight - distanceFromTop - topOffset;
 
-	        var bottomLimit = this.state.distanceFromBottom - this.state.height - this.props.bottomOffset;
-	        if (this.state.containerOffset > bottomLimit) {
-	          _stickyStyle.top = bottomLimit;
-	        }
-
-	        placeholderStyle.paddingBottom = this.state.height;
-
-	        className += ' ' + this.props.stickyClassName;
-	        style = _extends({}, style, _stickyStyle, this.props.stickyStyle);
-	      }
-
-	      var _props = this.props;
-	      var topOffset = _props.topOffset;
-	      var isActive = _props.isActive;
-	      var stickyClassName = _props.stickyClassName;
-	      var stickyStyle = _props.stickyStyle;
-	      var bottomOffset = _props.bottomOffset;
-	      var onStickyStateChange = _props.onStickyStateChange;
-
-	      var props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange']);
+	        //return containerOffset > bottomLimit ? bottomLimit : containerOffset
+	        return position === 'top' ? Math.min(containerOffset, bottomLimit) : Math.min(containerOffset, topLimit);
+	      };
+	      var finalStickyStyle = isSticky && _extends((_extends2 = {
+	        position: 'fixed'
+	      }, _defineProperty(_extends2, position, getPositionOffset()), _defineProperty(_extends2, 'left', xOffset), _defineProperty(_extends2, 'width', width), _extends2), stickyStyle);
+	      var finalStyle = _extends({
+	        transform: 'translateZ(0)'
+	      }, style, finalStickyStyle || {});
 
 	      return _react2.default.createElement(
 	        'div',
@@ -469,7 +513,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _react2.default.createElement('div', { ref: 'placeholder', style: placeholderStyle }),
 	        _react2.default.createElement(
 	          'div',
-	          _extends({}, props, { ref: 'children', className: className, style: style }),
+	          _extends({}, props, { ref: 'children', className: className, style: finalStyle }),
 	          this.props.children
 	        )
 	      );
@@ -482,6 +526,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Sticky.propTypes = {
 	  isActive: _react2.default.PropTypes.bool,
 	  className: _react2.default.PropTypes.string,
+	  position: _react2.default.PropTypes.oneOf(['top', 'bottom']),
 	  style: _react2.default.PropTypes.object,
 	  stickyClassName: _react2.default.PropTypes.string,
 	  stickyStyle: _react2.default.PropTypes.object,
@@ -492,6 +537,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Sticky.defaultProps = {
 	  isActive: true,
 	  className: '',
+	  position: 'top',
 	  style: {},
 	  stickyClassName: 'sticky',
 	  stickyStyle: {},
