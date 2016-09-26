@@ -67,6 +67,27 @@ Note that the calculation of the Sticky element's height does not currently take
 
 ### `<Sticky />` Props
 
+#### position _(default: 'top')_
+Position of the sticky element. Possible values are 'top' or 'bottom':
+
+app.jsx
+```js
+<StickyContainer>
+  <Sticky position="bottom">
+    <header />
+  </Sticky>
+</StickyContainer>
+```
+
+Note: If you've chosen 'bottom' position sticky will set `bottom` css prop instead of `top`:
+```css
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: < width is inherited from the closest StickyContainer >
+```
+
+
 #### stickyStyle _(default: {})_
 In the event that you wish to override the style rules applied, simply pass in the style object as a prop:
 
