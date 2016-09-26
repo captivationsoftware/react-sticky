@@ -284,8 +284,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _this.containerNode = node;
 	      _this.setState({
 	        containerOffset: inherited,
-	        distanceFromBottom: _this.getDistanceFromContainer().bottom,
-	        distanceFromTop: _this.getDistanceFromContainer().top
+	        containerBottom: _this.getContainerRect().bottom,
+	        containerTop: _this.getContainerRect().top,
+	        placeholderTop: _this.getPlaceholderRect().top
 	      });
 	    };
 
@@ -294,11 +295,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var height = _this.getHeight();
 	      var width = _this.getWidth();
 	      var xOffset = _this.getXOffset();
-	      var distanceFromBottom = _this.getDistanceFromContainer().bottom;
-	      var distanceFromTop = _this.getDistanceFromContainer().top;
+	      var containerBottom = _this.getContainerRect().bottom;
+	      var containerTop = _this.getContainerRect().top;
+	      var placeholderTop = _this.getPlaceholderRect().top;
 	      var hasChanged = _this.state.isSticky !== isSticky;
+	      var winHeight = window.innerHeight;
 
-	      _this.setState({ isSticky: isSticky, height: height, width: width, xOffset: xOffset, distanceFromBottom: distanceFromBottom, distanceFromTop: distanceFromTop });
+	      _this.setState({ isSticky: isSticky, height: height, width: width, xOffset: xOffset, containerBottom: containerBottom, containerTop: containerTop, placeholderTop: placeholderTop, winHeight: winHeight });
 
 	      if (hasChanged) {
 	        if (_this.channel) {
@@ -354,43 +357,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return _reactDom2.default.findDOMNode(this.refs.children).getBoundingClientRect().height;
 	    }
 	  }, {
-	    key: 'getStickyDistancesFromPlaceholder',
-	    value: function getStickyDistancesFromPlaceholder() {
-	      return this.refs.placeholder.getBoundingClientRect().top;
+	    key: 'getPlaceholderRect',
+	    value: function getPlaceholderRect() {
+	      return this.refs.placeholder.getBoundingClientRect();
 	    }
 	  }, {
-	    key: 'getDistanceFromContainer',
-	    value: function getDistanceFromContainer() {
-	      if (!this.containerNode) return 0;
-	      return this.containerNode.getBoundingClientRect();
+	    key: 'getContainerRect',
+	    value: function getContainerRect() {
+	      return this.containerNode ? this.containerNode.getBoundingClientRect() : {
+	        top: 0,
+	        bottom: 0
+	      };
 	    }
 	  }, {
 	    key: 'isStickyBottom',
 	    value: function isStickyBottom() {
-	      var topBreakpoint = this.state.containerOffset - this.props.topOffset;
-	      var bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
+	      var bottomOffset = this.props.bottomOffset;
+	      var _state = this.state;
+	      var containerOffset = _state.containerOffset;
+	      var height = _state.height;
+	      var placeholderTop = _state.placeholderTop;
+	      var winHeight = _state.winHeight;
 
-	      var wHeight = window.innerHeight;
-	      var realBottom = this.refs.placeholder.getBoundingClientRect().top + this.state.height;
-	      //const fromTop = this.getDistanceFromContainer().top + this.state.;
-	      var res = realBottom >= wHeight + bottomBreakpoint; // && realBottom <= fromBottom + bottomBreakpoint;
-	      console.log('Real top = %i, distance = %i', realBottom, wHeight + topBreakpoint);
-	      console.log('Is bottom sticky? ', res);
-	      return res;
+
+	      var bottomBreakpoint = containerOffset - bottomOffset;
+	      var placeholderBottom = placeholderTop + height;
+
+	      return placeholderBottom >= winHeight - bottomBreakpoint;
 	    }
 	  }, {
 	    key: 'isStickyTop',
 	    value: function isStickyTop() {
-	      if (!this.props.isActive) return false;
-
-	      var distancesFromPlaceholder = this.getStickyDistancesFromPlaceholder();
-	      var fromBottom = this.getDistanceFromContainer().bottom;
+	      var distancesFromPlaceholder = this.getPlaceholderRect().top;
 
 	      var topBreakpoint = this.state.containerOffset - this.props.topOffset;
 	      var bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
 
-	      console.log('From top = %i, bottom = %i ', distancesFromPlaceholder, fromBottom);
-	      return distancesFromPlaceholder <= topBreakpoint && fromBottom >= bottomBreakpoint;
+	      return distancesFromPlaceholder <= topBreakpoint && this.state.containerBottom >= bottomBreakpoint;
 	    }
 	  }, {
 	    key: 'isSticky',
@@ -440,10 +443,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (newState.width !== state.width) return true;
 	        if (newState.xOffset !== state.xOffset) return true;
 	        if (newState.containerOffset !== state.containerOffset) return true;
-	        if (newState.distanceFromBottom !== state.distanceFromBottom) return true;
+	        if (newState.containerBottom !== state.containerBottom) return true;
+	        if (newState.placeholderTop !== state.placeholderTop) return true;
+	        if (newState.containerTop !== state.containerTop) return true;
 	      }
 
 	      return false;
+	    }
+	  }, {
+	    key: 'getPositionOffset',
+	    value: function getPositionOffset() {
+	      var _state2 = this.state;
+	      var containerOffset = _state2.containerOffset;
+	      var containerTop = _state2.containerTop;
+	      var containerBottom = _state2.containerBottom;
+	      var height = _state2.height;
+	      var _props = this.props;
+	      var bottomOffset = _props.bottomOffset;
+	      var position = _props.position;
+	      var topOffset = _props.topOffset;
+
+
+	      var bottomLimit = containerBottom - height - bottomOffset;
+	      var topLimit = window.innerHeight - containerTop - topOffset;
+
+	      return position === 'top' ? Math.min(containerOffset, bottomLimit) : Math.min(containerOffset, topLimit);
 	    }
 
 	    /*
@@ -453,56 +477,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this3 = this,
-	          _extends2;
+	      var _extends2;
 
-	      var _props = this.props;
-	      var propsClassName = _props.className;
-	      var topOffset = _props.topOffset;
-	      var isActive = _props.isActive;
-	      var position = _props.position;
-	      var stickyClassName = _props.stickyClassName;
-	      var stickyStyle = _props.stickyStyle;
-	      var style = _props.style;
-	      var bottomOffset = _props.bottomOffset;
-	      var onStickyStateChange = _props.onStickyStateChange;
+	      var _props2 = this.props;
+	      var propsClassName = _props2.className;
+	      var position = _props2.position;
+	      var stickyClassName = _props2.stickyClassName;
+	      var stickyStyle = _props2.stickyStyle;
+	      var style = _props2.style;
 
-	      var props = _objectWithoutProperties(_props, ['className', 'topOffset', 'isActive', 'position', 'stickyClassName', 'stickyStyle', 'style', 'bottomOffset', 'onStickyStateChange']);
+	      var props = _objectWithoutProperties(_props2, ['className', 'position', 'stickyClassName', 'stickyStyle', 'style']);
 
-	      var _state = this.state;
-	      var containerOffset = _state.containerOffset;
-	      var isSticky = _state.isSticky;
-	      var height = _state.height;
-	      var width = _state.width;
-	      var xOffset = _state.xOffset;
+	      var _state3 = this.state;
+	      var isSticky = _state3.isSticky;
+	      var height = _state3.height;
+	      var width = _state3.width;
+	      var xOffset = _state3.xOffset;
 
 
 	      var placeholderStyle = { paddingBottom: isSticky ? height : 0 };
 	      var className = propsClassName + ' ' + (isSticky ? stickyClassName : '');
+	      var finalStickyStyle = isSticky && _extends((_extends2 = {
+	        position: 'fixed'
+	      }, _defineProperty(_extends2, position, this.getPositionOffset()), _defineProperty(_extends2, 'left', xOffset), _defineProperty(_extends2, 'width', width), _extends2), stickyStyle);
 
 	      // To ensure that this component becomes sticky immediately on mobile devices instead
 	      // of disappearing until the scroll event completes, we add `transform: translateZ(0)`
 	      // to 'kick' rendering of this element to the GPU
 	      // @see http://stackoverflow.com/questions/32875046
-	      var getPositionOffset = function getPositionOffset() {
-	        var _state2 = _this3.state;
-	        var containerOffset = _state2.containerOffset;
-	        var distanceFromTop = _state2.distanceFromTop;
-	        var distanceFromBottom = _state2.distanceFromBottom;
-	        var height = _state2.height;
-	        var _props2 = _this3.props;
-	        var bottomOffset = _props2.bottomOffset;
-	        var position = _props2.position;
-
-	        var bottomLimit = distanceFromBottom - height - bottomOffset;
-	        var topLimit = window.innerHeight - distanceFromTop - topOffset;
-
-	        //return containerOffset > bottomLimit ? bottomLimit : containerOffset
-	        return position === 'top' ? Math.min(containerOffset, bottomLimit) : Math.min(containerOffset, topLimit);
-	      };
-	      var finalStickyStyle = isSticky && _extends((_extends2 = {
-	        position: 'fixed'
-	      }, _defineProperty(_extends2, position, getPositionOffset()), _defineProperty(_extends2, 'left', xOffset), _defineProperty(_extends2, 'width', width), _extends2), stickyStyle);
 	      var finalStyle = _extends({
 	        transform: 'translateZ(0)'
 	      }, style, finalStickyStyle || {});

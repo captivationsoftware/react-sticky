@@ -67,39 +67,34 @@ export default class Sticky extends React.Component {
     return ReactDOM.findDOMNode(this.refs.children).getBoundingClientRect().height;
   }
 
-  getStickyDistancesFromPlaceholder() {
-    return this.refs.placeholder.getBoundingClientRect().top;
+  getPlaceholderRect() {
+    return this.refs.placeholder.getBoundingClientRect();
   }
 
-  getDistanceFromContainer() {
-    if (!this.containerNode) return 0;
-    return this.containerNode.getBoundingClientRect();
+  getContainerRect() {
+    return this.containerNode ? this.containerNode.getBoundingClientRect() : {
+      top: 0,
+      bottom: 0,
+    }
   }
 
   isStickyBottom() {
-    const topBreakpoint = this.state.containerOffset - this.props.topOffset;
-    const bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
+    const { bottomOffset } = this.props
+    const { containerOffset, height, placeholderTop, winHeight } = this.state
 
-    const wHeight = window.innerHeight
-    const realBottom = this.refs.placeholder.getBoundingClientRect().top + this.state.height
-    //const fromTop = this.getDistanceFromContainer().top + this.state.;
-    const res = realBottom >= wHeight + bottomBreakpoint// && realBottom <= fromBottom + bottomBreakpoint;
-    console.log('Real top = %i, distance = %i', realBottom, wHeight + topBreakpoint);
-    console.log('Is bottom sticky? ', res);
-    return res;
+    const bottomBreakpoint = containerOffset - bottomOffset
+    const placeholderBottom = placeholderTop + height
+
+    return placeholderBottom >= winHeight - bottomBreakpoint
   }
 
   isStickyTop() {
-    if (!this.props.isActive) return false;
-
-    const distancesFromPlaceholder = this.getStickyDistancesFromPlaceholder();
-    const fromBottom = this.getDistanceFromContainer().bottom;
+    const distancesFromPlaceholder = this.getPlaceholderRect().top;
 
     const topBreakpoint = this.state.containerOffset - this.props.topOffset;
     const bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
 
-    console.log('From top = %i, bottom = %i ', distancesFromPlaceholder, fromBottom);
-    return distancesFromPlaceholder <= topBreakpoint && fromBottom >= bottomBreakpoint;
+    return distancesFromPlaceholder <= topBreakpoint && this.state.containerBottom >= bottomBreakpoint;
   }
 
   isSticky() {
@@ -114,8 +109,9 @@ export default class Sticky extends React.Component {
     this.containerNode = node;
     this.setState({
       containerOffset: inherited,
-      distanceFromBottom: this.getDistanceFromContainer().bottom,
-      distanceFromTop: this.getDistanceFromContainer().top,
+      containerBottom: this.getContainerRect().bottom,
+      containerTop: this.getContainerRect().top,
+      placeholderTop: this.getPlaceholderRect().top,
     });
   }
 
@@ -124,11 +120,13 @@ export default class Sticky extends React.Component {
     const height = this.getHeight();
     const width = this.getWidth();
     const xOffset = this.getXOffset();
-    const distanceFromBottom = this.getDistanceFromContainer().bottom;
-    const distanceFromTop = this.getDistanceFromContainer().top;
+    const containerBottom = this.getContainerRect().bottom;
+    const containerTop = this.getContainerRect().top;
+    const placeholderTop = this.getPlaceholderRect().top;
     const hasChanged = this.state.isSticky !== isSticky;
+    const winHeight = window.innerHeight;
 
-    this.setState({ isSticky, height, width, xOffset, distanceFromBottom, distanceFromTop });
+    this.setState({ isSticky, height, width, xOffset, containerBottom, containerTop, placeholderTop, winHeight });
 
     if (hasChanged) {
       if (this.channel) {
@@ -174,10 +172,24 @@ export default class Sticky extends React.Component {
       if (newState.width !== state.width) return true;
       if (newState.xOffset !== state.xOffset) return true;
       if (newState.containerOffset !== state.containerOffset) return true;
-      if (newState.distanceFromBottom !== state.distanceFromBottom) return true;
+      if (newState.containerBottom !== state.containerBottom) return true;
+      if (newState.placeholderTop !== state.placeholderTop) return true;
+      if (newState.containerTop !== state.containerTop) return true;
     }
 
     return false;
+  }
+
+  getPositionOffset() {
+    const { containerOffset, containerTop, containerBottom, height } = this.state;
+    const { bottomOffset, position, topOffset } = this.props;
+
+    const bottomLimit = containerBottom - height - bottomOffset
+    const topLimit =  window.innerHeight - containerTop - topOffset
+
+    return position === 'top'
+      ? Math.min(containerOffset, bottomLimit)
+      : Math.min(containerOffset, topLimit)
   }
 
   /*
@@ -186,18 +198,13 @@ export default class Sticky extends React.Component {
   render() {
     const {
       className: propsClassName,
-      topOffset,
-      isActive,
       position,
       stickyClassName,
       stickyStyle,
       style,
-      bottomOffset,
-      onStickyStateChange,
       ...props
     } = this.props;
     const {
-      containerOffset,
       isSticky,
       height,
       width,
@@ -206,29 +213,18 @@ export default class Sticky extends React.Component {
 
     const placeholderStyle = { paddingBottom: isSticky ? height : 0 };
     const className = `${propsClassName} ${isSticky ? stickyClassName : ''}`;
+    const finalStickyStyle = isSticky && {
+      position: 'fixed',
+      [position]: this.getPositionOffset(),
+      left: xOffset,
+      width: width,
+      ...stickyStyle,
+    }
 
     // To ensure that this component becomes sticky immediately on mobile devices instead
     // of disappearing until the scroll event completes, we add `transform: translateZ(0)`
     // to 'kick' rendering of this element to the GPU
     // @see http://stackoverflow.com/questions/32875046
-    const getPositionOffset = () => {
-      const { containerOffset, distanceFromTop, distanceFromBottom, height } = this.state;
-      const { bottomOffset, position } = this.props;
-      const bottomLimit = distanceFromBottom - height - bottomOffset
-      const topLimit =  window.innerHeight - distanceFromTop - topOffset
-
-      //return containerOffset > bottomLimit ? bottomLimit : containerOffset
-      return position === 'top'
-        ? Math.min(containerOffset, bottomLimit)
-        : Math.min(containerOffset, topLimit)
-    }
-    const finalStickyStyle = isSticky && {
-      position: 'fixed',
-      [position]: getPositionOffset(),
-      left: xOffset,
-      width: width,
-      ...stickyStyle,
-    }
     const finalStyle = {
       transform: 'translateZ(0)',
       ...style,
