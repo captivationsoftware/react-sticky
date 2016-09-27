@@ -226,6 +226,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var valuesMatch = ['top', 'bottom', 'left', 'right'].every(function (key) {
 	        return nextRect.hasOwnProperty(key) && nextRect[key] === _this2.rect[key];
 	      });
+
+	      this.rect = nextRect;
 	      return !valuesMatch && this.channel.update(function (data) {
 	        data.node = node;
 	      });
@@ -378,7 +380,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'isStickyTop',
 	    value: function isStickyTop(props, state) {
-	      var distancesFromPlaceholder = state.placeholderTop; // this.getPlaceholderRect().top;
+	      var distancesFromPlaceholder = state.placeholderTop;
 
 	      var topBreakpoint = state.containerOffset - props.topOffset;
 	      var bottomBreakpoint = state.containerOffset + props.bottomOffset;
@@ -435,6 +437,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (newState.placeholderTop !== state.placeholderTop) return true;
 	      }
 
+	      // We should check container sizes anyway
 	      if (newState.containerOffset !== state.containerOffset) return true;
 	      if (newState.containerBottom !== state.containerBottom) return true;
 	      if (newState.containerTop !== state.containerTop) return true;
@@ -551,12 +554,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _this5.containerNode = node;
 	    _this5.recomputeState(_this5.props, inherited);
-	    /*this.setState({
-	      containerOffset: inherited,
-	      containerBottom: this.getContainerRect().bottom,
-	      containerTop: this.getContainerRect().top,
-	      placeholderTop: this.getPlaceholderRect().top,
-	    });*/
 	  };
 
 	  this.recomputeState = function () {
@@ -579,6 +576,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var hasChanged = _this5.state.isSticky !== isSticky;
 
 	    _this5.setState(finalNextState, function () {
+	      // After component did update lets broadcast update msg to channel
 	      if (hasChanged) {
 	        if (_this5.channel) {
 	          _this5.channel.update(function (data) {
