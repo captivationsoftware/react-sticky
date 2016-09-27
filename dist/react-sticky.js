@@ -180,6 +180,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    _this.channel = new _channel2.default({ inherited: 0, offset: 0, node: null });
+	    _this.rect = {};
 	    return _this;
 	  }
 
@@ -201,6 +202,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.channel.update(function (data) {
 	        data.node = node;
 	      });
+	      this.rect = node.getBoundingClientRect();
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -211,6 +213,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var parentChannel = this.context['sticky-channel'];
 	      if (parentChannel) parentChannel.unsubscribe(this.updateOffset);
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate() {
+	      var _this2 = this;
+
+	      var node = _reactDom2.default.findDOMNode(this);
+	      var nextRect = node.getBoundingClientRect();
+	      // Have we changed any prop values?
+	      // Somehow Object.keys(this.rect) returns [] O_O
+	      var valuesMatch = ['top', 'bottom', 'left', 'right'].every(function (key) {
+	        return nextRect.hasOwnProperty(key) && nextRect[key] === _this2.rect[key];
+	      });
+	      return !valuesMatch && this.channel.update(function (data) {
+	        data.node = node;
+	      });
 	    }
 	  }, {
 	    key: 'render',
@@ -277,42 +295,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var _this = _possibleConstructorReturn(this, (Sticky.__proto__ || Object.getPrototypeOf(Sticky)).call(this, props));
 
-	    _this.updateContext = function (_ref) {
-	      var inherited = _ref.inherited;
-	      var node = _ref.node;
-
-	      _this.containerNode = node;
-	      _this.setState({
-	        containerOffset: inherited,
-	        containerBottom: _this.getContainerRect().bottom,
-	        containerTop: _this.getContainerRect().top,
-	        placeholderTop: _this.getPlaceholderRect().top
-	      });
-	    };
-
-	    _this.recomputeState = function () {
-	      var isSticky = _this.isSticky();
-	      var height = _this.getHeight();
-	      var width = _this.getWidth();
-	      var xOffset = _this.getXOffset();
-	      var containerBottom = _this.getContainerRect().bottom;
-	      var containerTop = _this.getContainerRect().top;
-	      var placeholderTop = _this.getPlaceholderRect().top;
-	      var hasChanged = _this.state.isSticky !== isSticky;
-	      var winHeight = window.innerHeight;
-
-	      _this.setState({ isSticky: isSticky, height: height, width: width, xOffset: xOffset, containerBottom: containerBottom, containerTop: containerTop, placeholderTop: placeholderTop, winHeight: winHeight });
-
-	      if (hasChanged) {
-	        if (_this.channel) {
-	          _this.channel.update(function (data) {
-	            data.offset = isSticky ? _this.state.height : 0;
-	          });
-	        }
-
-	        _this.props.onStickyStateChange(isSticky);
-	      }
-	    };
+	    _initialiseProps.call(_this);
 
 	    _this.state = {};
 	    return _this;
@@ -327,18 +310,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.on(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.recomputeState);
+	      var _this2 = this;
+
+	      this.on(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], function () {
+	        return _this2.recomputeState();
+	      });
 	      this.recomputeState();
 	    }
 	  }, {
 	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps() {
-	      this.recomputeState();
+	    value: function componentWillReceiveProps(nextProps) {
+	      this.recomputeState(nextProps);
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
-	      this.off(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.recomputeState);
+	      var _this3 = this;
+
+	      this.off(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], function () {
+	        return _this3.recomputeState();
+	      });
 	      this.channel.unsubscribe(this.updateContext);
 	    }
 	  }, {
@@ -371,13 +362,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'isStickyBottom',
-	    value: function isStickyBottom() {
-	      var bottomOffset = this.props.bottomOffset;
-	      var _state = this.state;
-	      var containerOffset = _state.containerOffset;
-	      var height = _state.height;
-	      var placeholderTop = _state.placeholderTop;
-	      var winHeight = _state.winHeight;
+	    value: function isStickyBottom(props, state) {
+	      var bottomOffset = props.bottomOffset;
+	      var containerOffset = state.containerOffset;
+	      var height = state.height;
+	      var placeholderTop = state.placeholderTop;
+	      var winHeight = state.winHeight;
 
 
 	      var bottomBreakpoint = containerOffset - bottomOffset;
@@ -387,22 +377,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'isStickyTop',
-	    value: function isStickyTop() {
-	      var distancesFromPlaceholder = this.getPlaceholderRect().top;
+	    value: function isStickyTop(props, state) {
+	      var distancesFromPlaceholder = state.placeholderTop; // this.getPlaceholderRect().top;
 
-	      var topBreakpoint = this.state.containerOffset - this.props.topOffset;
-	      var bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
+	      var topBreakpoint = state.containerOffset - props.topOffset;
+	      var bottomBreakpoint = state.containerOffset + props.bottomOffset;
 
-	      return distancesFromPlaceholder <= topBreakpoint && this.state.containerBottom >= bottomBreakpoint;
+	      return distancesFromPlaceholder <= topBreakpoint && state.containerBottom >= bottomBreakpoint;
 	    }
 	  }, {
 	    key: 'isSticky',
-	    value: function isSticky() {
-	      if (!this.props.isActive) {
+	    value: function isSticky(props, state) {
+	      if (!props.isActive) {
 	        return false;
 	      }
 
-	      return this.props.position === 'top' ? this.isStickyTop() : this.isStickyBottom();
+	      return props.position === 'top' ? this.isStickyTop(props, state) : this.isStickyBottom(props, state);
 	    }
 	  }, {
 	    key: 'on',
@@ -421,7 +411,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'shouldComponentUpdate',
 	    value: function shouldComponentUpdate(newProps, newState) {
-	      var _this2 = this;
+	      var _this4 = this;
 
 	      // Have we changed the number of props?
 	      var propNames = Object.keys(this.props);
@@ -429,7 +419,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // Have we changed any prop values?
 	      var valuesMatch = propNames.every(function (key) {
-	        return newProps.hasOwnProperty(key) && newProps[key] === _this2.props[key];
+	        return newProps.hasOwnProperty(key) && newProps[key] === _this4.props[key];
 	      });
 	      if (!valuesMatch) return true;
 
@@ -442,22 +432,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (newState.height !== state.height) return true;
 	        if (newState.width !== state.width) return true;
 	        if (newState.xOffset !== state.xOffset) return true;
-	        if (newState.containerOffset !== state.containerOffset) return true;
-	        if (newState.containerBottom !== state.containerBottom) return true;
 	        if (newState.placeholderTop !== state.placeholderTop) return true;
-	        if (newState.containerTop !== state.containerTop) return true;
 	      }
+
+	      if (newState.containerOffset !== state.containerOffset) return true;
+	      if (newState.containerBottom !== state.containerBottom) return true;
+	      if (newState.containerTop !== state.containerTop) return true;
 
 	      return false;
 	    }
 	  }, {
 	    key: 'getPositionOffset',
 	    value: function getPositionOffset() {
-	      var _state2 = this.state;
-	      var containerOffset = _state2.containerOffset;
-	      var containerTop = _state2.containerTop;
-	      var containerBottom = _state2.containerBottom;
-	      var height = _state2.height;
+	      var _state = this.state;
+	      var containerOffset = _state.containerOffset;
+	      var containerTop = _state.containerTop;
+	      var containerBottom = _state.containerBottom;
+	      var height = _state.height;
 	      var _props = this.props;
 	      var bottomOffset = _props.bottomOffset;
 	      var position = _props.position;
@@ -488,11 +479,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var props = _objectWithoutProperties(_props2, ['className', 'position', 'stickyClassName', 'stickyStyle', 'style']);
 
-	      var _state3 = this.state;
-	      var isSticky = _state3.isSticky;
-	      var height = _state3.height;
-	      var width = _state3.width;
-	      var xOffset = _state3.xOffset;
+	      var _state2 = this.state;
+	      var isSticky = _state2.isSticky;
+	      var height = _state2.height;
+	      var width = _state2.width;
+	      var xOffset = _state2.xOffset;
 
 
 	      var placeholderStyle = { paddingBottom: isSticky ? height : 0 };
@@ -550,6 +541,57 @@ return /******/ (function(modules) { // webpackBootstrap
 	Sticky.contextTypes = {
 	  'sticky-channel': _react2.default.PropTypes.any
 	};
+
+	var _initialiseProps = function _initialiseProps() {
+	  var _this5 = this;
+
+	  this.updateContext = function (_ref) {
+	    var inherited = _ref.inherited;
+	    var node = _ref.node;
+
+	    _this5.containerNode = node;
+	    _this5.recomputeState(_this5.props, inherited);
+	    /*this.setState({
+	      containerOffset: inherited,
+	      containerBottom: this.getContainerRect().bottom,
+	      containerTop: this.getContainerRect().top,
+	      placeholderTop: this.getPlaceholderRect().top,
+	    });*/
+	  };
+
+	  this.recomputeState = function () {
+	    var props = arguments.length <= 0 || arguments[0] === undefined ? _this5.props : arguments[0];
+	    var inherited = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+
+	    var nextState = _extends({}, _this5.state, {
+	      height: _this5.getHeight(),
+	      width: _this5.getWidth(),
+	      xOffset: _this5.getXOffset(),
+	      containerOffset: inherited === false ? _this5.state.containerOffset : inherited,
+	      containerBottom: _this5.getContainerRect().bottom,
+	      containerTop: _this5.getContainerRect().top,
+	      placeholderTop: _this5.getPlaceholderRect().top,
+	      winHeight: window.innerHeight
+	    });
+
+	    var isSticky = _this5.isSticky(props, nextState);
+	    var finalNextState = _extends({}, nextState, { isSticky: isSticky });
+	    var hasChanged = _this5.state.isSticky !== isSticky;
+
+	    _this5.setState(finalNextState, function () {
+	      if (hasChanged) {
+	        if (_this5.channel) {
+	          _this5.channel.update(function (data) {
+	            data.offset = isSticky ? _this5.state.height : 0;
+	          });
+	        }
+
+	        _this5.props.onStickyStateChange(isSticky);
+	      }
+	    });
+	  };
+	};
+
 	exports.default = Sticky;
 	module.exports = exports['default'];
 
