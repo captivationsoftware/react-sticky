@@ -11,7 +11,8 @@ export default class Sticky extends React.Component {
     stickyStyle: React.PropTypes.object,
     topOffset: React.PropTypes.number,
     bottomOffset: React.PropTypes.number,
-    onStickyStateChange: React.PropTypes.func
+    onStickyStateChange: React.PropTypes.func,
+    useCapture: React.PropTypes.bool
   }
 
   static defaultProps = {
@@ -22,7 +23,8 @@ export default class Sticky extends React.Component {
     stickyStyle: {},
     topOffset: 0,
     bottomOffset: 0,
-    onStickyStateChange: () => {}
+    onStickyStateChange: () => {},
+    useCapture: false
   }
 
   static contextTypes = {
@@ -117,13 +119,13 @@ export default class Sticky extends React.Component {
 
   on(events, callback) {
     events.forEach((evt) => {
-      window.addEventListener(evt, callback);
+      window.addEventListener(evt, callback, this.props.useCapture);
     });
   }
 
   off(events, callback) {
     events.forEach((evt) => {
-      window.removeEventListener(evt, callback);
+      window.removeEventListener(evt, callback, this.props.useCapture);
     });
   }
 
@@ -193,6 +195,7 @@ export default class Sticky extends React.Component {
       stickyStyle,
       bottomOffset,
       onStickyStateChange,
+      useCapture,
       ...props
     } = this.props;
 

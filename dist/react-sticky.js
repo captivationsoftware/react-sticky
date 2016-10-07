@@ -168,7 +168,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Container(props) {
 	    _classCallCheck(this, Container);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Container).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).call(this, props));
 
 	    _this.updateOffset = function (_ref) {
 	      var inherited = _ref.inherited;
@@ -273,7 +273,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Sticky(props) {
 	    _classCallCheck(this, Sticky);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Sticky).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Sticky.__proto__ || Object.getPrototypeOf(Sticky)).call(this, props));
 
 	    _this.updateContext = function (_ref) {
 	      var inherited = _ref.inherited;
@@ -376,21 +376,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'on',
 	    value: function on(events, callback) {
+	      var _this2 = this;
+
 	      events.forEach(function (evt) {
-	        window.addEventListener(evt, callback);
+	        window.addEventListener(evt, callback, _this2.props.useCapture);
 	      });
 	    }
 	  }, {
 	    key: 'off',
 	    value: function off(events, callback) {
+	      var _this3 = this;
+
 	      events.forEach(function (evt) {
-	        window.removeEventListener(evt, callback);
+	        window.removeEventListener(evt, callback, _this3.props.useCapture);
 	      });
 	    }
 	  }, {
 	    key: 'shouldComponentUpdate',
 	    value: function shouldComponentUpdate(newProps, newState) {
-	      var _this2 = this;
+	      var _this4 = this;
 
 	      // Have we changed the number of props?
 	      var propNames = Object.keys(this.props);
@@ -398,7 +402,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // Have we changed any prop values?
 	      var valuesMatch = propNames.every(function (key) {
-	        return newProps.hasOwnProperty(key) && newProps[key] === _this2.props[key];
+	        return newProps.hasOwnProperty(key) && newProps[key] === _this4.props[key];
 	      });
 	      if (!valuesMatch) return true;
 
@@ -487,7 +491,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  stickyStyle: _react2.default.PropTypes.object,
 	  topOffset: _react2.default.PropTypes.number,
 	  bottomOffset: _react2.default.PropTypes.number,
-	  onStickyStateChange: _react2.default.PropTypes.func
+	  onStickyStateChange: _react2.default.PropTypes.func,
+	  useCapture: _react2.default.PropTypes.bool
 	};
 	Sticky.defaultProps = {
 	  isActive: true,
@@ -497,7 +502,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  stickyStyle: {},
 	  topOffset: 0,
 	  bottomOffset: 0,
-	  onStickyStateChange: function onStickyStateChange() {}
+	  onStickyStateChange: function onStickyStateChange() {},
+	  useCapture: false
 	};
 	Sticky.contextTypes = {
 	  'sticky-channel': _react2.default.PropTypes.any
