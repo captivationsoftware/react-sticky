@@ -9,6 +9,7 @@ export default class Sticky extends React.Component {
     style: React.PropTypes.object,
     stickyClassName: React.PropTypes.string,
     stickyStyle: React.PropTypes.object,
+    fixedOffset: React.PropTypes.number,
     topOffset: React.PropTypes.number,
     bottomOffset: React.PropTypes.number,
     onStickyStateChange: React.PropTypes.func
@@ -20,6 +21,7 @@ export default class Sticky extends React.Component {
     style: {},
     stickyClassName: 'sticky',
     stickyStyle: {},
+    fixedOffset: 0,
     topOffset: 0,
     bottomOffset: 0,
     onStickyStateChange: () => {}
@@ -78,7 +80,7 @@ export default class Sticky extends React.Component {
     if (!this.props.isActive) return false;
 
     const fromTop = this.getDistanceFromTop();
-    const fromBottom = this.getDistanceFromBottom();
+    const fromBottom = this.getDistanceFromBottom() + this.props.fixedOffset;
 
     const topBreakpoint = this.state.containerOffset - this.props.topOffset;
     const bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
@@ -170,15 +172,16 @@ export default class Sticky extends React.Component {
     if (this.state.isSticky) {
       const stickyStyle = {
         position: 'fixed',
-        top: this.state.containerOffset,
+        top: this.state.containerOffset + this.props.fixedOffset,
         left: this.state.xOffset,
         width: this.state.width
       };
 
-      const bottomLimit = this.state.distanceFromBottom - this.state.height - this.props.bottomOffset;
+      const bottomLimit = this.state.distanceFromBottom - this.state.height - this.props.bottomOffset - this.props.fixedOffset;
       if (this.state.containerOffset > bottomLimit) {
-        stickyStyle.top = bottomLimit;
+        stickyStyle.top = bottomLimit + this.props.fixedOffset;
       }
+
 
       placeholderStyle.paddingBottom = this.state.height;
 
@@ -192,6 +195,7 @@ export default class Sticky extends React.Component {
       stickyClassName,
       stickyStyle,
       bottomOffset,
+      fixedOffset,
       onStickyStateChange,
       ...props
     } = this.props;
