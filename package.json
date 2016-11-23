@@ -1,5 +1,5 @@
 {
-  "name": "react-sticky",
+  "name": "slavnyy-react-sticky",
   "version": "5.0.5",
   "description": "Sticky component for React",
   "main": "lib/index.js",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/captivationsoftware/react-sticky"
+    "url": "https://github.com/viventus/react-sticky"
   },
   "keywords": [
     "react-component",
@@ -23,28 +23,28 @@
   "author": "Captivation Software",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/captivationsoftware/react-sticky/issues"
+    "url": "https://github.com/viventus/react-sticky/issues"
   },
-  "homepage": "https://github.com/captivationsoftware/react-sticky",
+  "homepage": "https://github.com/viventus/react-sticky",
   "peerDependencies": {
-    "react": "^0.14.0 || ^15.0.0",
-    "react-dom": "^0.14.0 || ^15.0.0"
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1"
   },
   "devDependencies": {
     "babel-cli": "^6.6.0",
-    "babel-core": "^6.6.0",
+    "babel-core": "^6.14.0",
     "babel-plugin-add-module-exports": "^0.1.2",
     "babel-plugin-transform-object-assign": "^6.5.0",
-    "babel-preset-es2015": "^6.5.0",
-    "babel-preset-react": "^6.5.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
-    "chai": "^3.2.0",
+    "chai": "^3.5.0",
     "jsdom": "8.0.4",
-    "mocha": "^2.2.5",
-    "react-addons-test-utils": "^0.14.0 || ^15.0.0",
-    "react": "^0.14.0 || ^15.0.0",
-    "react-dom": "^0.14.0 || ^15.0.0",
+    "mocha": "^2.5.3",
+    "react-addons-test-utils": "^15.3.1",
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1",
     "rimraf": "^2.5.2",
-    "webpack": "^1.12.14"
+    "webpack": "^1.13.2"
   }
 }

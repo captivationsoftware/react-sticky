@@ -417,7 +417,7 @@ describe('Sticky component', function() {
   describe('context', () => {
     describe('sticky-channel', () => {
       beforeEach(() => {
-        this.channel = this.stickyContainer.getChildContext()['sticky-channel'];
+        this.channel = this.stickyContainer.getChildContext()['sticky-channel']['sticky'];
       });
 
       it('is subscribed to for updates to inherited offsets', () => {

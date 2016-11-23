@@ -9,6 +9,7 @@ export default class Sticky extends React.Component {
     style: React.PropTypes.object,
     stickyClassName: React.PropTypes.string,
     stickyStyle: React.PropTypes.object,
+    name: React.PropTypes.string,
     topOffset: React.PropTypes.number,
     bottomOffset: React.PropTypes.number,
     onStickyStateChange: React.PropTypes.func
@@ -20,13 +21,14 @@ export default class Sticky extends React.Component {
     style: {},
     stickyClassName: 'sticky',
     stickyStyle: {},
+    name: 'sticky',
     topOffset: 0,
     bottomOffset: 0,
     onStickyStateChange: () => {}
   }
 
   static contextTypes = {
-    'sticky-channel': React.PropTypes.any
+    'sticky-channel': React.PropTypes.object
   }
 
   constructor(props) {
@@ -35,7 +37,7 @@ export default class Sticky extends React.Component {
   }
 
   componentWillMount() {
-    this.channel = this.context['sticky-channel'];
+    this.channel = this.context['sticky-channel'][this.props.name];
     this.channel.subscribe(this.updateContext);
   }
 
