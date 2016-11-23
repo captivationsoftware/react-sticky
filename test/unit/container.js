@@ -2,11 +2,9 @@ import '../setup'
 
 import { expect } from 'chai';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import ReactTestUtils from 'react-addons-test-utils';
 import { mount, unmount } from '../utils';
 
-const { Sticky, StickyContainer, Channel } = require('../../src');
+const { StickyContainer, Channel } = require('../../src');
 
 describe('StickyContainer component', function() {
   beforeEach(() => {
@@ -19,28 +17,20 @@ describe('StickyContainer component', function() {
 
   describe('context', () => {
     beforeEach(() => {
-      this.childContext = this.stickyContainer.getChildContext();
+      this.childContext = this.stickyContainer.getChildContext()['sticky-channel']['sticky'];
     });
 
     afterEach(() => {
       // Avoid calling the unmounting update.
-      this.childContext['sticky-channel'].update = () => {};
+      this.childContext.update = () => {};
     });
 
     it('should expose a Channel', () => {
-      expect(this.childContext['sticky-channel']).to.not.be.null;
-    });
-
-    it('should subscribe to any Channel in its ancestry', (done) => {
-      this.stickyContainer.context['sticky-channel'] = {
-        subscribe: (fn) => done(),
-        unsubscribe: () => {},
-      };
-      this.stickyContainer.componentWillMount();
+      expect(this.childContext).to.not.be.null;
     });
 
     it('should publish its DOMNode via its Channel', (done) => {
-      const childChannel = this.childContext['sticky-channel'];
+      const childChannel = this.childContext;
       childChannel.subscribe(({ node }) => {
         expect(node).to.be.an.instanceof(window.HTMLDivElement);
         done();
@@ -50,17 +40,17 @@ describe('StickyContainer component', function() {
     });
 
     it('should publish any inherited offsets via its Channel', (done) => {
-      const parentChannel = new Channel({ inherited: 0 });
+      const parentChannel = { sticky: new Channel({ inherited: 0 }) };
       this.stickyContainer.context['sticky-channel'] = parentChannel;
       this.stickyContainer.componentWillMount();
 
-      const childChannel = this.childContext['sticky-channel'];
+      const childChannel = this.childContext;
       childChannel.subscribe(({ inherited }) => {
         expect(inherited).to.equal(999);
         done();
       });
 
-      parentChannel.update((data) => { data.offset = 999 });
+      parentChannel.sticky.update((data) => { data.offset = 999 });
     });
   });
 });

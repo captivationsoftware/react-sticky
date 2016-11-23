@@ -4,27 +4,38 @@ import ReactDOM from 'react-dom';
 import Channel from './channel';
 
 export default class Container extends React.Component {
+  static propTypes = {
+    name: React.PropTypes.string
+  }
+
+  static defaultProps = {
+    name: 'sticky'
+  }
 
   static contextTypes = {
-    'sticky-channel': React.PropTypes.any,
+    'sticky-channel': React.PropTypes.object,
   }
 
   static childContextTypes = {
-    'sticky-channel': React.PropTypes.any,
+    'sticky-channel': React.PropTypes.object,
   }
 
   constructor(props) {
     super(props);
+
     this.channel = new Channel({ inherited: 0, offset: 0, node: null });
   }
 
   getChildContext() {
-    return { 'sticky-channel': this.channel };
+    return { 'sticky-channel': { [this.props.name]: this.channel } };
   }
 
   componentWillMount() {
     const parentChannel = this.context['sticky-channel'];
-    if (parentChannel) parentChannel.subscribe(this.updateOffset);
+
+    if (parentChannel && this.props.name in parentChannel) {
+      parentChannel[this.props.name].subscribe(this.updateOffset);
+    }
   }
 
   componentDidMount() {
@@ -36,7 +47,10 @@ export default class Container extends React.Component {
     this.channel.update((data) => { data.node = null });
 
     const parentChannel = this.context['sticky-channel'];
-    if (parentChannel) parentChannel.unsubscribe(this.updateOffset);
+
+    if (parentChannel && this.props.name in parentChannel) {
+      parentChannel[this.props.name].unsubscribe(this.updateOffset);
+    }
   }
 
   updateOffset = ({ inherited, offset }) => {
