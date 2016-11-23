@@ -54,18 +54,22 @@ export default class Sticky extends React.Component {
   }
 
   getXOffset() {
+    if (!this.refs.placeholder) return 0;
     return this.refs.placeholder.getBoundingClientRect().left;
   }
 
   getWidth() {
+    if (!this.refs.placeholder) return 0;
     return this.refs.placeholder.getBoundingClientRect().width;
   }
 
   getHeight() {
+    if (!ReactDOM.findDOMNode(this.refs.children)) return 0;
     return ReactDOM.findDOMNode(this.refs.children).getBoundingClientRect().height;
   }
 
   getDistanceFromTop() {
+    if (!this.refs.placeholder) return 0;
     return this.refs.placeholder.getBoundingClientRect().top;
   }
 
