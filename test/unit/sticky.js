@@ -344,6 +344,14 @@ describe('Sticky component', function() {
       });
     });
 
+    describe('disableTransform', () => {
+      it('disables `transform: translateZ(0)`', () => {
+        mountSticky(<Sticky className="handle" disableTransform>Test</Sticky>);
+
+        expect(ReactDOM.findDOMNode(this.sticky).querySelector('.handle').style.transform).to.be.undefined;
+      });
+    });
+
     describe('stickyStyle', () => {
       it('applies if the component is sticky', () => {
         mountSticky(<Sticky className="handle" stickyStyle={{height: 200}}>Test</Sticky>);
