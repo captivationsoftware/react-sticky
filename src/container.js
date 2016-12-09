@@ -4,13 +4,16 @@ import ReactDOM from 'react-dom';
 import Channel from './channel';
 
 export default class Container extends React.Component {
-
   static contextTypes = {
     'sticky-channel': React.PropTypes.any,
   }
 
   static childContextTypes = {
     'sticky-channel': React.PropTypes.any,
+  }
+
+  static propTypes = {
+    element: React.PropTypes.string,
   }
 
   constructor(props) {
@@ -44,8 +47,7 @@ export default class Container extends React.Component {
   }
 
   render() {
-    return <div {...this.props}>
-      {this.props.children}
-    </div>
+    const { element, children, ...props } = this.props;
+    return React.createElement(element, props, children);
   }
 }
