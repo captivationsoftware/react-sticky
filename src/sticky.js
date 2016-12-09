@@ -4,6 +4,9 @@ import ReactDOM from 'react-dom';
 export default class Sticky extends React.Component {
 
   static propTypes = {
+    containerElement: React.PropTypes.string,
+    placeholderElement: React.PropTypes.string,
+    childrenElement: React.PropTypes.string,
     isActive: React.PropTypes.bool,
     className: React.PropTypes.string,
     style: React.PropTypes.object,
@@ -15,6 +18,9 @@ export default class Sticky extends React.Component {
   }
 
   static defaultProps = {
+    containerElement: 'div',
+    placeholderElement: 'div',
+    childrenElement: 'div',
     isActive: true,
     className: '',
     style: {},
@@ -187,6 +193,9 @@ export default class Sticky extends React.Component {
     }
 
     const {
+      containerElement,
+      placeholderElement,
+      childrenElement,
       topOffset,
       isActive,
       stickyClassName,
@@ -196,13 +205,17 @@ export default class Sticky extends React.Component {
       ...props
     } = this.props;
 
-    return (
-      <div>
-        <div ref="placeholder" style={placeholderStyle}></div>
-        <div {...props} ref="children" className={className} style={style}>
-          {this.props.children}
-        </div>
-      </div>
+    return React.createElement(containerElement, null,
+      React.createElement(placeholderElement, {
+        ref: 'placeholder',
+        style: placeholderStyle,
+      }),
+      React.createElement(childrenElement, {
+        ...props,
+        ref: 'children',
+        className: className,
+        style: style,
+      }, this.props.children)
     );
   }
 }
