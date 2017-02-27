@@ -84,6 +84,7 @@ export default class Sticky extends React.Component {
 
     const topBreakpoint = this.state.containerOffset - this.props.topOffset;
     const bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
+    if (fromBottom < 0) return this.state.isSticky;
 
     return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
   }
