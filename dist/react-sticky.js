@@ -171,8 +171,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this = _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).call(this, props));
 
 	    _this.updateOffset = function (_ref) {
-	      var inherited = _ref.inherited;
-	      var offset = _ref.offset;
+	      var inherited = _ref.inherited,
+	          offset = _ref.offset;
 
 	      _this.channel.update(function (data) {
 	        data.inherited = inherited + offset;
@@ -276,8 +276,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this = _possibleConstructorReturn(this, (Sticky.__proto__ || Object.getPrototypeOf(Sticky)).call(this, props));
 
 	    _this.updateContext = function (_ref) {
-	      var inherited = _ref.inherited;
-	      var node = _ref.node;
+	      var inherited = _ref.inherited,
+	          node = _ref.node;
 
 	      _this.containerNode = node;
 	      _this.setState({
@@ -452,21 +452,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	        style = _extends({}, style, _stickyStyle, this.props.stickyStyle);
 	      }
 
-	      var _props = this.props;
-	      var topOffset = _props.topOffset;
-	      var isActive = _props.isActive;
-	      var outterClassName = _props.outterClassName;
-	      var stickyClassName = _props.stickyClassName;
-	      var stickyStyle = _props.stickyStyle;
-	      var bottomOffset = _props.bottomOffset;
-	      var onStickyStateChange = _props.onStickyStateChange;
-
-	      var props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'outterClassName', 'stickyClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange']);
+	      var _props = this.props,
+	          topOffset = _props.topOffset,
+	          isActive = _props.isActive,
+	          outerClassName = _props.outerClassName,
+	          stickyClassName = _props.stickyClassName,
+	          stickyStyle = _props.stickyStyle,
+	          bottomOffset = _props.bottomOffset,
+	          onStickyStateChange = _props.onStickyStateChange,
+	          props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'outerClassName', 'stickyClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange']);
 
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement('div', { ref: 'placeholder', className: outterClassName, style: placeholderStyle }),
+	        _react2.default.createElement('div', { ref: 'placeholder', className: outerClassName, style: placeholderStyle }),
 	        _react2.default.createElement(
 	          'div',
 	          _extends({}, props, { ref: 'children', className: className, style: style }),
@@ -482,7 +481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Sticky.propTypes = {
 	  isActive: _react2.default.PropTypes.bool,
 	  className: _react2.default.PropTypes.string,
-	  outterClassName: _react2.default.PropTypes.string,
+	  outerClassName: _react2.default.PropTypes.string,
 	  style: _react2.default.PropTypes.object,
 	  stickyClassName: _react2.default.PropTypes.string,
 	  stickyStyle: _react2.default.PropTypes.object,
@@ -493,7 +492,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Sticky.defaultProps = {
 	  isActive: true,
 	  className: '',
-	  outterClassName: '',
+	  outerClassName: '',
 	  style: {},
 	  stickyClassName: 'sticky',
 	  stickyStyle: {},

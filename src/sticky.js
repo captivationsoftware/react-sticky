@@ -6,7 +6,7 @@ export default class Sticky extends React.Component {
   static propTypes = {
     isActive: React.PropTypes.bool,
     className: React.PropTypes.string,
-    outterClassName: React.PropTypes.string,
+    outerClassName: React.PropTypes.string,
     style: React.PropTypes.object,
     stickyClassName: React.PropTypes.string,
     stickyStyle: React.PropTypes.object,
@@ -18,7 +18,7 @@ export default class Sticky extends React.Component {
   static defaultProps = {
     isActive: true,
     className: '',
-    outterClassName: '',
+    outerClassName: '',
     style: {},
     stickyClassName: 'sticky',
     stickyStyle: {},
@@ -190,7 +190,7 @@ export default class Sticky extends React.Component {
     const {
       topOffset,
       isActive,
-      outterClassName,
+      outerClassName,
       stickyClassName,
       stickyStyle,
       bottomOffset,
@@ -200,7 +200,7 @@ export default class Sticky extends React.Component {
 
     return (
       <div>
-        <div ref="placeholder" className={outterClassName} style={placeholderStyle}></div>
+        <div ref="placeholder" className={outerClassName} style={placeholderStyle}></div>
         <div {...props} ref="children" className={className} style={style}>
           {this.props.children}
         </div>
