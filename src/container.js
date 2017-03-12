@@ -16,6 +16,7 @@ export default class Container extends React.Component {
   constructor(props) {
     super(props);
     this.channel = new Channel({ inherited: 0, offset: 0, node: null });
+    this.rect = {}
   }
 
   getChildContext() {
@@ -30,6 +31,7 @@ export default class Container extends React.Component {
   componentDidMount() {
     const node = ReactDOM.findDOMNode(this);
     this.channel.update((data) => { data.node = node });
+    this.rect = node.getBoundingClientRect()
   }
 
   componentWillUnmount() {
@@ -37,6 +39,19 @@ export default class Container extends React.Component {
 
     const parentChannel = this.context['sticky-channel'];
     if (parentChannel) parentChannel.unsubscribe(this.updateOffset);
+  }
+
+  componentDidUpdate() {
+    const node = ReactDOM.findDOMNode(this);
+    const nextRect = node.getBoundingClientRect()
+    // Have we changed any prop values?
+    // Somehow Object.keys(this.rect) returns [] O_O
+    const valuesMatch = ['top', 'bottom', 'left', 'right'].every((key) => {
+      return nextRect.hasOwnProperty(key) && nextRect[key] === this.rect[key];
+    });
+
+    this.rect = nextRect
+    return !valuesMatch && this.channel.update((data) => { data.node = node });
   }
 
   updateOffset = ({ inherited, offset }) => {

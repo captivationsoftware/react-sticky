@@ -168,7 +168,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Container(props) {
 	    _classCallCheck(this, Container);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Container).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).call(this, props));
 
 	    _this.updateOffset = function (_ref) {
 	      var inherited = _ref.inherited;
@@ -180,6 +180,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    _this.channel = new _channel2.default({ inherited: 0, offset: 0, node: null });
+	    _this.rect = {};
 	    return _this;
 	  }
 
@@ -201,6 +202,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.channel.update(function (data) {
 	        data.node = node;
 	      });
+	      this.rect = node.getBoundingClientRect();
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -211,6 +213,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var parentChannel = this.context['sticky-channel'];
 	      if (parentChannel) parentChannel.unsubscribe(this.updateOffset);
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate() {
+	      var _this2 = this;
+
+	      var node = _reactDom2.default.findDOMNode(this);
+	      var nextRect = node.getBoundingClientRect();
+	      // Have we changed any prop values?
+	      // Somehow Object.keys(this.rect) returns [] O_O
+	      var valuesMatch = ['top', 'bottom', 'left', 'right'].every(function (key) {
+	        return nextRect.hasOwnProperty(key) && nextRect[key] === _this2.rect[key];
+	      });
+
+	      this.rect = nextRect;
+	      return !valuesMatch && this.channel.update(function (data) {
+	        data.node = node;
+	      });
 	    }
 	  }, {
 	    key: 'render',
@@ -259,6 +279,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -273,39 +295,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Sticky(props) {
 	    _classCallCheck(this, Sticky);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Sticky).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Sticky.__proto__ || Object.getPrototypeOf(Sticky)).call(this, props));
 
-	    _this.updateContext = function (_ref) {
-	      var inherited = _ref.inherited;
-	      var node = _ref.node;
-
-	      _this.containerNode = node;
-	      _this.setState({
-	        containerOffset: inherited,
-	        distanceFromBottom: _this.getDistanceFromBottom()
-	      });
-	    };
-
-	    _this.recomputeState = function () {
-	      var isSticky = _this.isSticky();
-	      var height = _this.getHeight();
-	      var width = _this.getWidth();
-	      var xOffset = _this.getXOffset();
-	      var distanceFromBottom = _this.getDistanceFromBottom();
-	      var hasChanged = _this.state.isSticky !== isSticky;
-
-	      _this.setState({ isSticky: isSticky, height: height, width: width, xOffset: xOffset, distanceFromBottom: distanceFromBottom });
-
-	      if (hasChanged) {
-	        if (_this.channel) {
-	          _this.channel.update(function (data) {
-	            data.offset = isSticky ? _this.state.height : 0;
-	          });
-	        }
-
-	        _this.props.onStickyStateChange(isSticky);
-	      }
-	    };
+	    _initialiseProps.call(_this);
 
 	    _this.state = {};
 	    return _this;
@@ -320,18 +312,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.on(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.recomputeState);
+	      var _this2 = this;
+
+	      this.on(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], function () {
+	        return _this2.recomputeState();
+	      });
 	      this.recomputeState();
 	    }
 	  }, {
 	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps() {
-	      this.recomputeState();
+	    value: function componentWillReceiveProps(nextProps) {
+	      this.recomputeState(nextProps);
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
-	      this.off(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.recomputeState);
+	      var _this3 = this;
+
+	      this.off(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], function () {
+	        return _this3.recomputeState();
+	      });
 	      this.channel.unsubscribe(this.updateContext);
 	    }
 	  }, {
@@ -350,28 +350,51 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return _reactDom2.default.findDOMNode(this.refs.children).getBoundingClientRect().height;
 	    }
 	  }, {
-	    key: 'getDistanceFromTop',
-	    value: function getDistanceFromTop() {
-	      return this.refs.placeholder.getBoundingClientRect().top;
+	    key: 'getPlaceholderRect',
+	    value: function getPlaceholderRect() {
+	      return this.refs.placeholder.getBoundingClientRect();
 	    }
 	  }, {
-	    key: 'getDistanceFromBottom',
-	    value: function getDistanceFromBottom() {
-	      if (!this.containerNode) return 0;
-	      return this.containerNode.getBoundingClientRect().bottom;
+	    key: 'getContainerRect',
+	    value: function getContainerRect() {
+	      return this.containerNode ? this.containerNode.getBoundingClientRect() : {
+	        top: 0,
+	        bottom: 0
+	      };
+	    }
+	  }, {
+	    key: 'isStickyBottom',
+	    value: function isStickyBottom(props, state) {
+	      var bottomOffset = props.bottomOffset;
+	      var containerOffset = state.containerOffset;
+	      var height = state.height;
+	      var placeholderTop = state.placeholderTop;
+	      var winHeight = state.winHeight;
+
+
+	      var bottomBreakpoint = containerOffset - bottomOffset;
+	      var placeholderBottom = placeholderTop + height;
+
+	      return placeholderBottom >= winHeight - bottomBreakpoint;
+	    }
+	  }, {
+	    key: 'isStickyTop',
+	    value: function isStickyTop(props, state) {
+	      var distancesFromPlaceholder = state.placeholderTop;
+
+	      var topBreakpoint = state.containerOffset - props.topOffset;
+	      var bottomBreakpoint = state.containerOffset + props.bottomOffset;
+
+	      return distancesFromPlaceholder <= topBreakpoint && state.containerBottom >= bottomBreakpoint;
 	    }
 	  }, {
 	    key: 'isSticky',
-	    value: function isSticky() {
-	      if (!this.props.isActive) return false;
+	    value: function isSticky(props, state) {
+	      if (!props.isActive) {
+	        return false;
+	      }
 
-	      var fromTop = this.getDistanceFromTop();
-	      var fromBottom = this.getDistanceFromBottom();
-
-	      var topBreakpoint = this.state.containerOffset - this.props.topOffset;
-	      var bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
-
-	      return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
+	      return props.position === 'top' ? this.isStickyTop(props, state) : this.isStickyBottom(props, state);
 	    }
 	  }, {
 	    key: 'on',
@@ -390,7 +413,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'shouldComponentUpdate',
 	    value: function shouldComponentUpdate(newProps, newState) {
-	      var _this2 = this;
+	      var _this4 = this;
 
 	      // Have we changed the number of props?
 	      var propNames = Object.keys(this.props);
@@ -398,7 +421,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // Have we changed any prop values?
 	      var valuesMatch = propNames.every(function (key) {
-	        return newProps.hasOwnProperty(key) && newProps[key] === _this2.props[key];
+	        return newProps.hasOwnProperty(key) && newProps[key] === _this4.props[key];
 	      });
 	      if (!valuesMatch) return true;
 
@@ -411,11 +434,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (newState.height !== state.height) return true;
 	        if (newState.width !== state.width) return true;
 	        if (newState.xOffset !== state.xOffset) return true;
-	        if (newState.containerOffset !== state.containerOffset) return true;
-	        if (newState.distanceFromBottom !== state.distanceFromBottom) return true;
+	        if (newState.placeholderTop !== state.placeholderTop) return true;
 	      }
 
+	      // We should check container sizes anyway
+	      if (newState.containerOffset !== state.containerOffset) return true;
+	      if (newState.containerBottom !== state.containerBottom) return true;
+	      if (newState.containerTop !== state.containerTop) return true;
+
 	      return false;
+	    }
+	  }, {
+	    key: 'getPositionOffset',
+	    value: function getPositionOffset() {
+	      var _state = this.state;
+	      var containerOffset = _state.containerOffset;
+	      var containerTop = _state.containerTop;
+	      var containerBottom = _state.containerBottom;
+	      var height = _state.height;
+	      var _props = this.props;
+	      var bottomOffset = _props.bottomOffset;
+	      var position = _props.position;
+	      var topOffset = _props.topOffset;
+
+
+	      var bottomLimit = containerBottom - height - bottomOffset;
+	      var topLimit = window.innerHeight - containerTop - topOffset;
+
+	      return position === 'top' ? Math.min(containerOffset, bottomLimit) : Math.min(containerOffset, topLimit);
 	    }
 
 	    /*
@@ -425,43 +471,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var placeholderStyle = { paddingBottom: 0 };
-	      var className = this.props.className;
+	      var _extends2;
+
+	      var _props2 = this.props;
+	      var propsClassName = _props2.className;
+	      var position = _props2.position;
+	      var stickyClassName = _props2.stickyClassName;
+	      var stickyStyle = _props2.stickyStyle;
+	      var style = _props2.style;
+
+	      var props = _objectWithoutProperties(_props2, ['className', 'position', 'stickyClassName', 'stickyStyle', 'style']);
+
+	      var _state2 = this.state;
+	      var isSticky = _state2.isSticky;
+	      var height = _state2.height;
+	      var width = _state2.width;
+	      var xOffset = _state2.xOffset;
+
+
+	      var placeholderStyle = { paddingBottom: isSticky ? height : 0 };
+	      var className = propsClassName + ' ' + (isSticky ? stickyClassName : '');
+	      var finalStickyStyle = isSticky && _extends((_extends2 = {
+	        position: 'fixed'
+	      }, _defineProperty(_extends2, position, this.getPositionOffset()), _defineProperty(_extends2, 'left', xOffset), _defineProperty(_extends2, 'width', width), _extends2), stickyStyle);
 
 	      // To ensure that this component becomes sticky immediately on mobile devices instead
 	      // of disappearing until the scroll event completes, we add `transform: translateZ(0)`
 	      // to 'kick' rendering of this element to the GPU
 	      // @see http://stackoverflow.com/questions/32875046
-	      var style = _extends({}, { transform: 'translateZ(0)' }, this.props.style);
-
-	      if (this.state.isSticky) {
-	        var _stickyStyle = {
-	          position: 'fixed',
-	          top: this.state.containerOffset,
-	          left: this.state.xOffset,
-	          width: this.state.width
-	        };
-
-	        var bottomLimit = this.state.distanceFromBottom - this.state.height - this.props.bottomOffset;
-	        if (this.state.containerOffset > bottomLimit) {
-	          _stickyStyle.top = bottomLimit;
-	        }
-
-	        placeholderStyle.paddingBottom = this.state.height;
-
-	        className += ' ' + this.props.stickyClassName;
-	        style = _extends({}, style, _stickyStyle, this.props.stickyStyle);
-	      }
-
-	      var _props = this.props;
-	      var topOffset = _props.topOffset;
-	      var isActive = _props.isActive;
-	      var stickyClassName = _props.stickyClassName;
-	      var stickyStyle = _props.stickyStyle;
-	      var bottomOffset = _props.bottomOffset;
-	      var onStickyStateChange = _props.onStickyStateChange;
-
-	      var props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange']);
+	      var finalStyle = _extends({
+	        transform: 'translateZ(0)'
+	      }, style, finalStickyStyle || {});
 
 	      return _react2.default.createElement(
 	        'div',
@@ -469,7 +509,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _react2.default.createElement('div', { ref: 'placeholder', style: placeholderStyle }),
 	        _react2.default.createElement(
 	          'div',
-	          _extends({}, props, { ref: 'children', className: className, style: style }),
+	          _extends({}, props, { ref: 'children', className: className, style: finalStyle }),
 	          this.props.children
 	        )
 	      );
@@ -482,6 +522,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Sticky.propTypes = {
 	  isActive: _react2.default.PropTypes.bool,
 	  className: _react2.default.PropTypes.string,
+	  position: _react2.default.PropTypes.oneOf(['top', 'bottom']),
 	  style: _react2.default.PropTypes.object,
 	  stickyClassName: _react2.default.PropTypes.string,
 	  stickyStyle: _react2.default.PropTypes.object,
@@ -492,6 +533,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Sticky.defaultProps = {
 	  isActive: true,
 	  className: '',
+	  position: 'top',
 	  style: {},
 	  stickyClassName: 'sticky',
 	  stickyStyle: {},
@@ -502,6 +544,52 @@ return /******/ (function(modules) { // webpackBootstrap
 	Sticky.contextTypes = {
 	  'sticky-channel': _react2.default.PropTypes.any
 	};
+
+	var _initialiseProps = function _initialiseProps() {
+	  var _this5 = this;
+
+	  this.updateContext = function (_ref) {
+	    var inherited = _ref.inherited;
+	    var node = _ref.node;
+
+	    _this5.containerNode = node;
+	    _this5.recomputeState(_this5.props, inherited);
+	  };
+
+	  this.recomputeState = function () {
+	    var props = arguments.length <= 0 || arguments[0] === undefined ? _this5.props : arguments[0];
+	    var inherited = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+
+	    var nextState = _extends({}, _this5.state, {
+	      height: _this5.getHeight(),
+	      width: _this5.getWidth(),
+	      xOffset: _this5.getXOffset(),
+	      containerOffset: inherited === false ? _this5.state.containerOffset : inherited,
+	      containerBottom: _this5.getContainerRect().bottom,
+	      containerTop: _this5.getContainerRect().top,
+	      placeholderTop: _this5.getPlaceholderRect().top,
+	      winHeight: window.innerHeight
+	    });
+
+	    var isSticky = _this5.isSticky(props, nextState);
+	    var finalNextState = _extends({}, nextState, { isSticky: isSticky });
+	    var hasChanged = _this5.state.isSticky !== isSticky;
+
+	    _this5.setState(finalNextState, function () {
+	      // After component did update lets broadcast update msg to channel
+	      if (hasChanged) {
+	        if (_this5.channel) {
+	          _this5.channel.update(function (data) {
+	            data.offset = isSticky ? _this5.state.height : 0;
+	          });
+	        }
+
+	        _this5.props.onStickyStateChange(isSticky);
+	      }
+	    });
+	  };
+	};
+
 	exports.default = Sticky;
 	module.exports = exports['default'];
 
