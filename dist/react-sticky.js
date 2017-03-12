@@ -171,8 +171,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this = _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).call(this, props));
 
 	    _this.updateOffset = function (_ref) {
-	      var inherited = _ref.inherited;
-	      var offset = _ref.offset;
+	      var inherited = _ref.inherited,
+	          offset = _ref.offset;
 
 	      _this.channel.update(function (data) {
 	        data.inherited = inherited + offset;
@@ -289,6 +289,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var events = ['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'];
+
 	var Sticky = function (_React$Component) {
 	  _inherits(Sticky, _React$Component);
 
@@ -297,9 +299,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var _this = _possibleConstructorReturn(this, (Sticky.__proto__ || Object.getPrototypeOf(Sticky)).call(this, props));
 
-	    _initialiseProps.call(_this);
-
 	    _this.state = {};
+
+	    _this.handleEvents = _this.handleEvents.bind(_this);
+	    _this.updateContext = _this.updateContext.bind(_this);
 	    return _this;
 	  }
 
@@ -312,11 +315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var _this2 = this;
-
-	      this.on(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], function () {
-	        return _this2.recomputeState();
-	      });
+	      this.subscribeToEvents();
 	      this.recomputeState();
 	    }
 	  }, {
@@ -327,11 +326,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
-	      var _this3 = this;
-
-	      this.off(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], function () {
-	        return _this3.recomputeState();
-	      });
+	      this.unsubscribeToEvents();
 	      this.channel.unsubscribe(this.updateContext);
 	    }
 	  }, {
@@ -366,10 +361,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'isStickyBottom',
 	    value: function isStickyBottom(props, state) {
 	      var bottomOffset = props.bottomOffset;
-	      var containerOffset = state.containerOffset;
-	      var height = state.height;
-	      var placeholderTop = state.placeholderTop;
-	      var winHeight = state.winHeight;
+	      var containerOffset = state.containerOffset,
+	          height = state.height,
+	          placeholderTop = state.placeholderTop,
+	          winHeight = state.winHeight;
 
 
 	      var bottomBreakpoint = containerOffset - bottomOffset;
@@ -389,7 +384,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'isSticky',
-	    value: function isSticky(props, state) {
+	    value: function isSticky() {
+	      var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
+	      var state = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.state;
+
 	      if (!props.isActive) {
 	        return false;
 	      }
@@ -397,23 +395,77 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return props.position === 'top' ? this.isStickyTop(props, state) : this.isStickyBottom(props, state);
 	    }
 	  }, {
-	    key: 'on',
-	    value: function on(events, callback) {
-	      events.forEach(function (evt) {
-	        window.addEventListener(evt, callback);
+	    key: 'updateContext',
+	    value: function updateContext(_ref) {
+	      var inherited = _ref.inherited,
+	          node = _ref.node;
+
+	      this.containerNode = node;
+	      this.recomputeState(this.props, inherited);
+	    }
+	  }, {
+	    key: 'recomputeState',
+	    value: function recomputeState() {
+	      var _this2 = this;
+
+	      var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
+	      var inherited = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+	      var nextState = _extends({}, this.state, {
+	        height: this.getHeight(),
+	        width: this.getWidth(),
+	        xOffset: this.getXOffset(),
+	        containerOffset: inherited === false ? this.state.containerOffset : inherited,
+	        containerBottom: this.getContainerRect().bottom,
+	        containerTop: this.getContainerRect().top,
+	        placeholderTop: this.getPlaceholderRect().top,
+	        winHeight: window.innerHeight
+	      });
+
+	      var isSticky = this.isSticky(props, nextState);
+	      var finalNextState = _extends({}, nextState, { isSticky: isSticky });
+	      var hasChanged = this.state.isSticky !== isSticky;
+
+	      this.setState(finalNextState, function () {
+	        // After component did update lets broadcast update msg to channel
+	        if (hasChanged) {
+	          if (_this2.channel) {
+	            _this2.channel.update(function (data) {
+	              data.offset = isSticky ? _this2.state.height : 0;
+	            });
+	          }
+
+	          _this2.props.onStickyStateChange(isSticky);
+	        }
 	      });
 	    }
 	  }, {
-	    key: 'off',
-	    value: function off(events, callback) {
+	    key: 'handleEvents',
+	    value: function handleEvents() {
+	      this.recomputeState();
+	    }
+	  }, {
+	    key: 'subscribeToEvents',
+	    value: function subscribeToEvents() {
+	      var _this3 = this;
+
 	      events.forEach(function (evt) {
-	        window.removeEventListener(evt, callback);
+	        window.addEventListener(evt, _this3.handleEvents);
+	      });
+	    }
+	  }, {
+	    key: 'unsubscribeToEvents',
+	    value: function unsubscribeToEvents() {
+	      var _this4 = this;
+
+	      events.forEach(function (evt) {
+	        window.removeEventListener(evt, _this4.handleEvents);
 	      });
 	    }
 	  }, {
 	    key: 'shouldComponentUpdate',
 	    value: function shouldComponentUpdate(newProps, newState) {
-	      var _this4 = this;
+	      var _this5 = this;
 
 	      // Have we changed the number of props?
 	      var propNames = Object.keys(this.props);
@@ -421,7 +473,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // Have we changed any prop values?
 	      var valuesMatch = propNames.every(function (key) {
-	        return newProps.hasOwnProperty(key) && newProps[key] === _this4.props[key];
+	        return newProps.hasOwnProperty(key) && newProps[key] === _this5.props[key];
 	      });
 	      if (!valuesMatch) return true;
 
@@ -447,15 +499,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getPositionOffset',
 	    value: function getPositionOffset() {
-	      var _state = this.state;
-	      var containerOffset = _state.containerOffset;
-	      var containerTop = _state.containerTop;
-	      var containerBottom = _state.containerBottom;
-	      var height = _state.height;
-	      var _props = this.props;
-	      var bottomOffset = _props.bottomOffset;
-	      var position = _props.position;
-	      var topOffset = _props.topOffset;
+	      var _state = this.state,
+	          containerOffset = _state.containerOffset,
+	          containerTop = _state.containerTop,
+	          containerBottom = _state.containerBottom,
+	          height = _state.height;
+	      var _props = this.props,
+	          bottomOffset = _props.bottomOffset,
+	          position = _props.position,
+	          topOffset = _props.topOffset;
 
 
 	      var bottomLimit = containerBottom - height - bottomOffset;
@@ -473,20 +525,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function render() {
 	      var _extends2;
 
-	      var _props2 = this.props;
-	      var propsClassName = _props2.className;
-	      var position = _props2.position;
-	      var stickyClassName = _props2.stickyClassName;
-	      var stickyStyle = _props2.stickyStyle;
-	      var style = _props2.style;
+	      var _props2 = this.props,
+	          propsClassName = _props2.className,
+	          bottomOffset = _props2.bottomOffset,
+	          isActive = _props2.isActive,
+	          onStickyStateChange = _props2.onStickyStateChange,
+	          position = _props2.position,
+	          stickyClassName = _props2.stickyClassName,
+	          stickyStyle = _props2.stickyStyle,
+	          style = _props2.style,
+	          topOffset = _props2.topOffset,
+	          props = _objectWithoutProperties(_props2, ['className', 'bottomOffset', 'isActive', 'onStickyStateChange', 'position', 'stickyClassName', 'stickyStyle', 'style', 'topOffset']);
 
-	      var props = _objectWithoutProperties(_props2, ['className', 'position', 'stickyClassName', 'stickyStyle', 'style']);
-
-	      var _state2 = this.state;
-	      var isSticky = _state2.isSticky;
-	      var height = _state2.height;
-	      var width = _state2.width;
-	      var xOffset = _state2.xOffset;
+	      var _state2 = this.state,
+	          isSticky = _state2.isSticky,
+	          height = _state2.height,
+	          width = _state2.width,
+	          xOffset = _state2.xOffset;
 
 
 	      var placeholderStyle = { paddingBottom: isSticky ? height : 0 };
@@ -544,52 +599,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	Sticky.contextTypes = {
 	  'sticky-channel': _react2.default.PropTypes.any
 	};
-
-	var _initialiseProps = function _initialiseProps() {
-	  var _this5 = this;
-
-	  this.updateContext = function (_ref) {
-	    var inherited = _ref.inherited;
-	    var node = _ref.node;
-
-	    _this5.containerNode = node;
-	    _this5.recomputeState(_this5.props, inherited);
-	  };
-
-	  this.recomputeState = function () {
-	    var props = arguments.length <= 0 || arguments[0] === undefined ? _this5.props : arguments[0];
-	    var inherited = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-
-	    var nextState = _extends({}, _this5.state, {
-	      height: _this5.getHeight(),
-	      width: _this5.getWidth(),
-	      xOffset: _this5.getXOffset(),
-	      containerOffset: inherited === false ? _this5.state.containerOffset : inherited,
-	      containerBottom: _this5.getContainerRect().bottom,
-	      containerTop: _this5.getContainerRect().top,
-	      placeholderTop: _this5.getPlaceholderRect().top,
-	      winHeight: window.innerHeight
-	    });
-
-	    var isSticky = _this5.isSticky(props, nextState);
-	    var finalNextState = _extends({}, nextState, { isSticky: isSticky });
-	    var hasChanged = _this5.state.isSticky !== isSticky;
-
-	    _this5.setState(finalNextState, function () {
-	      // After component did update lets broadcast update msg to channel
-	      if (hasChanged) {
-	        if (_this5.channel) {
-	          _this5.channel.update(function (data) {
-	            data.offset = isSticky ? _this5.state.height : 0;
-	          });
-	        }
-
-	        _this5.props.onStickyStateChange(isSticky);
-	      }
-	    });
-	  };
-	};
-
 	exports.default = Sticky;
 	module.exports = exports['default'];
 

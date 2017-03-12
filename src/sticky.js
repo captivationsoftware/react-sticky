@@ -102,7 +102,7 @@ export default class Sticky extends React.Component {
     return distancesFromPlaceholder <= topBreakpoint && state.containerBottom >= bottomBreakpoint;
   }
 
-  isSticky(props, state) {
+  isSticky(props = this.props, state = this.state) {
     if (!props.isActive) {
       return false;
     }

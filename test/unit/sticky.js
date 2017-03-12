@@ -25,33 +25,38 @@ describe('Sticky component', function() {
 
   describe('props', () => {
     describe('topOffset', () => {
-      describe('(positive)', () => {
+      describe.only('(positive)', () => {
         beforeEach(() => {
           mountSticky(<Sticky topOffset={10}>Test</Sticky>);
         });
 
         it('is not sticky when it is mid-screen', () => {
-          this.sticky.getDistanceFromTop = () => 100;
+          this.sticky.getPlaceholderRect = () => ({top: 100});
+          this.sticky.recomputeState();
           expect(this.sticky.isSticky()).to.be.false;
         });
 
         it('is not sticky when it is at the top of the screen', () => {
-          this.sticky.getDistanceFromTop = () => 0;
+          this.sticky.getPlaceholderRect = () => ({top: 0});
+          this.sticky.recomputeState();
           expect(this.sticky.isSticky()).to.be.false;
         });
 
         it('is not sticky when it is less than `topOffset` pixels above the top of the screen', () => {
-          this.sticky.getDistanceFromTop = () => -9;
+          this.sticky.getPlaceholderRect = () => ({top: -9});
+          this.sticky.recomputeState();
           expect(this.sticky.isSticky()).to.be.false;
         });
 
         it('is sticky when it is exactly `topOffset` pixels above the top of the screen', () => {
-          this.sticky.getDistanceFromTop = () => -10;
+          this.sticky.getPlaceholderRect = () => ({top: -10});
+          this.sticky.recomputeState();
           expect(this.sticky.isSticky()).to.be.true;
         });
 
         it('is sticky when it is more than `topOffset` pixels above the top of the screen', () => {
-          this.sticky.getDistanceFromTop = () => -11;
+          this.sticky.getPlaceholderRect = () => ({top: -11});
+          this.sticky.recomputeState();
           expect(this.sticky.isSticky()).to.be.true;
         });
       });
