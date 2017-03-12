@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+const events = ['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'];
+
 export default class Sticky extends React.Component {
 
   static propTypes = {
@@ -34,6 +36,9 @@ export default class Sticky extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+
+    this.handleEvents = this.handleEvents.bind(this);
+    this.updateContext = this.updateContext.bind(this);
   }
 
   componentWillMount() {
@@ -42,7 +47,7 @@ export default class Sticky extends React.Component {
   }
 
   componentDidMount() {
-    this.on(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], () => this.recomputeState());
+    this.subscribeToEvents();
     this.recomputeState();
   }
 
@@ -51,7 +56,7 @@ export default class Sticky extends React.Component {
   }
 
   componentWillUnmount() {
-    this.off(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], () => this.recomputeState());
+    this.unsubscribeToEvents();
     this.channel.unsubscribe(this.updateContext);
   }
 
@@ -105,12 +110,12 @@ export default class Sticky extends React.Component {
     return props.position === 'top' ? this.isStickyTop(props, state) : this.isStickyBottom(props, state);
   }
 
-  updateContext = ({ inherited, node }) => {
+  updateContext({ inherited, node }) {
     this.containerNode = node;
     this.recomputeState(this.props, inherited)
   }
 
-  recomputeState = (props = this.props, inherited = false) => {
+  recomputeState(props = this.props, inherited = false) {
     const nextState = {
       ...this.state,
       height: this.getHeight(),
@@ -141,15 +146,19 @@ export default class Sticky extends React.Component {
     });
   }
 
-  on(events, callback) {
+  handleEvents() {
+    this.recomputeState();
+  }
+
+  subscribeToEvents() {
     events.forEach((evt) => {
-      window.addEventListener(evt, callback);
+      window.addEventListener(evt, this.handleEvents);
     });
   }
 
-  off(events, callback) {
+  unsubscribeToEvents() {
     events.forEach((evt) => {
-      window.removeEventListener(evt, callback);
+      window.removeEventListener(evt, this.handleEvents);
     });
   }
 
