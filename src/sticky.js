@@ -11,7 +11,8 @@ export default class Sticky extends React.Component {
     stickyStyle: React.PropTypes.object,
     topOffset: React.PropTypes.number,
     bottomOffset: React.PropTypes.number,
-    onStickyStateChange: React.PropTypes.func
+    onStickyStateChange: React.PropTypes.func,
+    disablePlaceholder: React.PropTypes.bool,
   }
 
   static defaultProps = {
@@ -22,7 +23,8 @@ export default class Sticky extends React.Component {
     stickyStyle: {},
     topOffset: 0,
     bottomOffset: 0,
-    onStickyStateChange: () => {}
+    onStickyStateChange: () => {},
+    disablePlaceholder: false,
   }
 
   static contextTypes = {
@@ -82,6 +84,7 @@ export default class Sticky extends React.Component {
 
     const topBreakpoint = this.state.containerOffset - this.props.topOffset;
     const bottomBreakpoint = this.state.containerOffset + this.props.bottomOffset;
+    if (fromBottom < 0) return this.state.isSticky;
 
     return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
   }
@@ -180,7 +183,9 @@ export default class Sticky extends React.Component {
         stickyStyle.top = bottomLimit;
       }
 
-      placeholderStyle.paddingBottom = this.state.height;
+      if (!this.props.disablePlaceholder) {
+        placeholderStyle.paddingBottom = this.state.height;
+      }
 
       className += ` ${this.props.stickyClassName}`;
       style = Object.assign({}, style, stickyStyle, this.props.stickyStyle);
@@ -193,6 +198,7 @@ export default class Sticky extends React.Component {
       stickyStyle,
       bottomOffset,
       onStickyStateChange,
+      disablePlaceholder,
       ...props
     } = this.props;
 
