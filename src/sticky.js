@@ -22,7 +22,8 @@ export default class Sticky extends React.Component {
     stickyStyle: {},
     topOffset: 0,
     bottomOffset: 0,
-    onStickyStateChange: () => {}
+    onStickyStateChange: () => {},
+    gpu: true
   }
 
   static contextTypes = {
@@ -165,7 +166,11 @@ export default class Sticky extends React.Component {
     // of disappearing until the scroll event completes, we add `transform: translateZ(0)`
     // to 'kick' rendering of this element to the GPU
     // @see http://stackoverflow.com/questions/32875046
-    let style = Object.assign({}, { transform: 'translateZ(0)' }, this.props.style);
+    let baseStyle = {}
+    if(this.props.gpu) {
+      baseStyle.transform = 'translateZ(0)'
+    }
+    let style = Object.assign({}, baseStyle, this.props.style);
 
     if (this.state.isSticky) {
       const stickyStyle = {
