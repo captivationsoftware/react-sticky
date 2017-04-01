@@ -464,7 +464,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          stickyStyle = _props.stickyStyle,
 	          bottomOffset = _props.bottomOffset,
 	          onStickyStateChange = _props.onStickyStateChange,
-	          props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange']);
+	          gpu = _props.gpu,
+	          props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange', 'gpu']);
 
 	      return _react2.default.createElement(
 	        'div',
