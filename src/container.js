@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 
 import Channel from './channel';
@@ -6,11 +7,11 @@ import Channel from './channel';
 export default class Container extends React.Component {
 
   static contextTypes = {
-    'sticky-channel': React.PropTypes.any,
+    'sticky-channel': PropTypes.any,
   }
 
   static childContextTypes = {
-    'sticky-channel': React.PropTypes.any,
+    'sticky-channel': PropTypes.any,
   }
 
   constructor(props) {
