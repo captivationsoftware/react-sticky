@@ -168,11 +168,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Container(props) {
 	    _classCallCheck(this, Container);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Container).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).call(this, props));
 
 	    _this.updateOffset = function (_ref) {
-	      var inherited = _ref.inherited;
-	      var offset = _ref.offset;
+	      var inherited = _ref.inherited,
+	          offset = _ref.offset;
 
 	      _this.channel.update(function (data) {
 	        data.inherited = inherited + offset;
@@ -273,11 +273,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Sticky(props) {
 	    _classCallCheck(this, Sticky);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Sticky).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Sticky.__proto__ || Object.getPrototypeOf(Sticky)).call(this, props));
 
 	    _this.updateContext = function (_ref) {
-	      var inherited = _ref.inherited;
-	      var node = _ref.node;
+	      var inherited = _ref.inherited,
+	          node = _ref.node;
 
 	      _this.containerNode = node;
 	      _this.setState({
@@ -374,17 +374,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return fromTop <= topBreakpoint && fromBottom >= bottomBreakpoint;
 	    }
 	  }, {
+	    key: 'getScrollContainer',
+	    value: function getScrollContainer() {
+	      var element = this.props.scrollContainer;
+
+	      if (typeof this.props.scrollContainer === 'string') {
+	        element = document.querySelector(this.props.scrollContainer);
+	      }
+
+	      return element;
+	    }
+	  }, {
 	    key: 'on',
 	    value: function on(events, callback) {
+	      var element = this.getScrollContainer();
+
 	      events.forEach(function (evt) {
-	        window.addEventListener(evt, callback);
+	        element.addEventListener(evt, callback);
 	      });
 	    }
 	  }, {
 	    key: 'off',
 	    value: function off(events, callback) {
+	      var element = this.getScrollContainer();
+
 	      events.forEach(function (evt) {
-	        window.removeEventListener(evt, callback);
+	        element.removeEventListener(evt, callback);
 	      });
 	    }
 	  }, {
@@ -453,15 +468,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        style = _extends({}, style, _stickyStyle, this.props.stickyStyle);
 	      }
 
-	      var _props = this.props;
-	      var topOffset = _props.topOffset;
-	      var isActive = _props.isActive;
-	      var stickyClassName = _props.stickyClassName;
-	      var stickyStyle = _props.stickyStyle;
-	      var bottomOffset = _props.bottomOffset;
-	      var onStickyStateChange = _props.onStickyStateChange;
-
-	      var props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange']);
+	      var _props = this.props,
+	          topOffset = _props.topOffset,
+	          isActive = _props.isActive,
+	          stickyClassName = _props.stickyClassName,
+	          stickyStyle = _props.stickyStyle,
+	          bottomOffset = _props.bottomOffset,
+	          onStickyStateChange = _props.onStickyStateChange,
+	          scrollContainer = _props.scrollContainer,
+	          props = _objectWithoutProperties(_props, ['topOffset', 'isActive', 'stickyClassName', 'stickyStyle', 'bottomOffset', 'onStickyStateChange', 'scrollContainer']);
 
 	      return _react2.default.createElement(
 	        'div',
@@ -497,7 +512,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  stickyStyle: {},
 	  topOffset: 0,
 	  bottomOffset: 0,
-	  onStickyStateChange: function onStickyStateChange() {}
+	  onStickyStateChange: function onStickyStateChange() {},
+	  scrollContainer: window
 	};
 	Sticky.contextTypes = {
 	  'sticky-channel': _react2.default.PropTypes.any
