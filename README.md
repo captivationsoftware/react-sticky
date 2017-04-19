@@ -40,7 +40,7 @@ class App extends React.Component ({
         ...
         <Sticky>
           {
-            ({ isSticky, style, distanceFromTop, distanceFromBottom }) => {
+            ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom }) => {
               return (
                 <header style={style}>
                   ...
@@ -75,7 +75,7 @@ app.js
 <StickyContainer>
   ...
   <Sticky topOffset={80}>
-    { ({ isSticky, style, distanceFromTop, distanceFromBottom }) => (...) }
+    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom }) => (...) }
   </Sticky>
   ...
 </StickyContainer>
@@ -92,7 +92,38 @@ app.js
 <StickyContainer>
   ...
   <Sticky bottomOffset={80}>
-    { ({ isSticky, style, distanceFromTop, distanceFromBottom }) => (...) }
+    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom }) => (...) }
+  </Sticky>
+  ...
+</StickyContainer>
+```
+
+#### disableCompensation _(default: false)_
+Set `disableCompensation` to `false` if you do not want your `<Sticky />` to correct any
+jumpy behavior as its attachment changes across sticky state changes.
+
+app.js
+```js
+<StickyContainer>
+  ...
+  <Sticky disableCompensation>
+    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom }) => (...) }
+  </Sticky>
+  ...
+</StickyContainer>
+```
+
+
+#### disableHardwareAcceleration _(default: false)_
+When `disableHardwareAcceleration` is set to `true`, the `<Sticky />` element will not use hardware acceleration (e.g. `transform: translateZ(0)`). This setting is not recommended, and can usually be
+avoided by improving the structure of your DOM.
+
+app.js
+```js
+<StickyContainer>
+  ...
+  <Sticky disableHardwareAcceleration>
+    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom }) => (...) }
   </Sticky>
   ...
 </StickyContainer>
