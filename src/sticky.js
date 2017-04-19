@@ -23,7 +23,8 @@ export default class Sticky extends React.Component {
     stickyStyle: {},
     topOffset: 0,
     bottomOffset: 0,
-    onStickyStateChange: () => {}
+    onStickyStateChange: () => {},
+    scrollContainer: window
   }
 
   static contextTypes = {
@@ -116,15 +117,29 @@ export default class Sticky extends React.Component {
     }
   }
 
+  getScrollContainer() {
+    let element = this.props.scrollContainer;
+
+    if (typeof this.props.scrollContainer === 'string') {
+      element = document.querySelector(this.props.scrollContainer);
+    }
+
+    return element;
+  }
+
   on(events, callback) {
+    const element = this.getScrollContainer();
+
     events.forEach((evt) => {
-      window.addEventListener(evt, callback);
+      element.addEventListener(evt, callback);
     });
   }
 
   off(events, callback) {
+    const element = this.getScrollContainer();
+
     events.forEach((evt) => {
-      window.removeEventListener(evt, callback);
+      element.removeEventListener(evt, callback);
     });
   }
 
@@ -194,6 +209,7 @@ export default class Sticky extends React.Component {
       stickyStyle,
       bottomOffset,
       onStickyStateChange,
+      scrollContainer,
       ...props
     } = this.props;
 
