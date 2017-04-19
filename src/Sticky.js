@@ -31,42 +31,40 @@ export default class Sticky extends Component {
   }
 
   componentDidUpdate() {
-    this.placeholder.style.paddingBottom = `${this.isSticky ? this.content.getBoundingClientRect().height : 0}px`
+    this.placeholder.style.paddingBottom = `${this.state.isSticky ? this.content.getBoundingClientRect().height : 0}px`
   }
 
   handleContainerEvent = ({ distanceFromTop, distanceFromBottom }) => {
-    this.setState({ distanceFromTop, distanceFromBottom })
+    const wasSticky = !!this.state.isSticky;
+    const isSticky = this.placeholder.offsetTop + this.props.topOffset < distanceFromTop && distanceFromBottom > 0;
+
+    const bottomDifference = distanceFromBottom - this.props.bottomOffset - this.content.getBoundingClientRect().height;
+
+    const placeholderClientRect = this.placeholder.getBoundingClientRect();
+    const style = !isSticky ? { } : {
+      position: 'fixed',
+      top: bottomDifference > 0 ? 0 : bottomDifference,
+      left: placeholderClientRect.left,
+      width: placeholderClientRect.width
+    }
+
+    distanceFromTop = -distanceFromTop + this.placeholder.offsetTop;
+
+    this.setState({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom })
   };
 
   render() {
-    this.wasSticky = this.isSticky;
-    const isSafeToMeasure = this.placeholder && this.content;
-
-    const remainingDistanceFromBottom = isSafeToMeasure ? this.state.distanceFromBottom - this.content.getBoundingClientRect().height : 0;
-
-    const isSticky = this.isSticky = isSafeToMeasure
-      && this.placeholder.offsetTop + this.props.topOffset < this.state.distanceFromTop
-      && this.state.distanceFromBottom > 0
-
-    const placeholderClientRect = isSafeToMeasure ? this.placeholder.getBoundingClientRect() : {};
-
-    const bottomBreakpoint = isSafeToMeasure ? this.state.distanceFromBottom - this.props.bottomOffset - this.content.getBoundingClientRect().height : 0;
-
     return (
       <div>
         <div ref={ placeholder => this.placeholder = placeholder } />
         {
           React.cloneElement(
             this.props.children({
-              isSticky,
-              style: !isSticky ? { } : {
-                position: 'fixed',
-                top: bottomBreakpoint > 0 ? 0 : bottomBreakpoint,
-                left: placeholderClientRect.left,
-                width: placeholderClientRect.width
-              },
-              distanceFromTop: isSafeToMeasure ? -this.state.distanceFromTop + this.placeholder.offsetTop : undefined,
-              distanceFromBottom: isSafeToMeasure ? this.state.distanceFromBottom : undefined
+              isSticky: this.state.isSticky,
+              wasSticky: this.state.wasSticky,
+              distanceFromTop: this.state.distanceFromTop,
+              distanceFromBottom: this.state.distanceFromBottom,
+              style: this.state.style
             }),
             { ref: content => { if (content) this.content = content; } }
           )
