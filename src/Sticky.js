@@ -12,7 +12,9 @@ export default class Sticky extends Component {
 
   static defaultProps = {
     topOffset: 0,
-    bottomOffset: 0
+    bottomOffset: 0,
+    disableCompensation: false,
+    disableHardwareAcceleration: false
   }
 
   static contextTypes = {
@@ -31,7 +33,7 @@ export default class Sticky extends Component {
   }
 
   componentDidUpdate() {
-    this.placeholder.style.paddingBottom = `${this.state.isSticky ? this.content.getBoundingClientRect().height : 0}px`
+    this.placeholder.style.paddingBottom = this.props.disableCompensation ? 0 : `${this.state.isSticky ? this.content.getBoundingClientRect().height : 0}px`
   }
 
   handleContainerEvent = ({ distanceFromTop, distanceFromBottom }) => {
@@ -45,30 +47,31 @@ export default class Sticky extends Component {
       position: 'fixed',
       top: bottomDifference > 0 ? 0 : bottomDifference,
       left: placeholderClientRect.left,
-      width: placeholderClientRect.width
+      width: placeholderClientRect.width,
+      transform: this.props.disableHardwareAcceleration ? '' : 'translateZ(0)'
     }
 
     distanceFromTop = -distanceFromTop + this.placeholder.offsetTop;
 
-    this.setState({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom })
+    this.setState({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, style })
   };
 
   render() {
+    const element = React.cloneElement(
+      this.props.children({
+        isSticky: this.state.isSticky,
+        wasSticky: this.state.wasSticky,
+        distanceFromTop: this.state.distanceFromTop,
+        distanceFromBottom: this.state.distanceFromBottom,
+        style: this.state.style
+      }),
+      { ref: content => { if (content) this.content = content; } }
+    )
+
     return (
       <div>
         <div ref={ placeholder => this.placeholder = placeholder } />
-        {
-          React.cloneElement(
-            this.props.children({
-              isSticky: this.state.isSticky,
-              wasSticky: this.state.wasSticky,
-              distanceFromTop: this.state.distanceFromTop,
-              distanceFromBottom: this.state.distanceFromBottom,
-              style: this.state.style
-            }),
-            { ref: content => { if (content) this.content = content; } }
-          )
-        }
+        { element }
       </div>
     )
   }
