@@ -1,14 +1,10 @@
 {
   "name": "react-sticky",
-  "version": "5.0.8",
+  "version": "6.0.0",
   "description": "Sticky component for React",
   "main": "lib/index.js",
   "scripts": {
-    "clean": "rimraf lib dist",
-    "transpile": "babel src --loose --out-dir lib",
-    "dist": "webpack lib/index.js dist/react-sticky.js --display-modules --progress && NODE_ENV=production webpack lib/index.js dist/react-sticky.min.js --display-modules --progress",
-    "build": "npm run transpile && npm run dist",
-    "prepublish": "npm run clean && npm run build",
+    "start": "webpack-dev-server --content-base build/ --port 3000",
     "test": "mocha --compilers js:babel-core/register test/unit"
   },
   "repository": {
@@ -34,20 +30,22 @@
     "react-dom": "^0.14.0 || ^15.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.6.0",
-    "babel-core": "^6.6.0",
-    "babel-plugin-add-module-exports": "^0.1.2",
-    "babel-plugin-transform-object-assign": "^6.5.0",
-    "babel-preset-es2015": "^6.5.0",
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.2.10",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-preset-es2015": "^6.22.0",
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "chai": "^3.2.0",
+    "html-webpack-plugin": "2.22.0",
     "jsdom": "8.0.4",
     "mocha": "^2.2.5",
-    "react": "^0.14.0 || ^15.0.0",
+    "prop-types": "^15.5.8",
+    "react": "^15.5.4",
     "react-addons-test-utils": "^0.14.0 || ^15.0.0",
-    "react-dom": "^0.14.0 || ^15.0.0",
+    "react-dom": "^15.5.4",
     "rimraf": "^2.5.2",
-    "webpack": "^1.12.14"
+    "webpack": "^2.2.0",
+    "webpack-dev-server": "2.3.0"
   }
 }
