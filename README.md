@@ -40,7 +40,7 @@ class App extends React.Component ({
         ...
         <Sticky>
           {
-            ({ isSticky, style }) => {
+            ({ isSticky, style, distanceFromTop, distanceFromBottom }) => {
               return (
                 <header style={style}>
                   ...
@@ -58,7 +58,7 @@ class App extends React.Component ({
 
 ```
 
-When the "stickiness" becomes activated, the `isSticky` and `style` arguments to the sticky function
+When the "stickiness" becomes activated, the arguments to the sticky function
 are modified. Similarly, when deactivated, the arguments are once again restored accordingly.
 
 ### `<StickyContainer />` Props
@@ -75,7 +75,7 @@ app.js
 <StickyContainer>
   ...
   <Sticky topOffset={80}>
-    ...
+    { ({ isSticky, style, distanceFromTop, distanceFromBottom }) => (...) }
   </Sticky>
   ...
 </StickyContainer>
@@ -85,8 +85,6 @@ The above would result in an element that becomes sticky once its top is greater
 
 
 #### bottomOffset _(default: 0)_
-NOT IMPLEMENTED YET!!!!!
-
 Sticky state will be triggered when the bottom of the element is `bottomOffset` pixels from the bottom of the closest `<StickyContainer />`.
 
 app.js
@@ -94,7 +92,7 @@ app.js
 <StickyContainer>
   ...
   <Sticky bottomOffset={80}>
-    <SomeChild />
+    { ({ isSticky, style, distanceFromTop, distanceFromBottom }) => (...) }
   </Sticky>
   ...
 </StickyContainer>
