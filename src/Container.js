@@ -39,9 +39,11 @@ export default class Container extends PureComponent {
     if (!this.framePending) {
       requestAnimationFrame(() => {
         this.framePending = false;
-        const distanceFromTop = -this.node.getBoundingClientRect().top + this.node.offsetTop
+        const boundingClientRect = this.node.getBoundingClientRect();
+        const distanceFromTop = -boundingClientRect.top + this.node.offsetTop;
+        const distanceFromBottom = boundingClientRect.bottom;
         this.subscribers.forEach(handler => handler({
-          distanceFromTop
+          distanceFromTop, distanceFromBottom
         }));
       })
       this.framePending = true;
