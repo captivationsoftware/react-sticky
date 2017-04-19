@@ -1,47 +1,44 @@
-'use strict';
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-var webpack = require('webpack');
-
-var plugins = [
-  new webpack.DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-  }),
-  new webpack.optimize.OccurenceOrderPlugin()
+const loaders = [
+  {
+    "test": /\.js$/,
+    "exclude": /node_modules/,
+    "loader": "babel-loader",
+    "query": {
+      "presets": [
+        "babel-preset-es2015",
+        "babel-preset-react",
+        "babel-preset-stage-0"
+      ],
+      "plugins": [
+        "babel-plugin-transform-class-properties"
+      ]
+    }
+  }
 ];
 
-if (process.env.NODE_ENV === 'production') {
-  plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        screw_ie8: true,
-        warnings: false
-      }
-    })
-  );
-}
-
 module.exports = {
+  devtool: 'eval-source-map',
+  entry: path.resolve('examples', 'basic', 'basic.js'),
   output: {
-    library: 'ReactSticky',
-    libraryTarget: 'umd'
+    path: path.resolve('examples', 'basic'),
+    filename: 'basic.min.js',
+    publicPath: '/'
   },
-  externals: {
-    "react": {
-      root: "React",
-      commonjs2: "react",
-      commonjs: "react",
-      amd: "react"
-    },
-    "react-dom": {
-      root: "ReactDOM",
-      commonjs2: "react-dom",
-      commonjs: "react-dom",
-      amd: "react-dom"
-    }
-
-  },
-  plugins: plugins,
   resolve: {
-    extensions: ['', '.js']
+    extensions: ['.js']
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.resolve('examples', 'basic', 'index.tpl.html'),
+      filename: 'index.html',
+      inject: false
+    })
+  ],
+  module: {
+    loaders: loaders
   }
 };
