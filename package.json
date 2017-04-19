@@ -1,6 +1,6 @@
 {
   "name": "react-sticky",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "description": "Sticky component for React",
   "main": "lib/index.js",
   "scripts": {
@@ -26,6 +26,9 @@
     "url": "https://github.com/captivationsoftware/react-sticky/issues"
   },
   "homepage": "https://github.com/captivationsoftware/react-sticky",
+  "dependencies": {
+    "prop-types": "^15.5.8"
+  },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.0.0",
     "react-dom": "^0.14.0 || ^15.0.0"
@@ -41,7 +44,6 @@
     "chai": "^3.2.0",
     "jsdom": "8.0.4",
     "mocha": "^2.2.5",
-    "prop-types": "^15.5.8",
     "react": "^0.14.0 || ^15.0.0",
     "react-addons-test-utils": "^0.14.0 || ^15.0.0",
     "react-dom": "^0.14.0 || ^15.0.0",
