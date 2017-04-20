@@ -33,7 +33,7 @@ export default class Sticky extends Component {
   }
 
   componentDidUpdate() {
-    this.placeholder.style.paddingBottom = this.props.disableCompensation ? 0 : `${this.state.isSticky ? this.content.getBoundingClientRect().height : 0}px`
+    this.placeholder.style.paddingBottom = this.props.disableCompensation ? 0 : `${this.state.isSticky ? this.state.calculatedHeight : 0}px`
   }
 
   handleContainerEvent = ({ distanceFromTop, distanceFromBottom }) => {
@@ -42,6 +42,7 @@ export default class Sticky extends Component {
 
     const bottomDifference = distanceFromBottom - this.props.bottomOffset - this.content.getBoundingClientRect().height;
 
+    const calculatedHeight = this.content.getBoundingClientRect().height;
     const placeholderClientRect = this.placeholder.getBoundingClientRect();
     const style = !isSticky ? { } : {
       position: 'fixed',
@@ -53,7 +54,14 @@ export default class Sticky extends Component {
 
     distanceFromTop = -distanceFromTop + this.placeholder.offsetTop;
 
-    this.setState({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, style })
+    this.setState({
+      isSticky,
+      wasSticky,
+      distanceFromTop,
+      distanceFromBottom,
+      calculatedHeight,
+      style
+    });
   };
 
   render() {
@@ -63,9 +71,10 @@ export default class Sticky extends Component {
         wasSticky: this.state.wasSticky,
         distanceFromTop: this.state.distanceFromTop,
         distanceFromBottom: this.state.distanceFromBottom,
+        calculatedHeight: this.state.calculatedHeight,
         style: this.state.style
       }),
-      { ref: content => { if (content) this.content = content; } }
+      { ref: content => { this.content = content; } }
     )
 
     return (

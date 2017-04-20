@@ -3,7 +3,7 @@ react-sticky [![Build Status](https://travis-ci.org/captivationsoftware/react-st
 The most powerful Sticky library available for React!
 
 #### Demos
-  - [Basic](http://rawgit.com/captivationsoftware/react-sticky/master/examples/basic/index.html)
+  - [Basic] TODO
 
 #### Highlights
   - Fully-nestable, allowing you to build awesome layouts with familiar syntax
@@ -40,7 +40,7 @@ class App extends React.Component ({
         ...
         <Sticky>
           {
-            ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom }) => {
+            ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
               return (
                 <header style={style}>
                   ...
@@ -75,7 +75,7 @@ app.js
 <StickyContainer>
   ...
   <Sticky topOffset={80}>
-    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom }) => (...) }
+    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => (...) }
   </Sticky>
   ...
 </StickyContainer>
@@ -92,7 +92,7 @@ app.js
 <StickyContainer>
   ...
   <Sticky bottomOffset={80}>
-    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom }) => (...) }
+    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => (...) }
   </Sticky>
   ...
 </StickyContainer>
@@ -107,7 +107,7 @@ app.js
 <StickyContainer>
   ...
   <Sticky disableCompensation>
-    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom }) => (...) }
+    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => (...) }
   </Sticky>
   ...
 </StickyContainer>
@@ -123,7 +123,7 @@ app.js
 <StickyContainer>
   ...
   <Sticky disableHardwareAcceleration>
-    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom }) => (...) }
+    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => (...) }
   </Sticky>
   ...
 </StickyContainer>
