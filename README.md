@@ -15,12 +15,6 @@ The most powerful Sticky library available for React!
 npm install react-sticky
 ```
 
-## Contributing
-Start the development server, accessible on `localhost:3000` using the following command:
-```sh
-npm start
-```
-
 ## Overview & Basic Example
 `<Sticky />` elements should contain a function as its immediate child, which itself returns an element.
 This function will be called based on events of the parent `<StickyContainer />`, and will provide
