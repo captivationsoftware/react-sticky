@@ -13,17 +13,18 @@ class Document extends PureComponent {
         <StickyContainer style={{ height: 500, background: '#ddd', padding: '0 30px' }}>
           <Sticky>
             {
-              ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom }) => {
+              ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                 return (
                   <div style={{ ...style, height: 80, overflow: 'auto', background: '#aaa'}}>
                     <h2>
-                      <span className="pull-left">&lt;Sticky /&gt; invocation: #{i++}</span>
+                      <span className="pull-left">&lt;Sticky /&gt; <small>(invocation: #{i++})</small></span>
                       <small className="pull-right" style={{ marginTop: 10 }}>
                         <ul className="list-inline">
                           <li>isSticky: {isSticky ? 'true' : 'false'}</li>
                           <li>wasSticky: {wasSticky ? 'true' : 'false'}</li>
                           <li>distanceFromTop: { distanceFromTop }</li>
                           <li>distanceFromBottom: {distanceFromBottom}</li>
+                          <li>calculatedHeight: { calculatedHeight }px</li>
                         </ul>
                       </small>
                     </h2>
