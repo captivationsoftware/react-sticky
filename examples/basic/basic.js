@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 
-import { Sticky, StickyContainer } from '../../src';
+import { Sticky, StickyContainer } from '../../lib';
 
 let i = 0;
 class Document extends PureComponent {

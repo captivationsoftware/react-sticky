@@ -4,7 +4,10 @@
   "description": "Sticky component for React",
   "main": "lib/index.js",
   "scripts": {
-    "start": "webpack-dev-server --content-base build/ --port 3000",
+    "clean": "rimraf lib",
+    "compile": "babel src --loose --out-dir lib",
+    "start": "webpack --watch",
+    "prepublish": "npm run clean && npm run compile",
     "test": "mocha --compilers js:babel-core/register test/unit"
   },
   "repository": {
@@ -18,9 +21,6 @@
   ],
   "author": "Captivation Software",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/captivationsoftware/react-sticky/issues"
-  },
   "homepage": "https://github.com/captivationsoftware/react-sticky",
   "dependencies": {
     "prop-types": "15.5.8"
@@ -30,6 +30,7 @@
     "react-dom": "^0.14.0 || ^15.0.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.23.1",
     "babel-core": "^6.23.1",
     "babel-loader": "^6.2.10",
     "babel-plugin-transform-class-properties": "^6.23.0",
@@ -37,15 +38,12 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "chai": "^3.2.0",
-    "html-webpack-plugin": "2.22.0",
     "jsdom": "8.0.4",
     "mocha": "^2.2.5",
-    "prop-types": "^15.5.8",
     "react": "^15.5.4",
     "react-addons-test-utils": "^0.14.0 || ^15.0.0",
     "react-dom": "^15.5.4",
     "rimraf": "^2.5.2",
-    "webpack": "^2.2.0",
-    "webpack-dev-server": "2.3.0"
+    "webpack": "^2.2.0"
   }
 }
