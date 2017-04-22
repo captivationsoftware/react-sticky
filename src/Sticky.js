@@ -7,10 +7,12 @@ export default class Sticky extends Component {
   static propTypes = {
     topOffset: PropTypes.number,
     bottomOffset: PropTypes.number,
+    relative: PropTypes.bool,
     children: PropTypes.func.isRequired
   }
 
   static defaultProps = {
+    relative: false,
     topOffset: 0,
     bottomOffset: 0,
     disableCompensation: false,
@@ -20,7 +22,7 @@ export default class Sticky extends Component {
   static contextTypes = {
     subscribe: PropTypes.func,
     unsubscribe: PropTypes.func,
-    overflow: PropTypes.bool
+    getParent: PropTypes.func
   }
 
   state = {}
@@ -37,18 +39,27 @@ export default class Sticky extends Component {
     this.placeholder.style.paddingBottom = this.props.disableCompensation ? 0 : `${this.state.isSticky ? this.state.calculatedHeight : 0}px`
   }
 
-  handleContainerEvent = ({ distanceFromTop, distanceFromBottom }) => {
-    const wasSticky = !!this.state.isSticky;
-    const isSticky = (this.context.overflow ? distanceFromTop < 0 : this.placeholder.offsetTop + this.props.topOffset < distanceFromTop) && distanceFromBottom > 0;
+  handleContainerEvent = ({ distanceFromTop, distanceFromBottom, eventSource }) => {
+    const parent = this.context.getParent();
+    const preventingStickyStateChanges = this.props.relative && eventSource !== parent;
 
-    const bottomDifference = distanceFromBottom - this.props.bottomOffset - this.content.getBoundingClientRect().height;
-
-    const calculatedHeight = this.content.getBoundingClientRect().height;
     const placeholderClientRect = this.placeholder.getBoundingClientRect();
+    const contentClientRect = this.content.getBoundingClientRect();
+    const calculatedHeight = contentClientRect.height;
+
+    const bottomDifference = distanceFromBottom - this.props.bottomOffset - calculatedHeight;
+
+    distanceFromTop = -distanceFromTop + this.placeholder.offsetTop;
+
+    const wasSticky = !!this.state.isSticky;
+    const isSticky = preventingStickyStateChanges ? wasSticky : (distanceFromTop < -this.props.topOffset && distanceFromBottom > -this.props.bottomOffset);
+
+    distanceFromBottom = (this.props.relative ? parent.scrollHeight - parent.scrollTop : distanceFromBottom) - calculatedHeight;
+
 
     const style = !isSticky ? { } : {
       position: 'fixed',
-      top: bottomDifference > 0 ? (this.context.overflow ? this.placeholder.offsetTop - this.placeholder.offsetParent.offsetParent.scrollTop : 0) : bottomDifference,
+      top: bottomDifference > 0 ? (this.props.relative ? parent.offsetTop - parent.offsetParent.scrollTop : 0) : bottomDifference,
       left: placeholderClientRect.left,
       width: placeholderClientRect.width,
       transform: this.props.disableHardwareAcceleration ? '' : 'translateZ(0)'
@@ -57,7 +68,7 @@ export default class Sticky extends Component {
     this.setState({
       isSticky,
       wasSticky,
-      distanceFromTop: this.context.overflow ? distanceFromTop : -distanceFromTop + this.placeholder.offsetTop,
+      distanceFromTop,
       distanceFromBottom,
       calculatedHeight,
       style

@@ -8,16 +8,16 @@ class Document extends PureComponent {
   render() {
     return (
       <div style={{ margin: 30 }}>
-        <StickyContainer overflow={true} style={{ height: 500, overflowY: 'auto', background: '#ddd', padding: '0 30px' }}>
-          <div style={{ height: 2500 }}>
-            <div style={{ height: 30 }} />
-            <Sticky>
+        <StickyContainer style={{ height: 250, overflowY: 'auto', background: '#ddd', padding: '0 30px' }}>
+          <div style={{ height: 500 }}>
+            <div style={{ height: 50 }} />
+            <Sticky relative>
               {
                 ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                   console.log({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight });
 
                   return (
-                    <div style={{ ...style, height: 80, overflow: 'auto', background: '#aaa'}}>
+                    <div style={{ ...style, height: 100, overflow: 'auto', background: '#aaa'}}>
                       <h2>
                         <span className="pull-left">&lt;Sticky /&gt; <small>(invocation: #{i++})</small></span>
                       </h2>

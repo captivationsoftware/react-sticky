@@ -56,44 +56,18 @@ When the "stickiness" becomes activated, the arguments to the sticky function
 are modified. Similarly, when deactivated, the arguments are once again restored accordingly.
 
 ### `<StickyContainer />` Props
-
-`<StickyContainer />` passes along all props you provide to it without interference. That's right - no restrictions - go nuts!  
+`<StickyContainer />` supports all valid `<div />` props.  
 
 ### `<Sticky />` Props
 
-#### topOffset _(default: 0)_
-Sticky state will be triggered when the top of the element is `topOffset` pixels from the top of the closest `<StickyContainer />`. Positive numbers give the impression of a lazy sticky state, whereas negative numbers are more eager in their attachment.
+#### relative _(default: false)_
+Set `relative` to `true` if the `<Sticky />` element will be rendered within
+an overflowing `<StickyContainer />` (e.g. `style={{ overflowY: 'auto' }}`) and you want
+the `<Sticky />` behavior to react to scroll events only within that container.
 
-app.js
-```js
-<StickyContainer>
-  ...
-  <Sticky topOffset={80}>
-    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => (...) }
-  </Sticky>
-  ...
-</StickyContainer>
-```
-
-The above would result in an element that becomes sticky once its top is greater than or equal to 80px away from the top of the `<StickyContainer />`.
-
-
-#### bottomOffset _(default: 0)_
-Sticky state will be triggered when the bottom of the element is `bottomOffset` pixels from the bottom of the closest `<StickyContainer />`.
-
-app.js
-```js
-<StickyContainer>
-  ...
-  <Sticky bottomOffset={80}>
-    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => (...) }
-  </Sticky>
-  ...
-</StickyContainer>
-```
 
 #### disableCompensation _(default: false)_
-Set `disableCompensation` to `false` if you do not want your `<Sticky />` to correct any
+Set `disableCompensation` to `true` if you do not want your `<Sticky />` to correct any
 jumpy behavior as its attachment changes across sticky state changes.
 
 app.js
