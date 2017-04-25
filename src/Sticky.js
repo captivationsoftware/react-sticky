@@ -8,7 +8,8 @@ export default class Sticky extends Component {
     topOffset: PropTypes.number,
     bottomOffset: PropTypes.number,
     relative: PropTypes.bool,
-    children: PropTypes.func.isRequired
+    children: PropTypes.func.isRequired,
+    isFooter: PropTypes.bool
   }
 
   static defaultProps = {
@@ -16,7 +17,8 @@ export default class Sticky extends Component {
     topOffset: 0,
     bottomOffset: 0,
     disableCompensation: false,
-    disableHardwareAcceleration: false
+    disableHardwareAcceleration: false,
+    isFooter: false
   }
 
   static contextTypes = {
@@ -40,40 +42,59 @@ export default class Sticky extends Component {
   }
 
   handleContainerEvent = ({ distanceFromTop, distanceFromBottom, eventSource }) => {
-    const parent = this.context.getParent();
-    const preventingStickyStateChanges = this.props.relative && eventSource !== parent;
+  const parent = this.context.getParent();
+  const preventingStickyStateChanges = this.props.relative && eventSource !== parent;
 
-    const placeholderClientRect = this.placeholder.getBoundingClientRect();
-    const contentClientRect = this.content.getBoundingClientRect();
-    const calculatedHeight = contentClientRect.height;
+  const placeholderClientRect = this.placeholder.getBoundingClientRect();
+  const contentClientRect = this.content.getBoundingClientRect();
+  const calculatedHeight = contentClientRect.height;
 
-    const bottomDifference = distanceFromBottom - this.props.bottomOffset - calculatedHeight;
+  const bottomDifference = distanceFromBottom - this.props.bottomOffset - calculatedHeight;
 
-    distanceFromTop = -distanceFromTop + this.placeholder.offsetTop;
+  distanceFromTop = -distanceFromTop + this.placeholder.offsetTop;
 
-    const wasSticky = !!this.state.isSticky;
-    const isSticky = preventingStickyStateChanges ? wasSticky : (distanceFromTop < -this.props.topOffset && distanceFromBottom > -this.props.bottomOffset);
+  const wasSticky = !!this.state.isSticky;
 
-    distanceFromBottom = (this.props.relative ? parent.scrollHeight - parent.scrollTop : distanceFromBottom) - calculatedHeight;
+  distanceFromBottom = (this.props.relative ? parent.scrollHeight - parent.scrollTop : distanceFromBottom) - calculatedHeight;
 
+  let isSticky = false;
+  let topValue = 0;
 
-    const style = !isSticky ? { } : {
-      position: 'fixed',
-      top: bottomDifference > 0 ? (this.props.relative ? parent.offsetTop - parent.offsetParent.scrollTop : 0) : bottomDifference,
-      left: placeholderClientRect.left,
-      width: placeholderClientRect.width,
-      transform: this.props.disableHardwareAcceleration ? '' : 'translateZ(0)'
-    }
+  if (!this.props.isFooter) {
+      isSticky = preventingStickyStateChanges ? wasSticky : (distanceFromTop < -this.props.topOffset && distanceFromBottom > -this.props.bottomOffset);
 
-    this.setState({
-      isSticky,
-      wasSticky,
-      distanceFromTop,
-      distanceFromBottom,
-      calculatedHeight,
-      style
-    });
+      const bottomDifference = distanceFromBottom - this.props.bottomOffset - calculatedHeight;
+      topValue = bottomDifference > 0 ? (this.props.relative ? parent.offsetTop - parent.offsetParent.scrollTop : 0) : bottomDifference;
+  } else {
+      const viewportHeight = window.innerHeight;
+      const containerHeight = parent.getBoundingClientRect().height;
+      isSticky = preventingStickyStateChanges ? wasSticky : distanceFromTop + this.props.topOffset < viewportHeight && distanceFromBottom + calculatedHeight - this.props.bottomOffset> 0;
+
+      const footerDynamicTopValue = distanceFromTop + this.props.topOffset;
+      const footerStaticValue = viewportHeight - calculatedHeight;
+
+      const footerTopValue = Math.max(footerDynamicTopValue, footerStaticValue);
+      const footerBottomValue = distanceFromBottom - this.props.bottomOffset;
+      topValue = footerBottomValue + calculatedHeight < viewportHeight ? footerBottomValue : footerTopValue;
+  }
+
+  const style = !isSticky ? { } : {
+    position: 'fixed',
+    top: topValue,
+    left: placeholderClientRect.left,
+    width: placeholderClientRect.width,
+    transform: this.props.disableHardwareAcceleration ? '' : 'translateZ(0)'
   };
+
+  this.setState({
+    isSticky,
+    wasSticky,
+    distanceFromTop,
+    distanceFromBottom,
+    calculatedHeight,
+    style
+  });
+};
 
   render() {
     const element = React.cloneElement(
