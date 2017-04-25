@@ -1,9 +1,11 @@
 react-sticky [![Build Status](https://travis-ci.org/captivationsoftware/react-sticky.svg?branch=master)](https://travis-ci.org/captivationsoftware/react-sticky)
 ============
-The most powerful Sticky library available for React!
+
+Make your React components sticky!
 
 #### Demos
-  - [Basic](http://rawgit.com/captivationsoftware/react-sticky/master/examples/basic/index.html)
+  - [Basic](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/basic/index.html)
+  - [Relative](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/relative/index.html)
 
 #### Highlights
   - Fully-nestable, allowing you to build awesome layouts with familiar syntax
@@ -63,7 +65,7 @@ are modified. Similarly, when deactivated, the arguments are once again restored
 #### relative _(default: false)_
 Set `relative` to `true` if the `<Sticky />` element will be rendered within
 an overflowing `<StickyContainer />` (e.g. `style={{ overflowY: 'auto' }}`) and you want
-the `<Sticky />` behavior to react to scroll events only within that container.
+the `<Sticky />` behavior to react to events only within that container.
 
 
 #### disableCompensation _(default: false)_
