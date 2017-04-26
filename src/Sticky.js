@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
 export default class Sticky extends Component {
 
@@ -85,7 +85,7 @@ export default class Sticky extends Component {
         calculatedHeight: this.state.calculatedHeight,
         style: this.state.style
       }),
-      { ref: content => { this.content = content; } }
+      { ref: content => { this.content = ReactDOM.findDOMNode(content); } }
     )
 
     return (
