@@ -5,12 +5,14 @@ Make your React components sticky!
 
 #### Demos
   - [Basic](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/basic/index.html)
+  - [Bottom](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/bottom/index.html)
   - [Relative](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/relative/index.html)
 
 #### Highlights
   - Fully-nestable, allowing you to build awesome layouts with familiar syntax
   - Sane defaults so you spend less time configuring
   - Allows multiple Sticky elements on the page at once with compositional awareness!
+  - Sticky elements can stick to either top or bottom of the container
 
 ## Installation
 ```sh
@@ -67,6 +69,9 @@ Set `relative` to `true` if the `<Sticky />` element will be rendered within
 an overflowing `<StickyContainer />` (e.g. `style={{ overflowY: 'auto' }}`) and you want
 the `<Sticky />` behavior to react to events only within that container.
 
+#### edge _(default: Edges.TOP)_
+Set edge to `Edges.TOP` or `Edges.BOTTOM` to determine where the `<Sticky />` element will
+stick inside of a `<StickyContainer />`
 
 #### disableCompensation _(default: false)_
 Set `disableCompensation` to `true` if you do not want your `<Sticky />` to correct any
