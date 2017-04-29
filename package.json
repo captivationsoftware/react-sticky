@@ -43,6 +43,7 @@
     "jsdom": "8.0.4",
     "mocha": "^2.4.5",
     "react": "^15.5.4",
+    "react-dom": "^15.5.4",
     "react-addons-test-utils": "^15.5.1",
     "rimraf": "^2.5.2",
     "webpack": "^2.2.0"
