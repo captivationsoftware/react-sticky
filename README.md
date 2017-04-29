@@ -6,6 +6,7 @@ Make your React components sticky!
 #### Demos
   - [Basic](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/basic/index.html)
   - [Relative](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/relative/index.html)
+  - [Stacked](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/stacked/index.html)
 
 #### Highlights
   - Fully-nestable, allowing you to build awesome layouts with familiar syntax
