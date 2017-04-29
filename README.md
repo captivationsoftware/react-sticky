@@ -19,12 +19,11 @@ npm install react-sticky
 ```
 
 ## Overview & Basic Example
-`<Sticky />` elements should contain a single function as the child, which accepts an object
-as its only parameter. The structure of this object has the following properties:
+`<Sticky />` elements require a function that returns a React component or DOM node as the only child. When invoked, this child function will be supplied an object with the following properties: 
  - `isSticky` _(boolean)_ - is the element sticky as a result of the current event?
  - `wasSticky` _(boolean)_ - was the element sticky prior to the current event?
  - `distanceFromTop` _(number)_ - number of pixels from the top of the sticky to the nearest `<StickyContainer />`'s top
- - `distanceFromTop` _(number)_ - number of pixels from the bottom of the sticky to the nearest `<StickyContainer />`'s bottom
+ - `distanceFromBottom` _(number)_ - number of pixels from the bottom of the sticky to the nearest `<StickyContainer />`'s bottom
  - `calculatedHeight` _(number)_ - height of the element returned by this function
  - `style` _(object)_ - modifiable style attributes to optionally be passed to the element returned by this function
 
