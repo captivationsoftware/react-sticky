@@ -1,4 +1,4 @@
-react-sticky [![Build Status](https://travis-ci.org/captivationsoftware/react-sticky.svg?branch=master)](https://travis-ci.org/captivationsoftware/react-sticky)
+react-sticky [![Build Status](https://travis-ci.org/captivationsoftware/react-sticky.svg?branch=6.0.0)](https://travis-ci.org/captivationsoftware/react-sticky)
 ============
 
 Make your React components sticky!
@@ -56,7 +56,7 @@ class App extends React.Component ({
 ```
 
 When the "stickiness" becomes activated, the arguments to the sticky function
-are modified. Similarly, when deactivated, the arguments are once again restored accordingly.
+are modified. Similarly, when deactivated, the arguments will update accordingly.
 
 ### `<StickyContainer />` Props
 `<StickyContainer />` supports all valid `<div />` props.  
@@ -67,6 +67,9 @@ are modified. Similarly, when deactivated, the arguments are once again restored
 Set `relative` to `true` if the `<Sticky />` element will be rendered within
 an overflowing `<StickyContainer />` (e.g. `style={{ overflowY: 'auto' }}`) and you want
 the `<Sticky />` behavior to react to events only within that container.
+
+When in `relative` mode, `window` events will not trigger sticky state changes. Only scrolling
+within the nearest `StickyContainer` can trigger sticky state changes.
 
 #### topOffset _(default: 0)_
 Sticky state will be triggered when the top of the element is `topOffset` pixels from the top of the closest `<StickyContainer />`. Positive numbers give the impression of a lazy sticky state, whereas negative numbers are more eager in their attachment.
@@ -101,8 +104,9 @@ app.js
 The above would result in an element that ceases to be sticky once its bottom is 80px away from the bottom of the `<StickyContainer />`.
 
 #### disableCompensation _(default: false)_
-Set `disableCompensation` to `true` if you do not want your `<Sticky />` to correct any
-jumpy behavior as its attachment changes across sticky state changes.
+Set `disableCompensation` to `true` if you do not want your `<Sticky />` to apply padding to
+a hidden placeholder `<div />` to correct "jumpiness" as attachment changes from `position:fixed`
+and back.
 
 app.js
 ```js
@@ -115,10 +119,9 @@ app.js
 </StickyContainer>
 ```
 
-
 #### disableHardwareAcceleration _(default: false)_
-When `disableHardwareAcceleration` is set to `true`, the `<Sticky />` element will not use hardware acceleration (e.g. `transform: translateZ(0)`). This setting is not recommended, and can usually be
-avoided by improving the structure of your DOM.
+When `disableHardwareAcceleration` is set to `true`, the `<Sticky />` element will not use hardware acceleration (e.g. `transform: translateZ(0)`). This setting is not recommended as it negatively impacts
+the mobile experience, and can usually be avoided by improving the structure of your DOM.
 
 app.js
 ```js
@@ -131,5 +134,9 @@ app.js
 </StickyContainer>
 ```
 
-### License
-MIT
+## Having trouble implementing?
+React-sticky is provided to the community free of charge by [Captivation Software](https://www.captivationsoftware.com). For all implementation problems,
+be sure to post an issue on GitHub for answers from the community.
+
+For official, first-class implementation support, [contact](mailto:info@captivationsoftware.com)
+Captivation Software and we will quickly get you up and running (for a fee).
