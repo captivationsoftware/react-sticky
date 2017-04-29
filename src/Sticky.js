@@ -25,9 +25,15 @@ export default class Sticky extends Component {
     getParent: PropTypes.func
   }
 
-  state = {}
+  state = {
+    isSticky: false,
+    wasSticky: false,
+    style: {}
+  }
 
   componentWillMount() {
+    if (!this.context.subscribe) throw new TypeError("Expected Sticky to be mounted within StickyContainer");
+
     this.context.subscribe(this.handleContainerEvent)
   }
 
@@ -55,7 +61,7 @@ export default class Sticky extends Component {
     const bottomDifference = distanceFromBottom - this.props.bottomOffset - calculatedHeight;
 
     const wasSticky = !!this.state.isSticky;
-    const isSticky = preventingStickyStateChanges ? wasSticky : (distanceFromTop < -this.props.topOffset && distanceFromBottom > -this.props.bottomOffset);
+    const isSticky = preventingStickyStateChanges ? wasSticky : (distanceFromTop <= -this.props.topOffset && distanceFromBottom > -this.props.bottomOffset);
 
     distanceFromBottom = (this.props.relative ? parent.scrollHeight - parent.scrollTop : distanceFromBottom) - calculatedHeight;
 
