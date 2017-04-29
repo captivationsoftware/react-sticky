@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import raf from 'raf';
 
 export default class Container extends PureComponent {
 
@@ -41,7 +42,7 @@ export default class Container extends PureComponent {
     const eventSource = evt.currentTarget === window ? document.body : this.node;
 
     if (!this.framePending) {
-      requestAnimationFrame(() => {
+      raf(() => {
         this.framePending = false;
         const boundingClientRect = this.node.getBoundingClientRect();
         const distanceFromTop = boundingClientRect.top;
@@ -68,12 +69,12 @@ export default class Container extends PureComponent {
   render() {
     return (
       <div
+        { ...this.props }
         ref={ node => this.node = node }
         onScroll={this.notifySubscribers}
         onTouchStart={this.notifySubscribers}
         onTouchMove={this.notifySubscribers}
         onTouchEnd={this.notifySubscribers}
-        { ...this.props }
       />
     );
   }
