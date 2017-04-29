@@ -6,7 +6,7 @@ module.exports = {
   entry: {
     basic: path.resolve('examples', 'basic', 'basic.js'),
     relative: path.resolve('examples', 'relative', 'relative.js'),
-    // timeline: path.resolve('examples', 'timeline', 'timeline.js')
+    stacked: path.resolve('examples', 'stacked', 'stacked.js')
   },
   output: {
     path: path.join(__dirname, 'examples'),
