@@ -19,9 +19,18 @@ npm install react-sticky
 ```
 
 ## Overview & Basic Example
-`<Sticky />` elements should contain a function as its immediate child, which itself returns an element.
-This function will be called based on events of the parent `<StickyContainer />`, and will provide
-sane defaults for basic sticky functionality, along with a hook to apply your own logic / customizations.  
+`<Sticky />` elements should contain a single function as the child, which accepts an object
+as its only parameter. The structure of this object has the following properties:
+ - `isSticky` _(boolean)_ - is the element sticky as a result of the current event?
+ - `wasSticky` _(boolean)_ - was the element sticky prior to the current event?
+ - `distanceFromTop` _(number)_ - number of pixels from the top of the sticky to the nearest `<StickyContainer />`'s top
+ - `distanceFromTop` _(number)_ - number of pixels from the bottom of the sticky to the nearest `<StickyContainer />`'s bottom
+ - `calculatedHeight` _(number)_ - height of the element returned by this function
+ - `style` _(object)_ - modifiable style attributes to optionally be passed to the element returned by this function
+
+The `Sticky`'s child function will be called when events occur in the parent `<StickyContainer />`,
+and will serve as the callback to apply your own logic and customizations, with sane `style` attributes
+to get you up and running quickly.  
 
 app.js
 ```js
@@ -37,7 +46,16 @@ class App extends React.Component ({
         ...
         <Sticky>
           {
-            ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
+            ({
+              style,
+
+              // the following are also available but unused in this example
+              isSticky,
+              wasSticky,
+              distanceFromTop,
+              distanceFromBottom,
+              calculatedHeight
+            }) => {
               return (
                 <header style={style}>
                   ...
@@ -79,7 +97,7 @@ app.js
 <StickyContainer>
   ...
   <Sticky topOffset={80}>
-    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => (...) }
+    { props => (...) }
   </Sticky>
   ...
 </StickyContainer>
@@ -95,7 +113,7 @@ app.js
 <StickyContainer>
   ...
   <Sticky bottomOffset={80}>
-    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => (...) }
+    { props => (...) }
   </Sticky>
   ...
 </StickyContainer>
@@ -113,7 +131,7 @@ app.js
 <StickyContainer>
   ...
   <Sticky disableCompensation>
-    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => (...) }
+    { props => (...) }
   </Sticky>
   ...
 </StickyContainer>
@@ -128,7 +146,7 @@ app.js
 <StickyContainer>
   ...
   <Sticky disableHardwareAcceleration>
-    { ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => (...) }
+    { props => (...) }
   </Sticky>
   ...
 </StickyContainer>
