@@ -4,9 +4,9 @@ react-sticky [![Build Status](https://travis-ci.org/captivationsoftware/react-st
 Make your React components sticky!
 
 #### Demos
-  - [Basic](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/basic/index.html)
-  - [Relative](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/relative/index.html)
-  - [Stacked](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/stacked/index.html)
+  - [Basic](http://rawgit.com/captivationsoftware/react-sticky/master/examples/basic/index.html)
+  - [Relative](http://rawgit.com/captivationsoftware/react-sticky/master/examples/relative/index.html)
+  - [Stacked](http://rawgit.com/captivationsoftware/react-sticky/master/examples/stacked/index.html)
 
 #### Version 6.x Highlights
   - Over-hauled to support sticky behavior via higher-order component, giving you ultimate control of implementation details
