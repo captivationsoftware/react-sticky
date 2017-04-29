@@ -1,4 +1,4 @@
-react-sticky [![Build Status](https://travis-ci.org/captivationsoftware/react-sticky.svg?branch=6.0.0)](https://travis-ci.org/captivationsoftware/react-sticky)
+react-sticky [![Build Status](https://travis-ci.org/captivationsoftware/react-sticky.svg?branch=master)](https://travis-ci.org/captivationsoftware/react-sticky)
 ============
 
 Make your React components sticky!
@@ -8,8 +8,8 @@ Make your React components sticky!
   - [Relative](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/relative/index.html)
   - [Stacked](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/stacked/index.html)
 
-#### Version Highlights
-  - 6.x has been overhauled to support sticky behavior via higher-order component, giving you ultimate control of implementation details
+#### Version 6.x Highlights
+  - Over-hauled to support sticky behavior via higher-order component, giving you ultimate control of implementation details
   - Features a minimal yet efficient API
   - Drops support for versions of React < 15.3. If you are using an earlier version of React, continue to use the 5.x series
 
