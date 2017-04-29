@@ -14,7 +14,7 @@ class Document extends PureComponent {
             <Sticky relative>
               {
                 ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
-                  console.log({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight });
+                  // console.log({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight });
 
                   return (
                     <div style={{ ...style, height: 100, overflow: 'auto', background: '#aaa'}}>

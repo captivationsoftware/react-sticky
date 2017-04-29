@@ -44,7 +44,7 @@ export default class Container extends PureComponent {
       requestAnimationFrame(() => {
         this.framePending = false;
         const boundingClientRect = this.node.getBoundingClientRect();
-        const distanceFromTop = eventSource.scrollTop + eventSource.offsetTop;
+        const distanceFromTop = boundingClientRect.top;
         const distanceFromBottom = boundingClientRect.bottom;
 
         this.subscribers.forEach(handler => handler({

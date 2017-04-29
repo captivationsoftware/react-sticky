@@ -41,7 +41,12 @@ export default class Sticky extends Component {
 
   handleContainerEvent = ({ distanceFromTop, distanceFromBottom, eventSource }) => {
     const parent = this.context.getParent();
-    const preventingStickyStateChanges = this.props.relative && eventSource !== parent;
+
+    let preventingStickyStateChanges = false;
+    if (this.props.relative) {
+        preventingStickyStateChanges = this.props.relative && eventSource !== parent;
+        distanceFromTop = -(eventSource.scrollTop + eventSource.offsetTop) + this.placeholder.offsetTop
+    }
 
     const placeholderClientRect = this.placeholder.getBoundingClientRect();
     const contentClientRect = this.content.getBoundingClientRect();
@@ -49,13 +54,10 @@ export default class Sticky extends Component {
 
     const bottomDifference = distanceFromBottom - this.props.bottomOffset - calculatedHeight;
 
-    distanceFromTop = -distanceFromTop + this.placeholder.offsetTop;
-
     const wasSticky = !!this.state.isSticky;
     const isSticky = preventingStickyStateChanges ? wasSticky : (distanceFromTop < -this.props.topOffset && distanceFromBottom > -this.props.bottomOffset);
 
     distanceFromBottom = (this.props.relative ? parent.scrollHeight - parent.scrollTop : distanceFromBottom) - calculatedHeight;
-
 
     const style = !isSticky ? { } : {
       position: 'fixed',
