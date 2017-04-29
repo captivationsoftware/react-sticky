@@ -8,10 +8,10 @@ Make your React components sticky!
   - [Relative](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/relative/index.html)
   - [Stacked](http://rawgit.com/captivationsoftware/react-sticky/6.0.0/examples/stacked/index.html)
 
-#### Highlights
-  - Fully-nestable, allowing you to build awesome layouts with familiar syntax
-  - Sane defaults so you spend less time configuring
-  - Allows multiple Sticky elements on the page at once with compositional awareness!
+#### Version Highlights
+  - 6.x has been overhauled to support sticky behavior via higher-order component, giving you ultimate control of implementation details
+  - Features a minimal yet efficient API
+  - Drops support for versions of React < 15.3. If you are using an earlier version of React, continue to use the 5.x series
 
 ## Installation
 ```sh

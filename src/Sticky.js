@@ -28,7 +28,7 @@ export default class Sticky extends Component {
   state = {
     isSticky: false,
     wasSticky: false,
-    style: {}
+    style: { }
   }
 
   componentWillMount() {
@@ -69,8 +69,11 @@ export default class Sticky extends Component {
       position: 'fixed',
       top: bottomDifference > 0 ? (this.props.relative ? parent.offsetTop - parent.offsetParent.scrollTop : 0) : bottomDifference,
       left: placeholderClientRect.left,
-      width: placeholderClientRect.width,
-      transform: this.props.disableHardwareAcceleration ? '' : 'translateZ(0)'
+      width: placeholderClientRect.width
+    }
+
+    if (!this.props.disableHardwareAcceleration) {
+      style.transform = 'translateZ(0)';
     }
 
     this.setState({

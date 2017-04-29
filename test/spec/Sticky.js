@@ -115,7 +115,7 @@ describe('Valid Sticky', () => {
       expect(sticky.state).to.eql({
         isSticky: false,
         wasSticky: true,
-        style: {},
+        style: { transform: 'translateZ(0)' },
         distanceFromTop: 1,
         distanceFromBottom: 901,
         calculatedHeight: 100
@@ -238,9 +238,13 @@ describe('Valid Sticky', () => {
       }), { attachTo });
 
       const sticky = wrapper.children().node;
+      sticky.handleContainerEvent({ distanceFromTop: 1, distanceFromBottom: 100, eventSource: document.body });
+      expect(sticky.state.isSticky).to.be.false;
+      expect(sticky.state.style.transform).to.be.undefined;
+
       sticky.handleContainerEvent({ distanceFromTop: -1, distanceFromBottom: 99, eventSource: document.body });
       expect(sticky.state.isSticky).to.be.true;
-      expect(sticky.state.style.transform).to.equal('');
+      expect(sticky.state.style.transform).to.be.undefined;
     })
   });
 
