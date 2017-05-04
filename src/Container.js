@@ -40,6 +40,8 @@ export default class Container extends PureComponent {
 
   notifySubscribers = evt => {
     if (!this.framePending) {
+      const { currentTarget } = evt;
+
       raf(() => {
         this.framePending = false;
         const { top, bottom } = this.node.getBoundingClientRect();
@@ -47,7 +49,7 @@ export default class Container extends PureComponent {
         this.subscribers.forEach(handler => handler({
           distanceFromTop: top,
           distanceFromBottom: bottom,
-          eventSource: evt.currentTarget === window ? document.body : this.node
+          eventSource: currentTarget === window ? document.body : this.node
         }));
       });
       this.framePending = true;
