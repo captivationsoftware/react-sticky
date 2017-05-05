@@ -85,24 +85,19 @@ export default class Sticky extends Component {
       style
     });
   };
+  
+  contentRef = content => {
+    this.content = ReactDOM.findDOMNode(content);
+  };
+  placeholderRed = placeholder => {
+    this.placeholder = placeholder
+  };
 
   render() {
-    const element = React.cloneElement(
-      this.props.children({
-        isSticky: this.state.isSticky,
-        wasSticky: this.state.wasSticky,
-        distanceFromTop: this.state.distanceFromTop,
-        distanceFromBottom: this.state.distanceFromBottom,
-        calculatedHeight: this.state.calculatedHeight,
-        style: this.state.style
-      }),
-      { ref: content => { this.content = ReactDOM.findDOMNode(content); } }
-    )
-
     return (
       <div>
-        <div ref={ placeholder => this.placeholder = placeholder } />
-        { element }
+        <div ref={this.placeholderRef} />
+        <Component {...this.state} ref={this.contentRef}/>
       </div>
     )
   }
