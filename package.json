@@ -23,6 +23,7 @@
   "license": "MIT",
   "homepage": "https://github.com/captivationsoftware/react-sticky",
   "dependencies": {
+    "lodash.throttle": "^4.1.1",
     "prop-types": "^15.5.8",
     "raf": "^3.3.0"
   },
