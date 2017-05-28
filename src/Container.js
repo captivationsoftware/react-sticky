@@ -1,8 +1,17 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import raf from 'raf';
+import throttle from 'lodash.throttle';
 
 export default class Container extends PureComponent {
+
+  static propTypes = {
+    throttleWait: PropTypes.number
+  }
+
+  static defaultProps = {
+    throttleWait: 16
+  }
 
   static childContextTypes = {
     subscribe: PropTypes.func,
@@ -38,7 +47,7 @@ export default class Container extends PureComponent {
     this.subscribers = this.subscribers.filter(current => current !== handler);
   }
 
-  notifySubscribers = evt => {
+  notifySubscribers = throttle(evt => {
     if (!this.framePending) {
       const { currentTarget } = evt;
 
@@ -54,7 +63,7 @@ export default class Container extends PureComponent {
       });
       this.framePending = true;
     }
-  }
+  }, this.props.throttleWait);
 
   getParent = () => this.node
 
