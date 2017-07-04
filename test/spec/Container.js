@@ -98,7 +98,7 @@ describe("StickyContainer", () => {
       containerNode.notifySubscribers({ currentTarget: window });
     });
 
-    it.only ('should not publish null node top and bottom to subscribers', (done) => {
+    it ('should not publish null node top and bottom to subscribers', (done) => {
       let subscribersCalled = false;
       containerNode.subscribers = [
         () => {
