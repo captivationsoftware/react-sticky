@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 export default class Sticky extends Component {
 
   static propTypes = {
+    topPosition: PropTypes.number,
     topOffset: PropTypes.number,
     bottomOffset: PropTypes.number,
     relative: PropTypes.bool,
@@ -15,6 +16,7 @@ export default class Sticky extends Component {
     relative: false,
     topOffset: 0,
     bottomOffset: 0,
+    topPosition: 0,
     disableCompensation: false,
     disableHardwareAcceleration: false
   }
@@ -67,7 +69,7 @@ export default class Sticky extends Component {
 
     const style = !isSticky ? { } : {
       position: 'fixed',
-      top: bottomDifference > 0 ? (this.props.relative ? parent.offsetTop - parent.offsetParent.scrollTop : 0) : bottomDifference,
+      top: bottomDifference > 0 ? (this.props.relative ? parent.offsetTop - parent.offsetParent.scrollTop : this.props.topPosition) : bottomDifference,
       left: placeholderClientRect.left,
       width: placeholderClientRect.width
     }
