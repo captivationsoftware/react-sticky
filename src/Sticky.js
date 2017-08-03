@@ -68,7 +68,7 @@ export default class Sticky extends Component {
     const topDifference = distanceFromTop - this.props.topOffset + calculatedHeight;
     const wasSticky = !!this.state.isSticky;
     
-    const isSticky = preventingStickyStateChanges ? wasSticky : (distanceFromTop < window.innerHeight && distanceFromTop > window.innerHeight - this.placeholder.offsetHeight - this.placeholder.offsetTop);
+    const isSticky = preventingStickyStateChanges ? wasSticky : (distanceFromTop < window.innerHeight - this.props.topOffset && distanceFromTop > window.innerHeight - this.placeholder.offsetHeight - this.placeholder.offsetTop + this.props.bottomOffset);
 
     distanceFromTop = (this.props.relative ? parent.scrollTop : distanceFromTop) - calculatedHeight;
 
