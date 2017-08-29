@@ -3,12 +3,15 @@
   "version": "6.0.1",
   "description": "Sticky component for React",
   "main": "lib/index.js",
+  "module": "es/index.js",
   "scripts": {
-    "clean": "rimraf lib",
-    "compile": "babel src --loose --out-dir lib",
+    "clean": "rimraf lib es",
+    "build:commonjs": "babel src --out-dir lib",
+    "build:es": "cross-env BABEL_ENV=es babel src --out-dir es",
+    "build": "npm run build:commonjs && npm run build:es",
     "start": "webpack --watch",
-    "prepublish": "npm run clean && npm run compile",
-    "test": "mocha test/setup.js test/spec/*.js"
+    "prepublish": "npm run clean && npm run build",
+    "test": "cross-env BABEL_ENV=development NODE_ENV=test mocha test/setup.js test/spec/*.js"
   },
   "repository": {
     "type": "git",
@@ -39,6 +42,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "chai": "^3.5.0",
+    "cross-env": "^5.0.5",
     "enzyme": "^2.8.2",
     "jsdom": "8.0.4",
     "mocha": "^2.4.5",

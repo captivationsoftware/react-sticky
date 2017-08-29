@@ -1,10 +1,21 @@
 {
-  "presets": [
-    "es2015",
-    "react",
-    "stage-0"
-  ],
   "plugins": [
     "transform-class-properties"
-  ]
+  ],
+  "env": {
+    "development": {
+      "presets": [
+        ["es2015", { "modules": "commonjs", "loose": true }],
+        "react",
+        "stage-0"
+      ]
+    },
+    "es": {
+      "presets": [
+        ["es2015", { "modules": false, "loose": true }],
+        "react",
+        "stage-0"
+      ]
+    }
+  }
 }
