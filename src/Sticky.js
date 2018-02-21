@@ -8,7 +8,12 @@ export default class Sticky extends Component {
     topOffset: PropTypes.number,
     bottomOffset: PropTypes.number,
     relative: PropTypes.bool,
-    children: PropTypes.func.isRequired
+    component: PropTypes.func,
+    render: PropTypes.func,
+    children: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.node
+    ])
   }
 
   static defaultProps = {
@@ -25,10 +30,42 @@ export default class Sticky extends Component {
     getParent: PropTypes.func
   }
 
+  static childContextTypes = {
+    stickyProps: PropTypes.object.isRequired
+  }
+
+  getChildContext() {
+    return { stickyProps: this.getProps() };
+  }
+
+  contentRef = content => {
+    this.content = ReactDOM.findDOMNode(content);
+  }
+  placeholderRef = placeholder => {
+    this.placeholder = placeholder
+  }
+
   state = {
+    ref: this.contentRef,
     isSticky: false,
     wasSticky: false,
-    style: { }
+    style: { },
+    placeholderProps: {
+      ref: this.placeholderRef,
+      style: { }
+    }
+  }
+
+  getProps() {
+    const { style, placeholderProps } = this.state;
+    return {
+      ...this.state,
+      style: { ...style },
+      placeholderProps: {
+        ...placeholderProps,
+        style: { ...placeholderProps.style }
+      }
+    };
   }
 
   componentWillMount() {
@@ -39,10 +76,6 @@ export default class Sticky extends Component {
 
   componentWillUnmount() {
     this.context.unsubscribe(this.handleContainerEvent)
-  }
-
-  componentDidUpdate() {
-    this.placeholder.style.paddingBottom = this.props.disableCompensation ? 0 : `${this.state.isSticky ? this.state.calculatedHeight : 0}px`
   }
 
   handleContainerEvent = ({ distanceFromTop, distanceFromBottom, eventSource }) => {
@@ -72,38 +105,54 @@ export default class Sticky extends Component {
       width: placeholderClientRect.width
     }
 
+    const placeholderStyle = {
+      paddingBottom: this.props.disableCompensation ? 0 : `${
+        isSticky ? calculatedHeight : 0
+      }px`
+    }
+
     if (!this.props.disableHardwareAcceleration) {
       style.transform = 'translateZ(0)';
     }
 
     this.setState({
+      ref: this.contentRef,
       isSticky,
       wasSticky,
       distanceFromTop,
       distanceFromBottom,
       calculatedHeight,
-      style
+      style,
+      placeholderProps: {
+        ref: this.placeholderRef,
+        style: placeholderStyle
+      }
     });
   };
 
   render() {
-    const element = React.cloneElement(
-      this.props.children({
-        isSticky: this.state.isSticky,
-        wasSticky: this.state.wasSticky,
-        distanceFromTop: this.state.distanceFromTop,
-        distanceFromBottom: this.state.distanceFromBottom,
-        calculatedHeight: this.state.calculatedHeight,
-        style: this.state.style
-      }),
-      { ref: content => { this.content = ReactDOM.findDOMNode(content); } }
-    )
-
+    const { component, children, render } = this.props;
+    const props = this.getProps();
+    
     return (
-      <div>
-        <div ref={ placeholder => this.placeholder = placeholder } />
-        { element }
-      </div>
-    )
+      component ? ( // component prop gets first priority
+        React.createElement(component, props)
+      ) : render ? ( // render prop is next
+        render(props)
+      ) : children ? ( // children come last
+        <div>
+          <div {...props.placeholderProps} />
+          {typeof children === 'function' ? (
+            children(props)
+          ) : !Array.isArray(children) || children.length ? ( // Preact defaults to empty children array
+            React.Children.only(children)
+          ) : (
+            null
+          )}
+        </div>
+      ) : (
+        null
+      )
+    );
   }
 }
