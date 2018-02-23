@@ -14,11 +14,7 @@
     "type": "git",
     "url": "https://github.com/captivationsoftware/react-sticky"
   },
-  "keywords": [
-    "react-component",
-    "React",
-    "Sticky"
-  ],
+  "keywords": ["react-component", "React", "Sticky"],
   "author": "Captivation Software",
   "license": "MIT",
   "homepage": "https://github.com/captivationsoftware/react-sticky",
@@ -38,10 +34,10 @@
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
-    "chai": "^3.5.0",
+    "chai": "^4",
     "enzyme": "^2.8.2",
     "jsdom": "8.0.4",
-    "mocha": "^2.4.5",
+    "mocha": "^5",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-test-renderer": "^15.5.4",
