@@ -104,6 +104,9 @@ app.js
 
 The above would result in an element that becomes sticky once its top is greater than or equal to 80px away from the top of the `<StickyContainer />`.
 
+#### topPosition _(default: 0)_
+Space in pixels between sticky header and top of the viewport. 
+
 #### bottomOffset _(default: 0)_
 Sticky state will be triggered when the bottom of the element is `bottomOffset` pixels from the bottom of the closest `<StickyContainer />`.
 
@@ -148,5 +151,25 @@ app.js
     { props => (...) }
   </Sticky>
   ...
+</StickyContainer>
+```
+
+#### placeholderStyles 
+An object with inline styles for placeholder.
+
+#### footer _(default: false)_
+When `footer` is set to `true`, the `<Sticky />` element will stick to the bottom of viewport. In this case you need to pass `placeholderStyles` property to Sticky with the same 'position' styles(position, bottom, top, etc) and width as you set to your footer. StickyContainer should have `position: realtive`. Doesn't work with `relative: true`. 
+```
+<StickyContainer style={{ height: 3000, background: '#ddd', padding: '0 30px', position: 'relative'}}>
+  <Sticky footer={true} placeholderStyles={{ position: 'absolute', bottom: 100, width: '90vw' }}>
+    {
+      ({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
+        console.log({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight });
+        return <Header style={Object.assign({}, { position: 'absolute', bottom: 100, width: '90vw' }, style)} />
+      }
+    }
+  </Sticky>
+
+  <h2 className="text-center" style={{ marginTop: 150 }}>&lt;StickyContainer /&gt;</h2>
 </StickyContainer>
 ```
