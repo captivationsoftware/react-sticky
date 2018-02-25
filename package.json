@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "rimraf lib",
     "compile": "babel src --loose --out-dir lib",
-    "start": "webpack-dev-server --watch",
+    "demos:start": "webpack-dev-server --watch",
+    "demos:build": "webpack",
     "prepublish": "npm run clean && npm run compile",
     "test": "mocha test/setup.js test/spec/*.js"
   },
