@@ -3,8 +3,8 @@ import ReactDOM from "react-dom";
 
 import { Sticky, StickyContainer } from "../../src";
 
-let i = 0;
-class Document extends PureComponent {
+let renderCount = 0;
+export class Relative extends PureComponent {
   render() {
     return (
       <div style={{ margin: 30 }}>
@@ -26,26 +26,23 @@ class Document extends PureComponent {
                 distanceFromTop,
                 distanceFromBottom,
                 calculatedHeight
-              }) => {
-                // console.log({ isSticky, wasSticky, style, distanceFromTop, distanceFromBottom, calculatedHeight });
-
-                return (
-                  <div
-                    style={{
-                      ...style,
-                      height: 100,
-                      overflow: "auto",
-                      background: "#aaa"
-                    }}
-                  >
-                    <h2>
-                      <span className="pull-left">
-                        &lt;Sticky /&gt; <small>(invocation: #{i++})</small>
-                      </span>
-                    </h2>
-                  </div>
-                );
-              }}
+              }) => (
+                <div
+                  style={{
+                    ...style,
+                    height: 100,
+                    overflow: "auto",
+                    background: "#aaa"
+                  }}
+                >
+                  <h2>
+                    <span className="pull-left">
+                      &lt;Sticky /&gt;{" "}
+                      <small>(invocation: #{renderCount++})</small>
+                    </span>
+                  </h2>
+                </div>
+              )}
             </Sticky>
 
             <h2 className="text-center" style={{ marginTop: 150 }}>
@@ -57,5 +54,3 @@ class Document extends PureComponent {
     );
   }
 }
-
-ReactDOM.render(<Document />, document.getElementById("mount"));
