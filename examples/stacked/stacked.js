@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
 
 import { Sticky, StickyContainer } from "../../src";
+import { Header } from "../header";
 
 export class Stacked extends PureComponent {
   render() {
@@ -13,36 +14,15 @@ export class Stacked extends PureComponent {
             style={{ height: 500, background: `hsl(${i * 40}, 70%, 90%)` }}
           >
             <Sticky>
-              {({
-                isSticky,
-                wasSticky,
-                style,
-                distanceFromTop,
-                distanceFromBottom,
-                calculatedHeight
-              }) => (
-                <div
-                  style={{
-                    ...style,
-                    height: 80,
-                    background: `hsl(${i * 40}, 70%, 50%)`
-                  }}
-                >
-                  <h2
-                    style={{
-                      lineHeight: "80px",
-                      padding: "0 15px",
-                      margin: 0
-                    }}
-                  >
-                    <span className="pull-left">&lt;Sticky #{i} /&gt;</span>
-                  </h2>
-                </div>
+              {({ style }) => (
+                <Header
+                  style={{ ...style, background: `hsl(${i * 40}, 70%, 50%)` }}
+                />
               )}
             </Sticky>
 
             <h2 className="text-center" style={{ marginTop: 150 }}>
-              &lt;StickyContainer #{i} /&gt;
+              {`<StickyContainer #${i} />`}
             </h2>
           </StickyContainer>
         ))}

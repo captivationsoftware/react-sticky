@@ -2,29 +2,9 @@ import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
 
 import { Sticky, StickyContainer } from "../../src";
+import { Header } from "../header";
 
 let renderCount = 0;
-class Header extends PureComponent {
-  render() {
-    return (
-      <div
-        style={{
-          ...this.props.style,
-          height: 80,
-          overflow: "auto",
-          background: "#aaa"
-        }}
-      >
-        <h2>
-          <span className="pull-left">
-            &lt;Sticky /&gt; <small>(invocation: #{renderCount++})</small>
-          </span>
-        </h2>
-      </div>
-    );
-  }
-}
-
 export class Basic extends PureComponent {
   render() {
     return (
@@ -34,9 +14,14 @@ export class Basic extends PureComponent {
         <StickyContainer
           style={{ height: 500, background: "#ddd", padding: "0 30px" }}
         >
-          <Sticky>{({ style }) => <Header style={style} />}</Sticky>
+          <Sticky>
+            {({ style }) => (
+              <Header style={style} renderCount={renderCount++} />
+            )}
+          </Sticky>
+
           <h2 className="text-center" style={{ marginTop: 150 }}>
-            &lt;StickyContainer /&gt;
+            {"<StickyContainer />"}
           </h2>
         </StickyContainer>
         <div style={{ marginBottom: 200 }} />
