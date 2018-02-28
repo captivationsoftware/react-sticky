@@ -10,7 +10,7 @@ ReactDOM.render(
   <Router>
     <div>
       <style>{styles}</style>
-      <div className="header">
+      <div className="navbar">
         <Link to="/basic">Basic</Link> <Link to="/relative">Relative</Link>{" "}
         <Link to="/stacked">Stacked</Link>
       </div>

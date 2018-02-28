@@ -8,24 +8,21 @@ let renderCount = 0;
 export class Basic extends PureComponent {
   render() {
     return (
-      <div style={{ height: 1500, margin: "0 30px" }}>
+      <div>
         <h2>Content before the Sticky...</h2>
-        <div style={{ marginBottom: 200 }} />
-        <StickyContainer
-          style={{ height: 500, background: "#ddd", padding: "0 30px" }}
-        >
+        <div className="gap short" />
+        <StickyContainer className="container">
           <Sticky>
             {({ style }) => (
               <Header style={style} renderCount={renderCount++} />
             )}
           </Sticky>
 
-          <h2 className="text-center" style={{ marginTop: 150 }}>
-            {"<StickyContainer />"}
-          </h2>
+          <h2 className="text-center">{"<StickyContainer />"}</h2>
         </StickyContainer>
-        <div style={{ marginBottom: 200 }} />
-        <h2>Content after the Sticky...</h2>
+        <div className="gap tall">
+          <h2>Content after the Sticky...</h2>
+        </div>
       </div>
     );
   }

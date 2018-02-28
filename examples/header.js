@@ -1,17 +1,13 @@
 import React from "react";
 
 export class Header extends React.Component {
+  static defaultProps = {
+    className: ""
+  };
   render() {
-    const { style, renderCount } = this.props;
+    const { style, renderCount, className } = this.props;
     return (
-      <div
-        style={{
-          height: 80,
-          overflow: "auto",
-          background: "#aaa",
-          ...style
-        }}
-      >
+      <div className={"header " + className} style={style}>
         <h2>
           <span className="pull-left">
             {"<Sticky /> "}
