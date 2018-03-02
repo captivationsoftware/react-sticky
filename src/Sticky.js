@@ -49,6 +49,14 @@ export default class Sticky extends Component {
       : `${this.state.isSticky ? this.state.calculatedHeight : 0}px`;
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const newStyle = JSON.stringify(nextState.style);
+    const oldStyle = JSON.stringify(this.state.style);
+    const styleChanged = newStyle !== oldStyle;
+
+    return (nextState.isSticky || nextState.wasSticky) && styleChanged;
+  }
+
   handleContainerEvent = ({
     distanceFromTop,
     distanceFromBottom,
