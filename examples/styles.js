@@ -1,4 +1,12 @@
 export default `
+html {
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: inherit;
+}
+
 body {
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   padding: 0;
@@ -16,12 +24,17 @@ h2 {
   line-height: 1.5rem;
 }
 
+.app {
+  display: grid;
+  grid-template-columns: 20% 80%;
+}
+
 .navbar {
-  position: fixed;
-  top: 0;
   padding: .5rem;
-  background: white;
-  z-index: 10;
+}
+
+.navbar .nav-link {
+  padding: .5rem;
 }
 
 .header {
@@ -38,6 +51,7 @@ h2 {
 
 .gap {
   height: 500px;
+  padding: .5rem;
 }
 
 .gap.short {
