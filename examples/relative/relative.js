@@ -10,7 +10,10 @@ export class Relative extends PureComponent {
     return (
       <div>
         <StickyContainer className="container relative">
-          <div className="gap tall">
+          <div
+            className="gap tall"
+            style={{ background: "linear-gradient(#e66465, #9198e5)" }}
+          >
             <div className="gap short" />
             <Sticky relative={true}>
               {({ style }) => (
