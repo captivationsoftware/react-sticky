@@ -12,7 +12,7 @@ export class Basic extends PureComponent {
         <h2>Content before the Sticky...</h2>
         <div
           className="gap short"
-          style={{ background: "linear-gradient(#e66465, #9198e5)" }}
+          style={{ background: "linear-gradient(#fff, #ddd)" }}
         />
         <StickyContainer className="container">
           <Sticky>
@@ -25,7 +25,7 @@ export class Basic extends PureComponent {
         </StickyContainer>
         <div
           className="gap tall"
-          style={{ background: "linear-gradient(#9198e5, #e66465)" }}
+          style={{ background: "linear-gradient(#ddd, #fff)" }}
         >
           <h2>Content after the Sticky...</h2>
         </div>

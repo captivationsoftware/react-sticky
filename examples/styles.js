@@ -18,10 +18,12 @@ body {
 
 h1 {
   line-height: 2rem;
+  display: inline-block;
 }
 
 h2 {
   line-height: 1.5rem;
+  display: inline-block;
 }
 
 .app {
@@ -46,12 +48,10 @@ h2 {
 .container {
   height: 500px;
   background: #ddd;
-  padding: 0 2rem;
 }
 
 .gap {
   height: 500px;
-  padding: .5rem;
 }
 
 .gap.short {
