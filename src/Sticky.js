@@ -1,13 +1,13 @@
-import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
 export default class Sticky extends Component {
   static propTypes = {
     topOffset: PropTypes.number,
     bottomOffset: PropTypes.number,
     relative: PropTypes.bool,
-    children: PropTypes.func.isRequired
+    children: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -15,25 +15,25 @@ export default class Sticky extends Component {
     topOffset: 0,
     bottomOffset: 0,
     disableCompensation: false,
-    disableHardwareAcceleration: false
+    disableHardwareAcceleration: false,
   };
 
   static contextTypes = {
     subscribe: PropTypes.func,
     unsubscribe: PropTypes.func,
-    getParent: PropTypes.func
+    getParent: PropTypes.func,
   };
 
   state = {
     isSticky: false,
     wasSticky: false,
-    style: {}
+    style: {},
   };
 
   componentWillMount() {
     if (!this.context.subscribe)
       throw new TypeError(
-        "Expected Sticky to be mounted within StickyContainer"
+        'Expected Sticky to be mounted within StickyContainer'
       );
 
     this.context.subscribe(this.handleContainerEvent);
@@ -49,10 +49,27 @@ export default class Sticky extends Component {
       : `${this.state.isSticky ? this.state.calculatedHeight : 0}px`;
   }
 
+  setWasSticky = () => {
+    return !!this.state.isSticky;
+  };
+
+  setBottomDifference = (distanceFromBottom, calculatedHeight) => {
+    return distanceFromBottom - this.props.bottomOffset - calculatedHeight;
+  };
+
+  withinBounds = (
+    distanceFromTop,
+    distanceFromBottom,
+    topOffset,
+    bottomOffset
+  ) => {
+    return distanceFromTop <= -topOffset && distanceFromBottom > -bottomOffset;
+  };
+
   handleContainerEvent = ({
     distanceFromTop,
     distanceFromBottom,
-    eventSource
+    eventSource,
   }) => {
     const parent = this.context.getParent();
 
@@ -68,14 +85,20 @@ export default class Sticky extends Component {
     const contentClientRect = this.content.getBoundingClientRect();
     const calculatedHeight = contentClientRect.height;
 
-    const bottomDifference =
-      distanceFromBottom - this.props.bottomOffset - calculatedHeight;
+    const bottomDifference = this.setBottomDifference(
+      distanceFromBottom,
+      calculatedHeight
+    );
 
-    const wasSticky = !!this.state.isSticky;
+    const wasSticky = this.setWasSticky();
     const isSticky = preventingStickyStateChanges
       ? wasSticky
-      : distanceFromTop <= -this.props.topOffset &&
-        distanceFromBottom > -this.props.bottomOffset;
+      : this.withinBounds(
+          distanceFromTop,
+          distanceFromBottom,
+          this.props.topOffset,
+          this.props.bottomOffset
+        );
 
     distanceFromBottom =
       (this.props.relative
@@ -85,7 +108,7 @@ export default class Sticky extends Component {
     const style = !isSticky
       ? {}
       : {
-          position: "fixed",
+          position: 'fixed',
           top:
             bottomDifference > 0
               ? this.props.relative
@@ -93,11 +116,11 @@ export default class Sticky extends Component {
                 : 0
               : bottomDifference,
           left: placeholderClientRect.left,
-          width: placeholderClientRect.width
+          width: placeholderClientRect.width,
         };
 
     if (!this.props.disableHardwareAcceleration) {
-      style.transform = "translateZ(0)";
+      style.transform = 'translateZ(0)';
     }
 
     this.setState({
@@ -106,7 +129,7 @@ export default class Sticky extends Component {
       distanceFromTop,
       distanceFromBottom,
       calculatedHeight,
-      style
+      style,
     });
   };
 
@@ -118,12 +141,12 @@ export default class Sticky extends Component {
         distanceFromTop: this.state.distanceFromTop,
         distanceFromBottom: this.state.distanceFromBottom,
         calculatedHeight: this.state.calculatedHeight,
-        style: this.state.style
+        style: this.state.style,
       }),
       {
         ref: content => {
           this.content = ReactDOM.findDOMNode(content);
-        }
+        },
       }
     );
 
