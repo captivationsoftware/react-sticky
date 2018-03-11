@@ -57,6 +57,10 @@ export default class Sticky extends Component {
     return distanceFromBottom - this.props.bottomOffset - calculatedHeight;
   };
 
+  calculateBottomOffset = (offsetTop, scrollTop) => {
+    return offsetTop - scrollTop;
+  };
+
   withinBounds = (
     distanceFromTop,
     distanceFromBottom,
@@ -112,7 +116,10 @@ export default class Sticky extends Component {
           top:
             bottomDifference > 0
               ? this.props.relative
-                ? parent.offsetTop - parent.offsetParent.scrollTop
+                ? this.calculateBottomOffset(
+                    parent.offsetTop,
+                    parent.offsetParent.scrollTop
+                  )
                 : 0
               : bottomDifference,
           left: placeholderClientRect.left,
