@@ -42,16 +42,15 @@ export default class Container extends PureComponent {
       const { currentTarget } = evt;
 
       raf(() => {
-        this.framePending = false;
-        const { top, bottom } = this.node.getBoundingClientRect();
-
-        this.subscribers.forEach(handler =>
-          handler({
+        if (this.node) {
+          const { top, bottom } = this.node.getBoundingClientRect();
+          this.subscribers.forEach(handler => handler({
             distanceFromTop: top,
             distanceFromBottom: bottom,
             eventSource: currentTarget === window ? document.body : this.node
-          })
-        );
+          }));
+        }
+        this.framePending = false;
       });
       this.framePending = true;
     }

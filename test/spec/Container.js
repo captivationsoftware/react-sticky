@@ -2,6 +2,7 @@ import React from "react";
 import { expect } from "chai";
 import { mount } from "enzyme";
 import { StickyContainer } from "../../src";
+import raf from 'raf';
 
 const attachTo = document.getElementById("mount");
 
@@ -110,5 +111,24 @@ describe("StickyContainer", () => {
       });
       containerNode.notifySubscribers({ currentTarget: window });
     });
+
+    it ('should not publish null node top and bottom to subscribers', (done) => {
+      let subscribersCalled = false;
+      containerNode.subscribers = [
+        () => {
+          subscribersCalled = true;
+        }
+      ];
+
+      containerNode.node = null;
+      containerNode.notifySubscribers({ currentTarget: window });
+      expect(containerNode.framePending).to.equal(true);
+      raf(() => {
+        expect(containerNode.framePending).to.equal(false);
+        expect(subscribersCalled).to.equal(false);
+        done();
+      });
+    });
+
   });
 });
