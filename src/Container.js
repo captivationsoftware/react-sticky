@@ -61,13 +61,13 @@ export default class Container extends PureComponent {
 
   componentDidMount() {
     this.events.forEach(event =>
-      window.addEventListener(event, this.notifySubscribers)
+      window.addEventListener(event, this.notifySubscribers, true)
     );
   }
 
   componentWillUnmount() {
     this.events.forEach(event =>
-      window.removeEventListener(event, this.notifySubscribers)
+      window.removeEventListener(event, this.notifySubscribers, true)
     );
   }
 
