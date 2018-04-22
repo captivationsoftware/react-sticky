@@ -2,68 +2,34 @@ import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
 
 import { Sticky, StickyContainer } from "../../src";
+import { Header } from "../header";
 
-let i = 0;
-class Header extends PureComponent {
+let renderCount = 0;
+export class Basic extends PureComponent {
   render() {
     return (
-      <div
-        style={{
-          ...this.props.style,
-          height: 80,
-          overflow: "auto",
-          background: "#aaa"
-        }}
-      >
-        <h2>
-          <span className="pull-left">
-            &lt;Sticky /&gt; <small>(invocation: #{i++})</small>
-          </span>
-        </h2>
-      </div>
-    );
-  }
-}
-
-class Document extends PureComponent {
-  render() {
-    return (
-      <div style={{ height: 1500, margin: "0 30px" }}>
+      <div>
         <h2>Content before the Sticky...</h2>
-        <div style={{ marginBottom: 200 }} />
-        <StickyContainer
-          style={{ height: 500, background: "#ddd", padding: "0 30px" }}
-        >
+        <div
+          className="gap short"
+          style={{ background: "linear-gradient(#fff, #ddd)" }}
+        />
+        <StickyContainer className="container">
           <Sticky>
-            {({
-              isSticky,
-              wasSticky,
-              style,
-              distanceFromTop,
-              distanceFromBottom,
-              calculatedHeight
-            }) => {
-              console.log({
-                isSticky,
-                wasSticky,
-                style,
-                distanceFromTop,
-                distanceFromBottom,
-                calculatedHeight
-              });
-              return <Header style={style} />;
-            }}
+            {({ style }) => (
+              <Header style={style} renderCount={renderCount++} />
+            )}
           </Sticky>
 
-          <h2 className="text-center" style={{ marginTop: 150 }}>
-            &lt;StickyContainer /&gt;
-          </h2>
+          <h2 className="text-center">{"<StickyContainer />"}</h2>
         </StickyContainer>
-        <div style={{ marginBottom: 200 }} />
-        <h2>Content after the Sticky...</h2>
+        <div
+          className="gap tall"
+          style={{ background: "linear-gradient(#ddd, #fff)" }}
+        >
+          <h2>Content after the Sticky...</h2>
+        </div>
       </div>
     );
   }
 }
-
-ReactDOM.render(<Document />, document.getElementById("mount"));
