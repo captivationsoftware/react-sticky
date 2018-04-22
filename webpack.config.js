@@ -1,8 +1,10 @@
 const path = require("path");
 const webpack = require("webpack");
 
+const isLive = process.env.NODE_ENV === "production";
+
 module.exports = {
-  devtool: "eval-source-map",
+  devtool: isLive ? "source-map" : "cheap-eval-source-map",
   entry: {
     demos: path.resolve("examples", "index.js")
   },

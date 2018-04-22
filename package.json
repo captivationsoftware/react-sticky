@@ -7,7 +7,7 @@
     "clean": "rimraf lib",
     "compile": "babel src --loose --out-dir lib",
     "demos:start": "webpack-dev-server --watch",
-    "demos:build": "webpack",
+    "demos:build": "NODE_ENV=production webpack -p",
     "prepublish": "npm run clean && npm run compile",
     "test": "mocha test/setup.js test/spec/*.js"
   },
