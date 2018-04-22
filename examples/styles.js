@@ -31,6 +31,12 @@ h2 {
   grid-template-columns: 20% 80%;
 }
 
+@media (max-width: 700px) {
+  .app {
+    grid-template-columns: unset;
+  }
+}
+
 .navbar {
   padding: .5rem;
 }
