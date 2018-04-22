@@ -4,9 +4,9 @@ Make your React components sticky!
 
 #### Demos
 
-* [Basic](http://rawgit.com/captivationsoftware/react-sticky/master/examples/basic/index.html)
-* [Relative](http://rawgit.com/captivationsoftware/react-sticky/master/examples/relative/index.html)
-* [Stacked](http://rawgit.com/captivationsoftware/react-sticky/master/examples/stacked/index.html)
+* [Basic](http://react-sticky.netlify.com/#/basic)
+* [Relative](http://react-sticky.netlify.com/#/relative)
+* [Stacked](http://react-sticky.netlify.com/#/stacked)
 
 #### Version 6.x Highlights
 
