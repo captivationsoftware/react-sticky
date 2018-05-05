@@ -14,6 +14,14 @@ Make your React components sticky!
 * Features a minimal yet efficient API
 * Drops support for versions of React < 15.3. If you are using an earlier version of React, continue to use the 5.x series
 
+#### CSS
+There's a CSS alternative to `react-sticky`: the `position: sticky` feature. However it currently does not have [full browser support](https://caniuse.com/#feat=css-sticky), specifically a lack of IE11 support and some bugs with table elements. Before using `react-sticky`, check to see if the browser support and restrictions prevent you from using `position: sticky`, as CSS will always be faster and more durable than a JS implementation.
+```css
+position: -webkit-sticky;
+position: sticky;
+top: 0;
+```
+
 ## Installation
 
 ```sh
