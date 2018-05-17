@@ -28,7 +28,7 @@ The goal of `react-sticky` is make it easier for developers to build UIs that ha
 
 ```js
 <StickyContainer>
-  <Sticky>{({ style }) => <h1 style={style}>I'm Sticky</h1>}</Sticky>
+  <Sticky>{({ style }) => <h1 style={style}>Sticky element</h1>}</Sticky>
 </StickyContainer>
 ```
 
