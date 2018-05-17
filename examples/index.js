@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { HashRouter as Router, Route, Redirect } from "react-router-dom";
-import { Basic } from "./basic/basic";
-import { Relative } from "./relative/relative";
-import { Stacked } from "./stacked/stacked";
+import { Basic } from "./basic";
+import { Relative } from "./relative";
+import { Stacked } from "./stacked";
 import { Navbar } from "./navbar";
 import styles from "./styles";
 

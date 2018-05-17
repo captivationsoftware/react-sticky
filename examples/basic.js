@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
 
-import { Sticky, StickyContainer } from "../../src";
-import { Header } from "../header";
+import { Sticky, StickyContainer } from "../src";
+import { Header } from "./header";
 
 let renderCount = 0;
 export class Basic extends PureComponent {
