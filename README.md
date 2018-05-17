@@ -30,58 +30,67 @@ npm install react-sticky
 
 ## Overview & Basic Example
 
-`<Sticky />` elements require a function that returns a React component or DOM node as the only child. When invoked, this child function will be supplied an object with the following properties:
+The goal of `react-sticky` is make it easier for developers to build UIs that have sticky elements. Some examples include a sticky navbar, or a two-column layout where the left side sticks while the right side scrolls.
 
+`react-sticky` works by calculating the position of a `<Sticky>` component relative to a `<StickyContainer>` component. If it would be outside the viewport, the styles required to affix it to the top of the screen are passed as an argument to a render callback, a function passed as a child.
+
+```js
+<StickyContainer>
+  <Sticky>{({ style }) => <h1 style={style}>Sticky element</h1>}</Sticky>
+</StickyContainer>
+```
+
+The majority of use cases will only need the style to pass to the DOM, but some other properties are passed for advanced use cases:
+
+* `style` _(object)_ - modifiable style attributes to optionally be passed to the element returned by this function. For many uses, this will be the only attribute needed.
 * `isSticky` _(boolean)_ - is the element sticky as a result of the current event?
 * `wasSticky` _(boolean)_ - was the element sticky prior to the current event?
 * `distanceFromTop` _(number)_ - number of pixels from the top of the `Sticky` to the nearest `StickyContainer`'s top
 * `distanceFromBottom` _(number)_ - number of pixels from the bottom of the `Sticky` to the nearest `StickyContainer`'s bottom
 * `calculatedHeight` _(number)_ - height of the element returned by this function
-* `style` _(object)_ - modifiable style attributes to optionally be passed to the element returned by this function
 
 The `Sticky`'s child function will be called when events occur in the parent `StickyContainer`,
 and will serve as the callback to apply your own logic and customizations, with sane `style` attributes
 to get you up and running quickly.
+
+### Full Example
+
+Here's an example of all of those pieces together:
 
 app.js
 
 ```js
 import React from 'react';
 import { StickyContainer, Sticky } from 'react-sticky';
-...
+// ...
 
-class App extends React.Component ({
+class App extends React.Component {
   render() {
     return (
-      ...
       <StickyContainer>
-        ...
+        {/* Other elements can be in between `StickyContainer` and `Sticky`,
+        but certain styles can break the positioning logic used. */}
         <Sticky>
-          {
-            ({
-              style,
+          {({
+            style,
 
-              // the following are also available but unused in this example
-              isSticky,
-              wasSticky,
-              distanceFromTop,
-              distanceFromBottom,
-              calculatedHeight
-            }) => {
-              return (
-                <header style={style}>
-                  ...
-                </header>
-              )
-            }
-          }
+            // the following are also available but unused in this example
+            isSticky,
+            wasSticky,
+            distanceFromTop,
+            distanceFromBottom,
+            calculatedHeight
+          }) => (
+            <header style={style}>
+              {/* ... */}
+            </header>
+          )}
         </Sticky>
-        ...
+        {/* ... */}
       </StickyContainer>
-      ...
     );
   },
-});
+};
 ```
 
 When the "stickiness" becomes activated, the arguments to the sticky function
