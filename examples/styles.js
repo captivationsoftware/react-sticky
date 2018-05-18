@@ -11,7 +11,6 @@ body {
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   padding: 0;
   margin: 0;
-  margin-top: 2rem;
   font-size: 16px;
   line-height: 1rem;
 }
@@ -71,4 +70,34 @@ h2 {
 .container.relative {
   overflow-y: auto;
 }
+
+.column {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: 0 10px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.sidebar {
+  flex-shrink: 0;
+  width: 100px;
+  background: #ddd;
+  margin-right: 20px;
+}
+
+.scroll-container {
+  overflow-y: scroll;
+}
+
+.wrapper {
+  display: flex;
+  flex: 1 1 auto;
+  height: 100vh;
+}
+
 `;
