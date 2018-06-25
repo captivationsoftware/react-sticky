@@ -1,51 +1,51 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import raf from 'raf'
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
+import raf from "raf";
 
 export default class Container extends PureComponent {
   static childContextTypes = {
     subscribe: PropTypes.func,
     unsubscribe: PropTypes.func,
     getParent: PropTypes.func
-  }
+  };
 
-  getChildContext () {
+  getChildContext() {
     return {
       subscribe: this.subscribe,
       unsubscribe: this.unsubscribe,
       getParent: this.getParent
-    }
+    };
   }
 
   events = [
-    'resize',
-    'scroll',
-    'touchstart',
-    'touchmove',
-    'touchend',
-    'pageshow',
-    'load'
-  ]
+    "resize",
+    "scroll",
+    "touchstart",
+    "touchmove",
+    "touchend",
+    "pageshow",
+    "load"
+  ];
 
-  subscribers = []
+  subscribers = [];
 
-  rafHandle = null
+  rafHandle = null;
 
   subscribe = handler => {
-    this.subscribers = this.subscribers.concat(handler)
-  }
+    this.subscribers = this.subscribers.concat(handler);
+  };
 
   unsubscribe = handler => {
-    this.subscribers = this.subscribers.filter(current => current !== handler)
-  }
+    this.subscribers = this.subscribers.filter(current => current !== handler);
+  };
 
   notifySubscribers = evt => {
     if (!this.framePending) {
-      const { currentTarget } = evt
+      const { currentTarget } = evt;
 
       this.rafHandle = raf(() => {
-        this.framePending = false
-        const { top, bottom } = this.node.getBoundingClientRect()
+        this.framePending = false;
+        const { top, bottom } = this.node.getBoundingClientRect();
 
         this.subscribers.forEach(handler =>
           handler({
@@ -53,32 +53,32 @@ export default class Container extends PureComponent {
             distanceFromBottom: bottom,
             eventSource: currentTarget === window ? document.body : this.node
           })
-        )
-      })
-      this.framePending = true
+        );
+      });
+      this.framePending = true;
     }
-  }
+  };
 
-  getParent = () => this.node
+  getParent = () => this.node;
 
-  componentDidMount () {
+  componentDidMount() {
     this.events.forEach(event =>
       window.addEventListener(event, this.notifySubscribers)
-    )
+    );
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.rafHandle) {
-      raf.cancel(this.rafHandle)
-      this.rafHandle = null
+      raf.cancel(this.rafHandle);
+      this.rafHandle = null;
     }
 
     this.events.forEach(event =>
       window.removeEventListener(event, this.notifySubscribers)
-    )
+    );
   }
 
-  render () {
+  render() {
     return (
       <div
         {...this.props}
@@ -88,6 +88,6 @@ export default class Container extends PureComponent {
         onTouchMove={this.notifySubscribers}
         onTouchEnd={this.notifySubscribers}
       />
-    )
+    );
   }
 }
