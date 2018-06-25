@@ -15,7 +15,11 @@
     "type": "git",
     "url": "https://github.com/captivationsoftware/react-sticky"
   },
-  "keywords": ["react-component", "React", "Sticky"],
+  "keywords": [
+    "react-component",
+    "React",
+    "Sticky"
+  ],
   "author": "Captivation Software",
   "license": "MIT",
   "homepage": "https://github.com/captivationsoftware/react-sticky",
