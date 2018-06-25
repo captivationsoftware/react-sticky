@@ -29,6 +29,8 @@ export default class Container extends PureComponent {
 
   subscribers = [];
 
+  rafHandle = null;
+
   subscribe = handler => {
     this.subscribers = this.subscribers.concat(handler);
   };
@@ -41,7 +43,7 @@ export default class Container extends PureComponent {
     if (!this.framePending) {
       const { currentTarget } = evt;
 
-      raf(() => {
+      this.rafHandle = raf(() => {
         this.framePending = false;
         const { top, bottom } = this.node.getBoundingClientRect();
 
@@ -66,6 +68,11 @@ export default class Container extends PureComponent {
   }
 
   componentWillUnmount() {
+    if (this.rafHandle) {
+      raf.cancel(this.rafHandle);
+      this.rafHandle = null;
+    }
+
     this.events.forEach(event =>
       window.removeEventListener(event, this.notifySubscribers)
     );
