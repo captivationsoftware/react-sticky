@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
 
-import { Sticky, StickyContainer } from "../../src";
-import { Header } from "../header";
+import { Sticky, StickyContainer } from "../src";
+import { Header } from "./header";
 
 const containerBg = i => `hsl(${i * 40}, 70%, 90%)`;
 const headerBg = i => `hsl(${i * 40}, 70%, 50%)`;

@@ -3,6 +3,14 @@ import PropTypes from "prop-types";
 import raf from "raf";
 
 export default class Container extends PureComponent {
+  static propTypes = {
+    capture: PropTypes.bool
+  };
+
+  static defaultProps = {
+    capture: false
+  };
+
   static childContextTypes = {
     subscribe: PropTypes.func,
     unsubscribe: PropTypes.func,
@@ -62,8 +70,9 @@ export default class Container extends PureComponent {
   getParent = () => this.node;
 
   componentDidMount() {
+    this.capture = this.props.capture;
     this.events.forEach(event =>
-      window.addEventListener(event, this.notifySubscribers)
+      window.addEventListener(event, this.notifySubscribers, this.capture)
     );
   }
 
@@ -74,14 +83,15 @@ export default class Container extends PureComponent {
     }
 
     this.events.forEach(event =>
-      window.removeEventListener(event, this.notifySubscribers)
+      window.removeEventListener(event, this.notifySubscribers, this.capture)
     );
   }
 
   render() {
+    const { capture, ...rest } = this.props;
     return (
       <div
-        {...this.props}
+        {...rest}
         ref={node => (this.node = node)}
         onScroll={this.notifySubscribers}
         onTouchStart={this.notifySubscribers}
