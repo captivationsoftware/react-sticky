@@ -87,6 +87,7 @@ export default class Container extends PureComponent {
         onTouchStart={this.notifySubscribers}
         onTouchMove={this.notifySubscribers}
         onTouchEnd={this.notifySubscribers}
+        onLoad={this.notifySubscribers}
       />
     );
   }
