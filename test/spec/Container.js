@@ -76,6 +76,19 @@ describe("StickyContainer", () => {
     });
   });
 
+    describe("subscribers", () => {
+      let subscribe;
+      beforeEach(() => {
+          subscribe = containerNode.getChildContext().subscribe;
+      });
+
+      it(`should be notified on container load event`, done => {
+          expect(containerNode.subscribers).to.be.empty;
+          subscribe(() => done());
+          container.simulate('load');
+      });
+    });
+
   describe("notifySubscribers", () => {
     it("should publish document.body as eventSource to subscribers when window event", done => {
       containerNode.subscribers = [
