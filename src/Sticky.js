@@ -15,7 +15,8 @@ export default class Sticky extends Component {
     topOffset: 0,
     bottomOffset: 0,
     disableCompensation: false,
-    disableHardwareAcceleration: false
+    disableHardwareAcceleration: false,
+    throttleRendering: false
   };
 
   static contextTypes = {
@@ -29,6 +30,8 @@ export default class Sticky extends Component {
     wasSticky: false,
     style: {}
   };
+
+  _width = 0;
 
   componentWillMount() {
     if (!this.context.subscribe)
@@ -82,6 +85,8 @@ export default class Sticky extends Component {
         ? parent.scrollHeight - parent.scrollTop
         : distanceFromBottom) - calculatedHeight;
 
+    const width = placeholderClientRect.width;
+
     const style = !isSticky
       ? {}
       : {
@@ -93,21 +98,28 @@ export default class Sticky extends Component {
                 : 0
               : bottomDifference,
           left: placeholderClientRect.left,
-          width: placeholderClientRect.width
+          width
         };
 
     if (!this.props.disableHardwareAcceleration) {
       style.transform = "translateZ(0)";
     }
 
-    this.setState({
-      isSticky,
-      wasSticky,
-      distanceFromTop,
-      distanceFromBottom,
-      calculatedHeight,
-      style
-    });
+    if ( 
+      !this.props.throttleRendering ||
+      ( wasSticky != isSticky || width != this._width)
+    ) {
+      this.setState({
+        isSticky,
+        wasSticky,
+        distanceFromTop,
+        distanceFromBottom,
+        calculatedHeight,
+        style
+      });
+    }
+
+    this._width = width;
   };
 
   render() {

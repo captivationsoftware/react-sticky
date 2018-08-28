@@ -181,3 +181,19 @@ app.js
   ...
 </StickyContainer>
 ```
+
+#### throttleRendering _(default: false)_
+When `throttleRendering` is set to `true`, the function supplied to `<Sticky />` element gets invoked only when `isSticky` or  `style` properties should change. This setting is recommended when the function supplied is expensive to render and you can not rely on `shouldComponentUpdate` to optimize it. 
+
+**Note:** It is not recommended when you rely on `distanceFromTop` and `distanceFromBottom` for other computation.
+
+app.js
+```js
+<StickyContainer>
+  ...
+  <Sticky throttleRendering>
+    { ({isSticky, style, ...dontNeedRest}) => (...) }
+  </Sticky>
+  ...
+</StickyContainer>
+```
