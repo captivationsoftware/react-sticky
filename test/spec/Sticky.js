@@ -109,7 +109,8 @@ describe("Valid Sticky", () => {
         style: expectedStickyStyle,
         distanceFromTop: 0,
         distanceFromBottom: 900,
-        calculatedHeight: 100
+        calculatedHeight: 100,
+        calculatedWidth: 100,
       });
       expect(parseInt(sticky.placeholder.style.paddingBottom)).to.equal(100);
     });
@@ -126,7 +127,8 @@ describe("Valid Sticky", () => {
         style: expectedStickyStyle,
         distanceFromTop: -1,
         distanceFromBottom: 899,
-        calculatedHeight: 100
+        calculatedHeight: 100,
+        calculatedWidth: 100,
       });
       expect(parseInt(sticky.placeholder.style.paddingBottom)).to.equal(100);
     });
@@ -148,7 +150,8 @@ describe("Valid Sticky", () => {
         style: expectedStickyStyle,
         distanceFromTop: -2,
         distanceFromBottom: 898,
-        calculatedHeight: 100
+        calculatedHeight: 100,
+        calculatedWidth: 100,
       });
       expect(parseInt(sticky.placeholder.style.paddingBottom)).to.equal(100);
     });
@@ -170,7 +173,8 @@ describe("Valid Sticky", () => {
         style: { transform: "translateZ(0)" },
         distanceFromTop: 1,
         distanceFromBottom: 901,
-        calculatedHeight: 100
+        calculatedHeight: 100,
+        calculatedWidth: 100,
       });
       expect(parseInt(sticky.placeholder.style.paddingBottom)).to.equal(0);
     });
@@ -187,7 +191,8 @@ describe("Valid Sticky", () => {
         style: { ...expectedStickyStyle, top: -1 },
         distanceFromTop: -901,
         distanceFromBottom: -1,
-        calculatedHeight: 100
+        calculatedHeight: 100,
+        calculatedWidth: 100,
       });
       expect(parseInt(sticky.placeholder.style.paddingBottom)).to.equal(100);
     });
