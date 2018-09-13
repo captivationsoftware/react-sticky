@@ -47,6 +47,9 @@ export default class Sticky extends Component {
     this.placeholder.style.paddingBottom = this.props.disableCompensation
       ? 0
       : `${this.state.isSticky ? this.state.calculatedHeight : 0}px`;
+    this.placeholder.style.paddingRight = this.props.disableCompensation
+      ? 0
+      : `${this.state.isSticky ? this.state.calculatedWidth : 0}px`;
   }
 
   handleContainerEvent = ({
@@ -67,6 +70,7 @@ export default class Sticky extends Component {
     const placeholderClientRect = this.placeholder.getBoundingClientRect();
     const contentClientRect = this.content.getBoundingClientRect();
     const calculatedHeight = contentClientRect.height;
+    const calculatedWidth = contentClientRect.width;
 
     const bottomDifference =
       distanceFromBottom - this.props.bottomOffset - calculatedHeight;
@@ -106,6 +110,7 @@ export default class Sticky extends Component {
       distanceFromTop,
       distanceFromBottom,
       calculatedHeight,
+      calculatedWidth,
       style
     });
   };
@@ -118,6 +123,7 @@ export default class Sticky extends Component {
         distanceFromTop: this.state.distanceFromTop,
         distanceFromBottom: this.state.distanceFromBottom,
         calculatedHeight: this.state.calculatedHeight,
+        calculatedWidth: this.state.calculatedWidth,
         style: this.state.style
       }),
       {

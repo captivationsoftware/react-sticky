@@ -48,6 +48,7 @@ The majority of use cases will only need the style to pass to the DOM, but some 
 * `distanceFromTop` _(number)_ - number of pixels from the top of the `Sticky` to the nearest `StickyContainer`'s top
 * `distanceFromBottom` _(number)_ - number of pixels from the bottom of the `Sticky` to the nearest `StickyContainer`'s bottom
 * `calculatedHeight` _(number)_ - height of the element returned by this function
+* `calculatedWidth` _(number)_ - width of the element returned by this function
 
 The `Sticky`'s child function will be called when events occur in the parent `StickyContainer`,
 and will serve as the callback to apply your own logic and customizations, with sane `style` attributes
