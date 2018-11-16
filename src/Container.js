@@ -1,30 +1,18 @@
-import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
-import raf from "raf";
+import React, { PureComponent } from 'react';
+
+export const StickyContext = React.createContext();
 
 export default class Container extends PureComponent {
-  static childContextTypes = {
-    subscribe: PropTypes.func,
-    unsubscribe: PropTypes.func,
-    getParent: PropTypes.func
-  };
-
-  getChildContext() {
-    return {
-      subscribe: this.subscribe,
-      unsubscribe: this.unsubscribe,
-      getParent: this.getParent
-    };
-  }
+  currentNode = React.createRef();
 
   events = [
-    "resize",
-    "scroll",
-    "touchstart",
-    "touchmove",
-    "touchend",
-    "pageshow",
-    "load"
+    'resize',
+    'scroll',
+    'touchstart',
+    'touchmove',
+    'touchend',
+    'pageshow',
+    'load'
   ];
 
   subscribers = [];
@@ -43,15 +31,21 @@ export default class Container extends PureComponent {
     if (!this.framePending) {
       const { currentTarget } = evt;
 
-      this.rafHandle = raf(() => {
+      this.rafHandle = window.requestAnimationFrame(() => {
         this.framePending = false;
-        const { top, bottom } = this.node.getBoundingClientRect();
+        const {
+          top,
+          bottom
+        } = this.currentNode.current.getBoundingClientRect();
 
         this.subscribers.forEach(handler =>
           handler({
             distanceFromTop: top,
             distanceFromBottom: bottom,
-            eventSource: currentTarget === window ? document.body : this.node
+            eventSource:
+              currentTarget === window
+                ? document.body
+                : this.currentNode.current
           })
         );
       });
@@ -59,7 +53,7 @@ export default class Container extends PureComponent {
     }
   };
 
-  getParent = () => this.node;
+  getParent = () => this.currentNode.current;
 
   componentDidMount() {
     this.events.forEach(event =>
@@ -69,7 +63,7 @@ export default class Container extends PureComponent {
 
   componentWillUnmount() {
     if (this.rafHandle) {
-      raf.cancel(this.rafHandle);
+      window.cancelAnimationFrame(this.rafHandle);
       this.rafHandle = null;
     }
 
@@ -80,14 +74,22 @@ export default class Container extends PureComponent {
 
   render() {
     return (
-      <div
-        {...this.props}
-        ref={node => (this.node = node)}
-        onScroll={this.notifySubscribers}
-        onTouchStart={this.notifySubscribers}
-        onTouchMove={this.notifySubscribers}
-        onTouchEnd={this.notifySubscribers}
-      />
+      <StickyContext.Provider
+        value={{
+          subscribe: this.subscribe,
+          unsubscribe: this.unsubscribe,
+          getParent: this.getParent
+        }}
+      >
+        <div
+          {...this.props}
+          ref={this.currentNode}
+          onScroll={this.notifySubscribers}
+          onTouchStart={this.notifySubscribers}
+          onTouchMove={this.notifySubscribers}
+          onTouchEnd={this.notifySubscribers}
+        />
+      </StickyContext.Provider>
     );
   }
 }

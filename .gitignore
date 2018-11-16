@@ -1,4 +1,5 @@
 node_modules
+coverage
 *.log
 lib
 package-lock.json

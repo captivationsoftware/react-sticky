@@ -1,12 +1,13 @@
-import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { StickyContext } from './Container';
 
 export default class Sticky extends Component {
   static propTypes = {
     topOffset: PropTypes.number,
     bottomOffset: PropTypes.number,
     relative: PropTypes.bool,
+    withCopy: PropTypes.bool,
     children: PropTypes.func.isRequired
   };
 
@@ -14,15 +15,15 @@ export default class Sticky extends Component {
     relative: false,
     topOffset: 0,
     bottomOffset: 0,
+    withCopy: false,
     disableCompensation: false,
     disableHardwareAcceleration: false
   };
 
-  static contextTypes = {
-    subscribe: PropTypes.func,
-    unsubscribe: PropTypes.func,
-    getParent: PropTypes.func
-  };
+  static contextType = StickyContext;
+
+  content = React.createRef();
+  placeholder = React.createRef();
 
   state = {
     isSticky: false,
@@ -33,9 +34,8 @@ export default class Sticky extends Component {
   componentWillMount() {
     if (!this.context.subscribe)
       throw new TypeError(
-        "Expected Sticky to be mounted within StickyContainer"
+        'Expected Sticky to be mounted within StickyContainer'
       );
-
     this.context.subscribe(this.handleContainerEvent);
   }
 
@@ -44,7 +44,8 @@ export default class Sticky extends Component {
   }
 
   componentDidUpdate() {
-    this.placeholder.style.paddingBottom = this.props.disableCompensation
+    this.placeholder.current.style.paddingBottom = this.props
+      .disableCompensation
       ? 0
       : `${this.state.isSticky ? this.state.calculatedHeight : 0}px`;
   }
@@ -61,11 +62,11 @@ export default class Sticky extends Component {
       preventingStickyStateChanges = eventSource !== parent;
       distanceFromTop =
         -(eventSource.scrollTop + eventSource.offsetTop) +
-        this.placeholder.offsetTop;
+        this.placeholder.current.offsetTop;
     }
 
-    const placeholderClientRect = this.placeholder.getBoundingClientRect();
-    const contentClientRect = this.content.getBoundingClientRect();
+    const placeholderClientRect = this.placeholder.current.getBoundingClientRect();
+    const contentClientRect = this.content.current.getBoundingClientRect();
     const calculatedHeight = contentClientRect.height;
 
     const bottomDifference =
@@ -74,7 +75,7 @@ export default class Sticky extends Component {
     const wasSticky = !!this.state.isSticky;
     const isSticky = preventingStickyStateChanges
       ? wasSticky
-      :  Math.min(0, distanceFromTop) <= -this.props.topOffset &&
+      : distanceFromTop <= -this.props.topOffset &&
         distanceFromBottom > -this.props.bottomOffset;
 
     distanceFromBottom =
@@ -85,7 +86,7 @@ export default class Sticky extends Component {
     const style = !isSticky
       ? {}
       : {
-          position: "fixed",
+          position: 'fixed',
           top:
             bottomDifference > 0
               ? this.props.relative
@@ -97,7 +98,7 @@ export default class Sticky extends Component {
         };
 
     if (!this.props.disableHardwareAcceleration) {
-      style.transform = "translateZ(0)";
+      style.transform = 'translateZ(0)';
     }
 
     this.setState({
@@ -111,6 +112,7 @@ export default class Sticky extends Component {
   };
 
   render() {
+    const { withCopy } = this.props;
     const element = React.cloneElement(
       this.props.children({
         isSticky: this.state.isSticky,
@@ -121,16 +123,27 @@ export default class Sticky extends Component {
         style: this.state.style
       }),
       {
-        ref: content => {
-          this.content = ReactDOM.findDOMNode(content);
-        }
+        ref: this.content
       }
+    );
+
+    const originalElement = React.cloneElement(
+      this.props.children({
+        style: undefined,
+        isSticky: false
+      })
     );
 
     return (
       <div>
-        <div ref={placeholder => (this.placeholder = placeholder)} />
-        {element}
+        <div ref={this.placeholder} />
+        {!withCopy && element}
+        {withCopy && (
+          <React.Fragment>
+            {element}
+            {this.state.isSticky && originalElement}
+          </React.Fragment>
+        )}
       </div>
     );
   }
