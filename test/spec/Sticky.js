@@ -193,6 +193,76 @@ describe("Valid Sticky", () => {
     });
   });
 
+  describe("with hasDifferentNonStickyHeight turned on", () => {
+    it("should set nonStickyHeight in state", () => {
+      const wrapper = mount(
+        componentFactory({
+          hasDifferentNonStickyHeight: true,
+          children: () => <div />
+        }),
+        { attachTo }
+      );
+
+      const sticky = wrapper.children().node;
+
+      expect(sticky.state.nonStickyHeight).to.not.be.undefined;
+    });
+
+    it("should use nonStickyHeight in placeholder padding", () => {
+      const wrapper = mount(
+        componentFactory({
+          hasDifferentNonStickyHeight: true,
+          children: () => <div />
+        }),
+        { attachTo }
+      );
+
+      const sticky = wrapper.children().node;
+      sticky.setState({ isSticky: true, nonStickyHeight: 500 })
+
+      expect(parseInt(sticky.placeholder.style.paddingBottom)).to.equal(500);
+    });
+  });
+
+  describe("with useHeightForOffsets turned on", () => {
+    it("should set nonStickyHeight in state", () => {
+      const wrapper = mount(
+        componentFactory({
+          useHeightForTopOffset: true,
+          useHeightForBottomOffset: true,
+          children: () => <div />
+        }),
+        { attachTo }
+      );
+
+      const sticky = wrapper.children().node;
+
+      expect(sticky.state.topOffset).to.not.be.undefined;
+      expect(sticky.state.bottomOffset).to.not.be.undefined;
+    });
+
+    it("should use state topOffset/bottomOffset", () => {
+      const wrapper = mount(
+        componentFactory({
+          topOffset: -10,
+          bottomOffset: -10,
+          children: () => <div />
+        }),
+        { attachTo }
+      );
+
+      const sticky = wrapper.children().node;
+      sticky.setState({ topOffset: 500, bottomOffset: 200 })
+
+      sticky.handleContainerEvent({
+        distanceFromTop: 0,
+        distanceFromBottom: 100,
+        eventSource: document.body
+      });
+      expect(sticky.state.isSticky).to.be.false;
+    });
+  });
+
   describe("with topOffset not equal to 0", () => {
     it("should attach lazily when topOffset is positive", () => {
       const wrapper = mount(

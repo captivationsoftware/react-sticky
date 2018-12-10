@@ -7,7 +7,10 @@ export default class Sticky extends Component {
     topOffset: PropTypes.number,
     bottomOffset: PropTypes.number,
     relative: PropTypes.bool,
-    children: PropTypes.func.isRequired
+    children: PropTypes.func.isRequired,
+    hasDifferentNonStickyHeight: PropTypes.bool,
+    useHeightForTopOffset: PropTypes.bool,
+    useHeightForBottomOffset: PropTypes.bool
   };
 
   static defaultProps = {
@@ -15,7 +18,10 @@ export default class Sticky extends Component {
     topOffset: 0,
     bottomOffset: 0,
     disableCompensation: false,
-    disableHardwareAcceleration: false
+    disableHardwareAcceleration: false,
+    hasDifferentNonStickyHeight: false,
+    useHeightForTopOffset: false,
+    useHeightForBottomOffset: false
   };
 
   static contextTypes = {
@@ -44,9 +50,32 @@ export default class Sticky extends Component {
   }
 
   componentDidUpdate() {
+    const { calculatedHeight, nonStickyHeight } = this.state
+
     this.placeholder.style.paddingBottom = this.props.disableCompensation
       ? 0
-      : `${this.state.isSticky ? this.state.calculatedHeight : 0}px`;
+      : `${this.state.isSticky ? (nonStickyHeight || calculatedHeight) : 0}px`;
+  }
+
+  componentDidMount() {
+    const contentClientRect = this.content.getBoundingClientRect();
+    const calculatedHeight = contentClientRect.height;
+
+    const newState = {}
+
+    if (this.props.hasDifferentNonStickyHeight) {
+      newState.nonStickyHeight = calculatedHeight
+    }
+
+    if (this.props.useHeightForTopOffset) {
+      newState.topOffset = calculatedHeight
+    }
+
+    if (this.props.useHeightForBottomOffset) {
+      newState.bottomOffset = calculatedHeight
+    }
+
+    this.setState(newState)
   }
 
   handleContainerEvent = ({
@@ -55,8 +84,11 @@ export default class Sticky extends Component {
     eventSource
   }) => {
     const parent = this.context.getParent();
+    const topOffset = this.state.topOffset || this.props.topOffset
+    const bottomOffset = this.state.bottomOffset || this.props.bottomOffset
 
     let preventingStickyStateChanges = false;
+
     if (this.props.relative) {
       preventingStickyStateChanges = eventSource !== parent;
       distanceFromTop =
@@ -69,13 +101,13 @@ export default class Sticky extends Component {
     const calculatedHeight = contentClientRect.height;
 
     const bottomDifference =
-      distanceFromBottom - this.props.bottomOffset - calculatedHeight;
+      distanceFromBottom - bottomOffset - calculatedHeight;
 
     const wasSticky = !!this.state.isSticky;
     const isSticky = preventingStickyStateChanges
       ? wasSticky
-      :  Math.min(0, distanceFromTop) <= -this.props.topOffset &&
-        distanceFromBottom > -this.props.bottomOffset;
+      : (distanceFromTop || 0) <= -topOffset &&
+        distanceFromBottom > -bottomOffset;
 
     distanceFromBottom =
       (this.props.relative

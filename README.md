@@ -181,3 +181,51 @@ app.js
   ...
 </StickyContainer>
 ```
+
+#### hasDifferentNonStickyHeight _(default: false)_
+
+When `hasDifferentNonStickyHeight_` is set to `true`, the `<Sticky />` element will use non sticky element's height for placeholder padding.
+
+app.js
+
+```js
+<StickyContainer>
+  ...
+  <Sticky hasDifferentNonStickyHeight>
+    { props => (...) }
+  </Sticky>
+  ...
+</StickyContainer>
+```
+
+#### useHeightForTopOffset _(default: false)_
+
+When `useHeightForTopOffset` is set to `true`, the `<Sticky />` element will use sticky element's height for topOffset used in sticky state calculations.
+
+app.js
+
+```js
+<StickyContainer>
+  ...
+  <Sticky useHeightForTopOffset>
+    { props => (...) }
+  </Sticky>
+  ...
+</StickyContainer>
+```
+
+#### useHeightForBottomOffset _(default: false)_
+
+When `useHeightForBottomOffset` is set to `true`, the `<Sticky />` element will use sticky element's height for bottomOffset used in sticky state calculations.
+
+app.js
+
+```js
+<StickyContainer>
+  ...
+  <Sticky useHeightForBottomOffset>
+    { props => (...) }
+  </Sticky>
+  ...
+</StickyContainer>
+```
