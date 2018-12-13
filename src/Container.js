@@ -45,6 +45,9 @@ export default class Container extends PureComponent {
 
       this.rafHandle = raf(() => {
         this.framePending = false;
+        
+        if(!this.node) return;
+        
         const { top, bottom } = this.node.getBoundingClientRect();
 
         this.subscribers.forEach(handler =>
