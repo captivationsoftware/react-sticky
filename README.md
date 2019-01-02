@@ -181,3 +181,8 @@ app.js
   ...
 </StickyContainer>
 ```
+
+## FAQ
+
+### I get errors while using React.Fragments
+React.Fragments does not correspond to an actual DOM node, so `react-sticky` can not calculate its position. Because of this, React.Fragments is not supported.
