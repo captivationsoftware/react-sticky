@@ -4,6 +4,7 @@ const webpack = require("webpack");
 const isLive = process.env.NODE_ENV === "production";
 
 module.exports = {
+  mode: isLive ? "production" : "development",
   devtool: isLive ? "source-map" : "cheap-eval-source-map",
   entry: {
     demos: path.resolve("examples", "index.js")
@@ -13,7 +14,7 @@ module.exports = {
     filename: "bundle.js"
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
