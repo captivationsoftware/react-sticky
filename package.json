@@ -7,7 +7,7 @@
     "clean": "rimraf lib",
     "compile": "babel src --loose --out-dir lib",
     "demos:start": "webpack-dev-server --watch",
-    "demos:build": "NODE_ENV=production webpack -p",
+    "demos:build": "NODE_ENV=production webpack",
     "prepublish": "npm run prepare",
     "prepare": "npm run clean && npm run compile",
     "test": "mocha test/setup.js test/spec/*.js"
@@ -41,7 +41,7 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.0.0",
-    "babel-loader": "^8.0.0",
+    "babel-loader": "^8.0.5",
     "chai": "^4",
     "enzyme": "^2.8.2",
     "jsdom": "8.0.4",
@@ -51,7 +51,8 @@
     "react-router-dom": "^4.2.2",
     "react-test-renderer": "^15.5.4",
     "rimraf": "^2.5.2",
-    "webpack": "^3.11.0",
-    "webpack-dev-server": "^2.11.1"
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.2.0"
   }
 }
