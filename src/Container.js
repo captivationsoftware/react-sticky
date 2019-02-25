@@ -50,8 +50,7 @@ export default class Container extends PureComponent {
         this.subscribers.forEach(handler =>
           handler({
             distanceFromTop: top,
-            distanceFromBottom: bottom,
-            eventSource: currentTarget === window ? document.body : this.node
+            distanceFromBottom: bottom
           })
         );
       });

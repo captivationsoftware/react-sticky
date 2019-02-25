@@ -69,6 +69,7 @@ h2 {
 }
 
 .container.relative {
+  position: relative;
   overflow-y: auto;
 }
 `;

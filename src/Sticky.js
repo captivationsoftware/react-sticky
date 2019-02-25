@@ -49,52 +49,28 @@ export default class Sticky extends Component {
       : `${this.state.isSticky ? this.state.calculatedHeight : 0}px`;
   }
 
-  handleContainerEvent = ({
-    distanceFromTop,
-    distanceFromBottom,
-    eventSource
-  }) => {
-    const parent = this.context.getParent();
-
-    let preventingStickyStateChanges = false;
-    if (this.props.relative) {
-      preventingStickyStateChanges = eventSource !== parent;
-      distanceFromTop =
-        -(eventSource.scrollTop + eventSource.offsetTop) +
-        this.placeholder.offsetTop;
-    }
-
-    const placeholderClientRect = this.placeholder.getBoundingClientRect();
+  handleContainerEvent = ({ distanceFromTop, distanceFromBottom } = {}) => {
     const contentClientRect = this.content.getBoundingClientRect();
     const calculatedHeight = contentClientRect.height;
 
-    const bottomDifference =
-      distanceFromBottom - this.props.bottomOffset - calculatedHeight;
+    if (this.props.relative) {
+      const parent = this.context.getParent();
+
+      distanceFromTop = this.placeholder.offsetTop - parent.scrollTop;
+      distanceFromBottom = parent.scrollHeight - parent.scrollTop;
+    }
 
     const wasSticky = !!this.state.isSticky;
-    const isSticky = preventingStickyStateChanges
-      ? wasSticky
-      : distanceFromTop <= -this.props.topOffset &&
-        distanceFromBottom > -this.props.bottomOffset;
+    const isSticky =
+      distanceFromTop <= -this.props.topOffset &&
+      distanceFromBottom > -this.props.bottomOffset;
+    const style = this.calculateStyle(
+      isSticky,
+      distanceFromBottom,
+      calculatedHeight
+    );
 
-    distanceFromBottom =
-      (this.props.relative
-        ? parent.scrollHeight - parent.scrollTop
-        : distanceFromBottom) - calculatedHeight;
-
-    const style = !isSticky
-      ? {}
-      : {
-          position: "fixed",
-          top:
-            bottomDifference > 0
-              ? this.props.relative
-                ? parent.offsetTop - parent.offsetParent.scrollTop
-                : 0
-              : bottomDifference,
-          left: placeholderClientRect.left,
-          width: placeholderClientRect.width
-        };
+    distanceFromBottom = distanceFromBottom - calculatedHeight;
 
     if (!this.props.disableHardwareAcceleration) {
       style.transform = "translateZ(0)";
@@ -109,6 +85,35 @@ export default class Sticky extends Component {
       style
     });
   };
+
+  calculateStyle(isSticky, distanceFromBottom, calculatedHeight) {
+    const parent = this.context.getParent();
+    const placeholderClientRect = this.placeholder.getBoundingClientRect();
+    const bottomDifference =
+      distanceFromBottom - this.props.bottomOffset - calculatedHeight;
+    let style = {};
+
+    if (isSticky) {
+      if (this.props.relative) {
+        style = {
+          position: "absolute",
+          top: parent.scrollTop,
+          width: placeholderClientRect.width
+        };
+
+        if (bottomDifference <= 0) style.top = style.top + bottomDifference;
+      } else {
+        style = {
+          position: "fixed",
+          top: bottomDifference > 0 ? 0 : bottomDifference,
+          left: placeholderClientRect.left,
+          width: placeholderClientRect.width
+        };
+      }
+    }
+
+    return style;
+  }
 
   render() {
     const element = React.cloneElement(
