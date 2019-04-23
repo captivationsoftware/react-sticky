@@ -47,7 +47,10 @@ The majority of use cases will only need the style to pass to the DOM, but some 
 * `wasSticky` _(boolean)_ - was the element sticky prior to the current event?
 * `distanceFromTop` _(number)_ - number of pixels from the top of the `Sticky` to the nearest `StickyContainer`'s top
 * `distanceFromBottom` _(number)_ - number of pixels from the bottom of the `Sticky` to the nearest `StickyContainer`'s bottom
+* `distanceFromLeft` _(number)_ - number of pixels from the left of the `Sticky` to the nearest `StickyContainer`'s left
+* `distanceFromRight` _(number)_ - number of pixels from the right of the `Sticky` to the nearest `StickyContainer`'s right
 * `calculatedHeight` _(number)_ - height of the element returned by this function
+* `calculatedWidth` _(number)_ - width of the element returned by this function
 
 The `Sticky`'s child function will be called when events occur in the parent `StickyContainer`,
 and will serve as the callback to apply your own logic and customizations, with sane `style` attributes
@@ -79,7 +82,10 @@ class App extends React.Component {
             wasSticky,
             distanceFromTop,
             distanceFromBottom,
-            calculatedHeight
+            distanceFromLeft,
+            distanceFromRight,
+            calculatedHeight,
+            calculatedWidth
           }) => (
             <header style={style}>
               {/* ... */}
@@ -176,6 +182,20 @@ app.js
 <StickyContainer>
   ...
   <Sticky disableHardwareAcceleration>
+    { props => (...) }
+  </Sticky>
+  ...
+</StickyContainer>
+```
+
+#### horizontal _(default: false)_
+
+When `horizontal` is set to `true`, the `<Sticky />` element will stick on horintal movement (to the left side of the screen), can be useful with tables.
+
+```js
+<StickyContainer>
+  ...
+  <Sticky horizontal>
     { props => (...) }
   </Sticky>
   ...
