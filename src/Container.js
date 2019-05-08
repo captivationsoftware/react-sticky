@@ -24,7 +24,8 @@ export default class Container extends PureComponent {
     "touchmove",
     "touchend",
     "pageshow",
-    "load"
+    "load",
+    "transitionend"
   ];
 
   subscribers = [];
