@@ -100,9 +100,7 @@ export default class Sticky extends Component {
           left: placeholderClientRect.left,
           width: placeholderClientRect.width
         };
-        console.log( bottomDifference , distanceFromBottom, distanceFromTop,
-          distanceFromTop <= margin -this.props.topOffset &&
-        distanceFromBottom > -margin -this.props.bottomOffset, calculatedHeight)
+       
     if (!this.props.disableHardwareAcceleration) {
       style.transform = "translateZ(0)";
     }
