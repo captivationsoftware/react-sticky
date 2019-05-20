@@ -7,7 +7,8 @@ export default class Sticky extends Component {
     topOffset: PropTypes.number,
     bottomOffset: PropTypes.number,
     relative: PropTypes.bool,
-    children: PropTypes.func.isRequired
+    children: PropTypes.func.isRequired,
+    marginTop: PropTypes.number,
   };
 
   static defaultProps = {
@@ -67,15 +68,19 @@ export default class Sticky extends Component {
     const placeholderClientRect = this.placeholder.getBoundingClientRect();
     const contentClientRect = this.content.getBoundingClientRect();
     const calculatedHeight = contentClientRect.height;
+    let margin = 0;
+    if(this.props.marginTop){
+      margin = this.props.marginTop
+    }
 
     const bottomDifference =
-      distanceFromBottom - this.props.bottomOffset - calculatedHeight;
+      distanceFromBottom - this.props.bottomOffset - calculatedHeight - 100;
 
     const wasSticky = !!this.state.isSticky;
     const isSticky = preventingStickyStateChanges
       ? wasSticky
-      : distanceFromTop <= -this.props.topOffset &&
-        distanceFromBottom > -this.props.bottomOffset;
+      : distanceFromTop <= margin -this.props.topOffset &&
+        distanceFromBottom > -margin -this.props.bottomOffset;
 
     distanceFromBottom =
       (this.props.relative
@@ -90,12 +95,14 @@ export default class Sticky extends Component {
             bottomDifference > 0
               ? this.props.relative
                 ? parent.offsetTop - parent.offsetParent.scrollTop
-                : 0
-              : bottomDifference,
+                : margin
+              : bottomDifference + margin,
           left: placeholderClientRect.left,
           width: placeholderClientRect.width
         };
-
+        console.log( bottomDifference , distanceFromBottom, distanceFromTop,
+          distanceFromTop <= margin -this.props.topOffset &&
+        distanceFromBottom > -margin -this.props.bottomOffset, calculatedHeight)
     if (!this.props.disableHardwareAcceleration) {
       style.transform = "translateZ(0)";
     }

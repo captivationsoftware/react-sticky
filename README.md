@@ -129,6 +129,25 @@ app.js
 
 The above would result in an element that becomes sticky once its top is greater than or equal to 80px away from the top of the `<StickyContainer />`.
 
+
+#### marginTop _(default: 0)_
+
+Sticky state will be triggered as usual only it will keap a margin from the top with the inputted value.
+
+app.js
+
+```js
+<StickyContainer>
+  ...
+  <Sticky marginTop={80}>
+    { props => (...) }
+  </Sticky>
+  ...
+</StickyContainer>
+```
+
+The above would result in an element that becomes sticky once its top is greater than or equal to 0px but it will scroll away from the top of the `<StickyContainer />` by 80px.
+
 #### bottomOffset _(default: 0)_
 
 Sticky state will be triggered when the bottom of the element is `bottomOffset` pixels from the bottom of the closest `<StickyContainer />`.
