@@ -390,4 +390,47 @@ describe("Valid Sticky", () => {
       expect(parseInt(sticky.placeholder.style.paddingBottom)).to.equal(0);
     });
   });
+
+  describe("with didNeedCompensation defined", () => {
+    it("should get compensation padding from props function", () => {
+      const wrapper = mount(
+        componentFactory({
+          didNeedCompensation: () => {
+            return 123
+          },
+          children: () => <div />
+        }),
+        { attachTo }
+      );
+
+      const sticky = wrapper.children().node;
+      sticky.handleContainerEvent({
+        distanceFromTop: -1,
+        distanceFromBottom: 99,
+        eventSource: document.body
+      });
+      expect(sticky.state.isSticky).to.be.true;
+      expect(parseInt(sticky.placeholder.style.paddingBottom)).to.equal(123);
+    });
+
+    it("should complain if compensation callback does not return a number", () => {
+      const wrapper = mount(
+        componentFactory({
+          didNeedCompensation: () => {
+            return 'to fail'
+          },
+          children: () => <div />
+        }),
+        { attachTo }
+      );
+
+      const sticky = wrapper.children().node;
+      expect(() => sticky.handleContainerEvent({
+          distanceFromTop: -1,
+          distanceFromBottom: 99,
+          eventSource: document.body
+        })
+      ).to.throw(TypeError);
+    });
+  });
 });

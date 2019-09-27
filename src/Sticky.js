@@ -44,9 +44,26 @@ export default class Sticky extends Component {
   }
 
   componentDidUpdate() {
-    this.placeholder.style.paddingBottom = this.props.disableCompensation
-      ? 0
-      : `${this.state.isSticky ? this.state.calculatedHeight : 0}px`;
+    if (this.props.disableCompensation) {
+      this.placeholder.style.paddingBottom = 0
+    } else if (this.state.isSticky) {
+      
+      if (this.props.didNeedCompensation) {
+        const targetCompensation = this.props.didNeedCompensation()
+        if (!isNaN(targetCompensation)) {
+          this.placeholder.style.paddingBottom = `${targetCompensation}px`
+        } else {
+          throw new TypeError(
+            "Expected didNeedCompensation to return a number"
+          );
+        }
+       
+      } else {
+        this.placeholder.style.paddingBottom = `${this.state.calculatedHeight}px`
+      }
+    } else {
+      this.placeholder.style.paddingBottom = 0
+    }
   }
 
   handleContainerEvent = ({
