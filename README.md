@@ -2,6 +2,10 @@
 
 Make your React components sticky!
 
+#### Update No longer actively maintained:	
+
+The 6.0.3 release is the last release maintained. This means we will not be considering any PR's and/or responding to any issues until a new maintainer is identified. It is *highly* recommended that you begin transitioning to another sticky library to ensure better support and sustainability. This is obviously less than ideal - sorry for any inconvenience!
+
 #### Demos
 
 * [Basic](http://react-sticky.netlify.com/#/basic)
