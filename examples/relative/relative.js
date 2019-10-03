@@ -24,6 +24,24 @@ export class Relative extends PureComponent {
             <h2>scrolling container</h2>
           </div>
         </StickyContainer>
+
+        <div className="gap short" />
+
+        <StickyContainer className="container relative">
+          <div
+            className="gap tall"
+            style={{ background: "linear-gradient(#aaa, #fff)" }}
+          >
+            <div className="gap short" />
+            <Sticky relative={true} bottomOffset={600}>
+              {({ style }) => (
+                <Header style={style} renderCount={renderCount++} />
+              )}
+            </Sticky>
+            <div className="gap short" />
+            <h2>scrolling container</h2>
+          </div>
+        </StickyContainer>
       </div>
     );
   }
