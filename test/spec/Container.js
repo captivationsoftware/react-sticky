@@ -77,24 +77,6 @@ describe("StickyContainer", () => {
   });
 
   describe("notifySubscribers", () => {
-    it("should publish document.body as eventSource to subscribers when window event", done => {
-      containerNode.subscribers = [
-        ({ eventSource }) => (
-          expect(eventSource).to.equal(document.body), done()
-        )
-      ];
-      containerNode.notifySubscribers({ currentTarget: window });
-    });
-
-    it("should publish node as eventSource to subscribers when div event", done => {
-      containerNode.subscribers = [
-        ({ eventSource }) => (
-          expect(eventSource).to.equal(containerNode.node), done()
-        )
-      ];
-      containerNode.notifySubscribers({ currentTarget: containerNode.node });
-    });
-
     it("should publish node top and bottom to subscribers", done => {
       containerNode.subscribers = [
         ({ distanceFromTop, distanceFromBottom }) => {
