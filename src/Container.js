@@ -45,12 +45,14 @@ export default class Container extends PureComponent {
 
       this.rafHandle = raf(() => {
         this.framePending = false;
-        const { top, bottom } = this.node.getBoundingClientRect();
+        const { top, bottom, left, right } = this.node.getBoundingClientRect();
 
         this.subscribers.forEach(handler =>
           handler({
             distanceFromTop: top,
             distanceFromBottom: bottom,
+            distanceFromLeft: left,
+            distanceFromRight: right,
             eventSource: currentTarget === window ? document.body : this.node
           })
         );

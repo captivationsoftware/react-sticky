@@ -95,18 +95,22 @@ describe("StickyContainer", () => {
       containerNode.notifySubscribers({ currentTarget: containerNode.node });
     });
 
-    it("should publish node top and bottom to subscribers", done => {
+    it("should publish node top, bottom, left, righ to subscribers", done => {
       containerNode.subscribers = [
         ({ distanceFromTop, distanceFromBottom }) => {
           expect(distanceFromTop).to.equal(100);
           expect(distanceFromBottom).to.equal(200);
+          expect(distanceFromLeft).to.equal(150);
+          expect(distanceFromRight).to.equal(250);
           done();
         }
       ];
 
       containerNode.node.getBoundingClientRect = () => ({
         top: 100,
-        bottom: 200
+        bottom: 200,
+        left: 150,
+        right: 250
       });
       containerNode.notifySubscribers({ currentTarget: window });
     });

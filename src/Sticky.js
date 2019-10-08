@@ -6,6 +6,9 @@ export default class Sticky extends Component {
   static propTypes = {
     topOffset: PropTypes.number,
     bottomOffset: PropTypes.number,
+    leftOffset: PropTypes.number,
+    rightOffset: PropTypes.number,
+    horizontal: PropTypes.bool,
     relative: PropTypes.bool,
     children: PropTypes.func.isRequired
   };
@@ -14,6 +17,9 @@ export default class Sticky extends Component {
     relative: false,
     topOffset: 0,
     bottomOffset: 0,
+    leftOffset: 0,
+    rightOffset: 0,
+    horizontal: false,
     disableCompensation: false,
     disableHardwareAcceleration: false
   };
@@ -44,9 +50,15 @@ export default class Sticky extends Component {
   }
 
   componentDidUpdate() {
-    this.placeholder.style.paddingBottom = this.props.disableCompensation
-      ? 0
-      : `${this.state.isSticky ? this.state.calculatedHeight : 0}px`;
+    if (!this.props.horizontal) {
+      this.placeholder.style.paddingBottom = this.props.disableCompensation
+        ? 0
+        : `${this.state.isSticky ? this.state.calculatedHeight : 0}px`;
+    } else {
+      this.placeholder.style.paddingRight = this.props.disableCompensation
+        ? 0
+        : `${this.state.isSticky ? this.state.calculatedWidth : 0}px`;
+    }
   }
 
   handleContainerEvent = ({
@@ -55,10 +67,14 @@ export default class Sticky extends Component {
     eventSource
   }) => {
     const parent = this.context.getParent();
+    const { horizontal } = this.props;
 
     let preventingStickyStateChanges = false;
     if (this.props.relative) {
       preventingStickyStateChanges = eventSource !== parent;
+      distanceFromLeft =
+        -(eventSource.scrollLeft + eventSource.offsetLeft) +
+        this.placeholder.offsetLeft;
       distanceFromTop =
         -(eventSource.scrollTop + eventSource.offsetTop) +
         this.placeholder.offsetTop;
@@ -67,25 +83,36 @@ export default class Sticky extends Component {
     const placeholderClientRect = this.placeholder.getBoundingClientRect();
     const contentClientRect = this.content.getBoundingClientRect();
     const calculatedHeight = contentClientRect.height;
+    const calculatedWidth = contentClientRect.width;
 
     const bottomDifference =
       distanceFromBottom - this.props.bottomOffset - calculatedHeight;
+    const rightDifference =
+      distanceFromRight - this.props.rightOffset - calculatedWidth;
 
-    const wasSticky = !!this.state.isSticky;
+    const wasSticky = !!this.state.isSticky
     const isSticky = preventingStickyStateChanges
       ? wasSticky
-      : distanceFromTop <= -this.props.topOffset &&
-        distanceFromBottom > -this.props.bottomOffset;
+      : !horizontal
+      ? distanceFromTop <= -this.props.topOffset &&
+        distanceFromBottom > -this.props.bottomOffset
+      : distanceFromLeft <= -this.props.leftOffset &&
+        distanceFromRight > -this.props.rightOffset;
 
     distanceFromBottom =
       (this.props.relative
         ? parent.scrollHeight - parent.scrollTop
         : distanceFromBottom) - calculatedHeight;
+    distanceFromRight =
+      (this.props.relative
+        ? parent.scrollWidth - parent.scrollLeft
+        : distanceFromRight) - calculatedWidth;
 
     const style = !isSticky
       ? {}
-      : {
-          position: "fixed",
+      : !horizontal
+      ? {
+          position: 'fixed',
           top:
             bottomDifference > 0
               ? this.props.relative
@@ -94,10 +121,21 @@ export default class Sticky extends Component {
               : bottomDifference,
           left: placeholderClientRect.left,
           width: placeholderClientRect.width
-        };
+        }
+      : {
+          position: 'fixed',
+          left:
+            rightDifference > 0
+              ? this.props.relative
+                ? parent.offsetLeft - parent.offsetParent.scrollLeft
+                : 0
+              : rightDifference,
+          top: placeholderClientRect.top,
+          height: placeholderClientRect.height
+        }
 
     if (!this.props.disableHardwareAcceleration) {
-      style.transform = "translateZ(0)";
+      style.transform = 'translateZ(0)';
     }
 
     this.setState({
@@ -105,8 +143,11 @@ export default class Sticky extends Component {
       wasSticky,
       distanceFromTop,
       distanceFromBottom,
+      distanceFromLeft,
+      distanceFromRight,
       calculatedHeight,
-      style
+      calculatedWidth,
+      style,
     });
   };
 
