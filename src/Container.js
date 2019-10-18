@@ -20,9 +20,9 @@ export default class Container extends PureComponent {
   events = [
     "resize",
     "scroll",
-    "touchstart",
+    /*  "touchstart",
     "touchmove",
-    "touchend",
+    "touchend", */
     "pageshow",
     "load"
   ];
@@ -83,10 +83,10 @@ export default class Container extends PureComponent {
       <div
         {...this.props}
         ref={node => (this.node = node)}
-        onScroll={this.notifySubscribers}
+        /*  onScroll={this.notifySubscribers}
         onTouchStart={this.notifySubscribers}
         onTouchMove={this.notifySubscribers}
-        onTouchEnd={this.notifySubscribers}
+        onTouchEnd={this.notifySubscribers} */
       />
     );
   }
