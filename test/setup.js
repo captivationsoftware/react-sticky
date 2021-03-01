@@ -1,4 +1,5 @@
 require("@babel/register")();
+require("raf").polyfill(global);
 
 const jsdom = require("jsdom").jsdom;
 

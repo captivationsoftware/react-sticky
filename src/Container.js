@@ -1,7 +1,5 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
-import raf from "raf";
-
 export default class Container extends PureComponent {
   static childContextTypes = {
     subscribe: PropTypes.func,
@@ -43,7 +41,7 @@ export default class Container extends PureComponent {
     if (!this.framePending) {
       const { currentTarget } = evt;
 
-      this.rafHandle = raf(() => {
+      this.rafHandle = requestAnimationFrame(() => {
         this.framePending = false;
         const { top, bottom } = this.node.getBoundingClientRect();
 
@@ -69,7 +67,7 @@ export default class Container extends PureComponent {
 
   componentWillUnmount() {
     if (this.rafHandle) {
-      raf.cancel(this.rafHandle);
+      cancelAnimationFrame(this.rafHandle);
       this.rafHandle = null;
     }
 
