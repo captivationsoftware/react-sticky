@@ -30,7 +30,7 @@ export default class Sticky extends Component {
     style: {}
   };
 
-  componentWillMount() {
+  componentDidMount() {
     if (!this.context.subscribe)
       throw new TypeError(
         "Expected Sticky to be mounted within StickyContainer"
@@ -40,7 +40,8 @@ export default class Sticky extends Component {
   }
 
   componentWillUnmount() {
-    this.context.unsubscribe(this.handleContainerEvent);
+    if (this.context.unsubscribe)
+      this.context.unsubscribe(this.handleContainerEvent);
   }
 
   componentDidUpdate() {
