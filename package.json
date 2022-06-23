@@ -44,7 +44,7 @@
     "babel-loader": "^8.0.5",
     "chai": "^4",
     "enzyme": "^2.8.2",
-    "jsdom": "8.0.4",
+    "jsdom": "16.5.0",
     "mocha": "^5",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
